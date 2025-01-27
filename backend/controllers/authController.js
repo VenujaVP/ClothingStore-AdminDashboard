@@ -58,6 +58,7 @@ const loginUser = (req, res) => {
                     name: result[0].NAME
                 };
                 const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1d' }); // Sign the token
+                console.log(token)
 
                 res.cookie('token', token, { // Set token in cookies
                     httpOnly: true,

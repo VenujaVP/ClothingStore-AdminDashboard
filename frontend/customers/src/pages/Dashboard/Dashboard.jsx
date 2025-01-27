@@ -14,7 +14,7 @@ const Dashboard = () => {
   axios.defaults.withCredentials = true
 
   useEffect(() =>{
-      axios.get('http://localhost:8081', { withCredentials: true })
+      axios.get('http://localhost:8081/dashboard', { withCredentials: true })
         .then(res =>{
           if(res.data.Status === "Success"){
             setAuth(true)
