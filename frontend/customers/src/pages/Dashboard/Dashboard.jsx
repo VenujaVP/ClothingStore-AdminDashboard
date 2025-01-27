@@ -1,3 +1,7 @@
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+
 // import React from 'react';
 import axios from 'axios';
 import { useEffect } from 'react';
@@ -55,9 +59,6 @@ const Dashboard = () => {
         </div>
       :
         <div className="login-now-container">
-          <div className="message-box">
-            <p className="message-text">{massage}</p>
-          </div>
           <div className="login-now-section">
             <h3 className="login-title">Login Expired</h3>
             <p className="login-subtitle">Your login has expired. Please log in again to continue.</p>

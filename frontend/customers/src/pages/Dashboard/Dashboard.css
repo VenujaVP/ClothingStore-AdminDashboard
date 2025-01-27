@@ -1,110 +1,76 @@
-/* Universal container for the "Login Expired" message section */
-.login-expired-container {
+.login-now-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;  /* Ensures it takes up full screen height */
-    width: 100vw;   /* Full screen width */
-    background: linear-gradient(135deg, #f5f7fb, #d6e6ff);  /* Using your theme colors */
-    font-family: 'Arial', sans-serif;
-    padding: 0;      /* Remove any extra padding */
-    margin: 0;       /* Remove any extra margin */
-    position: absolute;  /* Allows it to cover the whole screen */
-    top: 0;
-    left: 0;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    padding: 20px;
   }
   
-  /* Message Box for showing the "Login Expired" message */
   .message-box {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
     margin-bottom: 20px;
-    padding: 20px 30px;
-    background-color: #ffdddd;  /* Light red for warning */
-    border: 1px solid #ff9494;
-    border-radius: 8px;
-    text-align: center;
-    width: 80%;   /* Responsive width */
-    max-width: 500px;  /* Maximum width */
+    width: 100%;
+    max-width: 400px;
   }
   
-  /* Error message text */
   .message-text {
-    color: #ff4949;  /* Red color for error */
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 1.4;
-  }
-  
-  /* Section where the login prompt is placed */
-  .login-now-section {
+    margin: 0;
     text-align: center;
-    background: white;
+  }
+  
+  .login-now-section {
+    background-color: white;
     padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 90%;  /* Responsive width */
-    max-width: 400px; /* Maximum width */
-    margin-top: 20px;  /* Adds space below the message */
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
   }
   
-  /* Title for the Login expired prompt */
   .login-title {
-    font-size: 24px;
     color: #333;
-    font-weight: bold;
-    margin-bottom: 10px;
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
   }
   
-  /* Subtitle under the title */
   .login-subtitle {
-    font-size: 16px;
     color: #666;
+    font-size: 16px;
     margin-bottom: 20px;
+    text-align: center;
   }
   
-  /* Button to login again */
   .login-button {
-    background: #23b893;  /* Using your theme color */
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
     color: white;
     border: none;
-    padding: 12px 20px;
+    border-radius: 4px;
     font-size: 16px;
-    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
   }
   
   .login-button:hover {
-    background: #1a8b6f;  /* Darker green on hover */
-  }
-  
-  /* Responsive Design for smaller screens */
-  @media (max-width: 768px) {
-    .login-expired-container {
-      padding: 10px;  /* Ensure padding is adjusted for smaller screens */
-    }
-  
-    .message-box {
-      padding: 15px 20px;  /* Adjust padding for smaller screens */
-      font-size: 14px;
-    }
-  
-    .login-now-section {
-      padding: 20px;  /* Slightly reduced padding */
-    }
+    background-color: #0056b3;
   }
   
   @media (max-width: 480px) {
-    .message-text {
-      font-size: 14px;  /* Reduce font size for very small screens */
+    .login-now-section {
+      padding: 20px;
     }
   
     .login-title {
-      font-size: 20px;  /* Adjust title font size */
+      font-size: 20px;
     }
   
     .login-subtitle {
-      font-size: 14px;  /* Adjust subtitle font size */
+      font-size: 14px;
     }
   }
-  
