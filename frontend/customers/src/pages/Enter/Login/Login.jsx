@@ -9,6 +9,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { loginValidationSchema } from '../validationSchema';
 import { FaEnvelope, FaLock, FaGoogle, FaFacebookF, FaLinkedinIn } from 'react-icons/fa';
 import { Snackbar, Alert, Slide } from "@mui/material";
+import { GoogleLogin } from '@react-oauth/google';
 
 
 const Login = () => {
@@ -98,15 +99,11 @@ const Login = () => {
             <p className="text-muted">Please sign in to continue</p>
 
             <div className="social-login">
-              <button className="social-btn google">
-                <FaGoogle />
-              </button>
-              <button className="social-btn facebook">
-                <FaFacebookF />
-              </button>
-              <button className="social-btn linkedin">
-                <FaLinkedinIn />
-              </button>
+                <GoogleLogin
+                  className="social-btn google"
+                  // onClick={() => googleLogin()}
+                >
+                </GoogleLogin>
             </div>
 
             <div className="divider">

@@ -4,6 +4,7 @@
 
 //npm install react-icons react-router-dom axios yup
 //npm install @mui/material @emotion/react @emotion/styled
+//npm install @react-oauth/google@latest
 
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { useState } from 'react'

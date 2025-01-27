@@ -9,6 +9,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { registerValidationSchema } from '../validationSchema';
 import { FaUser, FaEnvelope, FaLock, FaGoogle, FaFacebookF, FaLinkedinIn, FaPhone } from 'react-icons/fa';
 import { Snackbar, Alert, Slide } from "@mui/material";
+import { GoogleOAuthProvider, googleLogout, useGoogleLogin , GoogleLogin} from '@react-oauth/google';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -17,14 +18,6 @@ const Register = () => {
   const [message, setMessage] = useState(''); // To store the message displayed in the Snackbar
   const [alertSeverity, setAlertSeverity] = useState(''); // To handle success or error severity
 
-  const handleClose = () => {
-    setOpen(false); // Close the Snackbar
-  };
-
-  function SlideTransition(props) {
-    return <Slide {...props} direction="left" />;
-  }
-  
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -41,6 +34,14 @@ const Register = () => {
     }));
   };
 
+
+  const handleClose = () => {
+    setOpen(false); // Close the Snackbar
+  };
+  function SlideTransition(props) {
+    return <Slide {...props} direction="left" />;
+  }
+  
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -86,6 +87,31 @@ const Register = () => {
       });
   };
 
+  const googleLogin = useGoogleLogin({
+    onSuccess: (response) => {
+      const { credential } = response; // Extract the Google credential (JWT)
+      console.log(response)
+      axios
+        .post('http://localhost:8081/auth/google-login', { token: credential })
+        .then((res) => {
+          setMessage('Login successful with Google!');
+          setAlertSeverity('success');
+          setOpen(true);
+          navigate('/dashboard'); // Redirect user after successful login
+        })
+        .catch((err) => {
+          setMessage('Google login failed. Try again.');
+          setAlertSeverity('error');
+          setOpen(true);
+        });
+    },
+    onError: () => {
+      setMessage('Google login failed. Try again.');
+      setAlertSeverity('error');
+      setOpen(true);
+    }
+  });
+
   return (
     <div className="register-page">
       <div className="register-container">
@@ -96,15 +122,11 @@ const Register = () => {
             <p className="text-muted">Get started with your free account</p>
 
             <div className="social-login">
-              <button className="social-btn google">
-                <FaGoogle />
-              </button>
-              <button className="social-btn facebook">
-                <FaFacebookF />
-              </button>
-              <button className="social-btn linkedin">
-                <FaLinkedinIn />
-              </button>
+                <GoogleLogin
+                  className="social-btn google"
+                  onClick={() => googleLogin()}
+                >
+                </GoogleLogin>
             </div>
 
             <div className="divider">
