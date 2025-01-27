@@ -1,7 +1,7 @@
 // to run - npm start
 
 //npm init -y - Initialize the Backend
-//"start": "nodemon server.js" - meekth dnn packace.json eke sctipt nodemon active krnn
+//"start": "nodemon server.js","dev": "nodemon server.js" - meekth dnn packace.json eke sctipt nodemon active krnn
 //"type": "module", - main eken phlt dnn package.json wlt
 
 //npm i -D nodemon ->developer depemdancy
@@ -35,6 +35,5 @@ app.use(cookieParser());
 app.use('/auth', authRoutes);
 
 // Start the server
-// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
