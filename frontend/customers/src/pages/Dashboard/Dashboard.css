@@ -1,78 +1,83 @@
-/* Make sure the container takes the whole screen */
+/* Full-Screen Container for Login Expired */
 .login-now-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh; /* Full viewport height */
     width: 100vw;  /* Full viewport width */
-    position: absolute; /* Remove all other content from the view */
+    position: absolute;
     top: 0;
     left: 0;
-    background-color: #f4f4f4; /* Light background color */
+    background-color: #f5f7fb; /* Match the web background color */
     flex-direction: column;
     padding: 20px;
-    box-sizing: border-box; /* Prevent padding overflow */
-    z-index: 9999; /* Make sure it appears on top */
+    box-sizing: border-box;
+    z-index: 9999; /* Ensure it appears on top */
   }
   
-  /* Message box for displaying the message */
+  /* Message Box */
   .message-box {
-    background-color: #ffeb3b;
-    color: #333;
+    background-color: #23b893; /* Color from theme */
+    color: white;
     padding: 15px;
     border-radius: 10px;
     margin-bottom: 30px;
     text-align: center;
     width: 100%;
-    max-width: 500px; /* Limit the width */
+    max-width: 500px;
   }
   
   .message-text {
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
     margin: 0;
   }
   
-  /* Section for login expired message */
+  /* Login Expired Section */
   .login-now-section {
     text-align: center;
     max-width: 500px;
     width: 100%;
   }
   
-  /* Title for Login Expired */
   .login-title {
-    font-size: 30px;
+    font-size: 2rem;
     color: #333;
-    font-weight: 700;
+    font-weight: 600;
     margin-bottom: 10px;
   }
   
-  /* Subtitle below the title */
   .login-subtitle {
-    font-size: 16px;
-    color: #555;
+    font-size: 1.1rem;
+    color: #888;
     margin-bottom: 20px;
   }
   
-  /* Button for Log In action */
+  /* Button */
   .login-button {
-    background-color: #ff5722;
-    color: #fff;
-    padding: 12px 30px;
-    font-size: 16px;
-    font-weight: bold;
+    width: 100%;
+    padding: 15px;
+    background: #23b893; /* Matching button color */
     border: none;
-    border-radius: 25px;
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
   }
   
   .login-button:hover {
-    background-color: #e64a19;
+    background: #1a8b6f; /* Darker shade for hover effect */
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(35, 184, 147, 0.2);
   }
   
-  /* Ensure responsive design */
+  .login-button:active {
+    transform: translateY(0);
+  }
+  
+  /* Responsive Design */
   @media (max-width: 768px) {
     .login-now-container {
       padding: 15px;
@@ -85,6 +90,30 @@
     .login-now-section {
       width: 100%;
       padding: 10px;
+    }
+  
+    .login-button {
+      width: 100%;
+      padding: 15px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .login-now-container {
+      padding: 10px;
+    }
+  
+    .message-box {
+      width: 100%;
+      max-width: 400px;
+    }
+  
+    .login-title {
+      font-size: 1.8rem;
+    }
+  
+    .login-subtitle {
+      font-size: 1rem;
     }
   
     .login-button {
