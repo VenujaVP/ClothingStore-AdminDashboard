@@ -3,7 +3,6 @@
 import { createUser, findUserByEmail } from '../models/userModel.js';
 import { validationResult } from 'express-validator';
 import sqldb from '../config/sqldb.js';
-
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -37,40 +36,6 @@ const registerUser = (req, res) => {
     });
 };
 
-const loginUser = (req, res) => {
-    const { email, password } = req.body;
 
-    const sql = 'SELECT * FROM USER WHERE EMAIL = ?';
-    sqldb.query(sql, [email], (err, result) => {
-        if (err) return res.status(500).json({ Error: "Database query error" });
-
-        if (result.length === 0) {
-            return res.status(404).json({ Error: "Email not registered" });
-        }
-
-        const hashedPassword = result[0].PASSWORD;
-        bcrypt.compare(password, hashedPassword, (err, match) => {
-            if (err) return res.status(500).json({ Error: "Error during password comparison" });
-
-            if (match) {
-                const user = {
-                    id: result[0].ID,
-                    email: result[0].EMAIL,
-                    name: result[0].NAME
-                };
-                const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1d' });
-                res.cookie('token', token, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    sameSite: 'Strict',
-                    maxAge: 24 * 60 * 60 * 1000
-                });
-                return res.status(200).json({ Status: "Success", token });
-            } else {
-                return res.status(401).json({ message: "Invalid password" });
-            }
-        });
-    });
-};
   
 export { registerUser, loginUser };

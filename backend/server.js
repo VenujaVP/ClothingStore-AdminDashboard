@@ -11,6 +11,7 @@
 
 import sqldb from './config/sqldb.js'
 import authRoutes from './routes/authRoutes.js'
+import verifyUser from './middleware/authMiddleware.js';
 
 import dotenv from 'dotenv';
 import express from 'express';
@@ -33,6 +34,10 @@ app.use(cookieParser());
 
 // Routes
 app.use('/auth', authRoutes);
+
+app.get('/dashboard', verifyUser, (req, res) => {
+    return res.status(200).json({ Status: "Success", name: req.name });
+});
 
 // Start the server
 const PORT = process.env.PORT || 5000;

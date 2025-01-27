@@ -8,7 +8,7 @@ import { body } from 'express-validator';
 const router = express.Router();
 
 // Route for registering a new user
-router.post('/register', validateRegister, registerUser);  // Apply validation middleware
+router.post('/register', validateRegister, registerUser);
 router.post('/login', validateLogin, loginUser);
 
 export default router;
