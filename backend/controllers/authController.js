@@ -58,7 +58,6 @@ const loginUser = (req, res) => {
                     name: result[0].NAME
                 };
                 const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1d' }); // Sign the token
-                console.log(token)
 
                 res.cookie('token', token, { // Set token in cookies
                     httpOnly: true,
@@ -66,6 +65,7 @@ const loginUser = (req, res) => {
                     sameSite: 'Strict',
                     maxAge: 24 * 60 * 60 * 1000
                 });
+                console.log(res)
 
                 return res.status(200).json({ Status: "Success", token });
             } else {

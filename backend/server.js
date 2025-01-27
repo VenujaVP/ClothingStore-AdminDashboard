@@ -23,13 +23,14 @@ dotenv.config();
 // Create Express app -----------------------------------------act as your HTTP server
 const app = express();
 
+app.use(express.json());  //--------------------------Parses incoming JSON request bodies and makes the data accessible
+
 // Middleware
 app.use(cors({          //---------------------------------Allows requests from different origins
     origin: ["http://localhost:5173"],
     methods: ["POST", "GET"],
     credentials: true   //-----------------------------------allows the browser to send cookies and authentication credentials
 }));
-app.use(express.json());  //--------------------------Parses incoming JSON request bodies and makes the data accessible
 app.use(cookieParser());
 
 // Routes

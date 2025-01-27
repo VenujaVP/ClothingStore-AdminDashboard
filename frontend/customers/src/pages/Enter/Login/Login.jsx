@@ -42,7 +42,7 @@ const Login = () => {
           .then(res => {
             if (res.data && res.data.Status === "Success") {
               console.log('Login successful:', res.data);
-              navigate('/home');
+              navigate('/dashboard');
             } else {
               console.error('Login error:', res);
               alert(res.data.Error || 'Invalid login credentials. Please try again.');
