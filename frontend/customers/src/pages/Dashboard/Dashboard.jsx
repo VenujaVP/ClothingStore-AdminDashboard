@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Dashboard.css';
 
 
 const Dashboard = () => {
@@ -53,12 +54,16 @@ const Dashboard = () => {
 
         </div>
       :
-        <div>
-          <div>{massage}</div>
-          <h3>Login Now</h3>
-          <button onClick={() => navigate('/login')}>Login</button>
+        <div className="login-now-container">
+          <div className="message-box">
+            <p className="message-text">{massage}</p>
+          </div>
+          <div className="login-now-section">
+            <h3 className="login-title">Login Expired</h3>
+            <p className="login-subtitle">Your login has expired. Please log in again to continue.</p>
+            <button className="login-button" onClick={() => navigate('/login')}>Log In Now</button>
+          </div>
         </div>
-        
       };
     </div>
   );
