@@ -1,124 +1,76 @@
-/* Full-Screen Container for Login Expired */
+/* Universal container for the "Log In Now" section */
 .login-now-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 100vh; /* Full viewport height */
-    width: 100vw;  /* Full viewport width */
-    position: absolute;
+    justify-content: center;
+    min-height: 100vh;  /* Ensures it takes up full screen height */
+    width: 100vw;   /* Full screen width */
+    background: linear-gradient(135deg, #f0f4ff, #d6e6ff);
+    font-family: 'Arial', sans-serif;
+    padding: 0;      /* Remove any extra padding */
+    margin: 0;       /* Remove any extra margin */
+    position: absolute;  /* Allows to cover the whole screen */
     top: 0;
     left: 0;
-    background-color: #f5f7fb; /* Match the web background color */
-    flex-direction: column;
-    padding: 20px;
-    box-sizing: border-box;
-    z-index: 9999; /* Ensure it appears on top */
   }
   
-  /* Message Box */
+  /* Message Box for showing the error message (session expired, etc.) */
   .message-box {
-    background-color: #23b893; /* Color from theme */
-    color: white;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: #ffdddd;
+    border: 1px solid #ff9494;
+    border-radius: 8px;
     text-align: center;
-    width: 100%;
-    max-width: 500px;
   }
   
+  /* Error message text */
   .message-text {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 0;
+    color: #ff4949;
+    font-size: 14px;
+    font-weight: bold;
   }
   
-  /* Login Expired Section */
+  /* Section where the login prompt is placed */
   .login-now-section {
     text-align: center;
-    max-width: 500px;
-    width: 100%;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;  /* Responsive width */
+    max-width: 400px; /* Maximum width */
   }
   
+  /* Title for the Login prompt */
   .login-title {
-    font-size: 2rem;
+    font-size: 22px;
     color: #333;
-    font-weight: 600;
+    font-weight: bold;
     margin-bottom: 10px;
   }
   
+  /* Subtitle under the title */
   .login-subtitle {
-    font-size: 1.1rem;
-    color: #888;
+    font-size: 16px;
+    color: #666;
     margin-bottom: 20px;
   }
   
-  /* Button */
+  /* Login button */
   .login-button {
-    width: 100%;
-    padding: 15px;
-    background: #23b893; /* Matching button color */
-    border: none;
-    border-radius: 10px;
+    background: #007bff;
     color: white;
-    font-size: 1rem;
-    font-weight: 600;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s;
   }
   
   .login-button:hover {
-    background: #1a8b6f; /* Darker shade for hover effect */
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(35, 184, 147, 0.2);
-  }
-  
-  .login-button:active {
-    transform: translateY(0);
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .login-now-container {
-      padding: 15px;
-    }
-  
-    .message-box {
-      width: 100%;
-    }
-  
-    .login-now-section {
-      width: 100%;
-      padding: 10px;
-    }
-  
-    .login-button {
-      width: 100%;
-      padding: 15px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .login-now-container {
-      padding: 10px;
-    }
-  
-    .message-box {
-      width: 100%;
-      max-width: 400px;
-    }
-  
-    .login-title {
-      font-size: 1.8rem;
-    }
-  
-    .login-subtitle {
-      font-size: 1rem;
-    }
-  
-    .login-button {
-      width: 100%;
-      padding: 15px;
-    }
+    background: #0056b3;
   }
   
