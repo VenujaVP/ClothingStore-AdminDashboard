@@ -149,9 +149,9 @@ const ShoppingCart = () => {
                                     </div>
                                     <div className="item-price">
                                         <span className="price">${(item.price * item.quantity).toFixed(2)}</span>
-                                        {item.discount > 0 && (
+                                        {/* {item.discount > 0 && (
                                             <span className="discount">-{item.discount}%</span>
-                                        )}
+                                        )} */}
                                     </div>
                                     <button 
                                         className="remove-item"
