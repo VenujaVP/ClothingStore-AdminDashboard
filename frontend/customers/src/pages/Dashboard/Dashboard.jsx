@@ -15,6 +15,7 @@ const Dashboard = () => {
   const[massage, setMassage]  = useState("")
   const[name, setName]  = useState("")
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   axios.defaults.withCredentials = true
 
@@ -28,6 +29,7 @@ const Dashboard = () => {
             setAuth(false)
             setMassage(res.data.err)
           }
+          setLoading(false);
         })
         .catch(err => {
           console.error("Error during authentication:", err);
@@ -35,7 +37,11 @@ const Dashboard = () => {
 
   },[])
 
-    const handleLogout = () => {
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const handleLogout = () => {
       axios.get('http://localhost:8081/logout')
         .then(res => {
           console.log(res);
@@ -45,7 +51,7 @@ const Dashboard = () => {
           navigate('/login');
         })
         .catch(err => console.log(err));
-    };
+  };
   
 
   return (
