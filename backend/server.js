@@ -38,7 +38,7 @@ app.use(cookieParser());
 // Routes
 app.use('/auth', authRoutes);
 
-app.get('/dashboard', verifyUser, (req, res) => {
+app.get('/tokenverification', verifyUser, (req, res) => {
     return res.status(200).json({ Status: "Success", name: req.name });
 });
 
