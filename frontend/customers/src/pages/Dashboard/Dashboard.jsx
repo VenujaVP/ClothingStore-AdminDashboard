@@ -29,10 +29,10 @@ const Dashboard = () => {
             setMassage(res.data.err)
           }
         })
-
-        .then(err => {
-          console.log(err);
+        .catch(err => {
+          console.error("Error during authentication:", err);
         });
+
   },[])
 
     const handleLogout = () => {
