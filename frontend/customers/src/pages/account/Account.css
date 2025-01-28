@@ -2,150 +2,230 @@
     display: flex;
     min-height: 100vh;
     background-color: #f5f7fb;
+    padding: 20px;
+    gap: 25px;
 }
 
 /* Sidebar Styles */
 .sidebar {
-    width: 280px;
+    width: 300px;
     background: white;
     padding: 30px 20px;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border-radius: 15px;
+    height: fit-content;
+    position: sticky;
+    top: 20px;
 }
 
 .sidebar-title {
-    color: #333;
-    margin-bottom: 30px;
+    color: #2c3e50;
+    margin-bottom: 35px;
     font-size: 1.8rem;
     padding-left: 15px;
+    font-weight: 600;
 }
 
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .nav-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 15px;
-    color: #666;
+    padding: 14px 18px;
+    color: #5a6c7f;
     text-decoration: none;
-    border-radius: 10px;
+    border-radius: 12px;
     transition: all 0.3s ease;
+    font-weight: 500;
 }
 
-.nav-item:hover, .nav-item.active {
+.nav-item:hover {
+    background: #edf7f5;
+    color: #23b893;
+    transform: translateX(5px);
+}
+
+.nav-item.active {
     background: #23b893;
     color: white;
+    box-shadow: 0 4px 10px rgba(35, 184, 147, 0.2);
 }
 
 /* Main Content Styles */
 .main-content {
     flex: 1;
-    padding: 30px;
+    max-width: calc(100% - 325px);
 }
 
 /* User Section Styles */
 .user-section {
     background: white;
     border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    padding: 35px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .user-info {
     display: flex;
     align-items: center;
-    gap: 30px;
-    margin-bottom: 40px;
+    gap: 35px;
+    margin-bottom: 45px;
+    padding-bottom: 35px;
+    border-bottom: 1px solid #eef0f5;
 }
 
 .profile-image {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     overflow: hidden;
+    border: 3px solid #23b893;
+    padding: 3px;
 }
 
 .profile-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 50%;
 }
 
 .user-details h2 {
-    color: #333;
-    margin-bottom: 15px;
+    color: #2c3e50;
+    margin-bottom: 18px;
+    font-size: 1.8rem;
+    font-weight: 600;
 }
 
 .user-actions {
     display: flex;
-    gap: 20px;
+    gap: 25px;
 }
 
 .action-link {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     color: #23b893;
     text-decoration: none;
     font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.action-link:hover {
+    background: #edf7f5;
+    transform: translateY(-2px);
 }
 
 /* Orders Section Styles */
 .orders-section {
-    background: #f9f9f9;
+    background: #f8fafb;
     border-radius: 15px;
-    padding: 25px;
+    padding: 30px;
+    margin-top: 20px;
 }
 
 .orders-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 .orders-header h3 {
-    color: #333;
+    color: #2c3e50;
+    font-size: 1.4rem;
+    font-weight: 600;
 }
 
 .view-all {
     color: #23b893;
     text-decoration: none;
     font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.view-all:hover {
+    background: #edf7f5;
 }
 
 .order-status-cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 25px;
 }
 
 .status-card {
     background: white;
-    padding: 20px;
-    border-radius: 12px;
+    padding: 25px 20px;
+    border-radius: 15px;
     text-align: center;
     transition: all 0.3s ease;
+    border: 1px solid #eef0f5;
 }
 
 .status-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    border-color: #23b893;
 }
 
 .status-number {
     display: block;
-    font-size: 1.8rem;
+    font-size: 2rem;
     color: #23b893;
-    font-weight: 600;
-    margin-bottom: 8px;
+    font-weight: 700;
+    margin-bottom: 10px;
 }
 
 .status-text {
-    color: #666;
-    font-size: 0.9rem;
+    color: #5a6c7f;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .order-status-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .account-page {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        position: static;
+    }
+    
+    .main-content {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .order-status-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .user-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .user-actions {
+        justify-content: center;
+    }
 }
