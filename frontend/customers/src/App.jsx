@@ -19,6 +19,7 @@ import ForgotPassword from './pages/Enter/ForgotPassword/ForgotPassword';
 import PasswordResetFinish from './pages/Enter/PasswordReset/PasswordResetFinish';
 import CheckYourEmail from './pages/Enter/CheckYourEmail/CheckYourEmail';
 import ShoppingCart from './pages/shoppingcart/ShoppingCart';
+import Account from './pages/account/Account';
 
 import Dashboard from './pages/Dashboard/Dashboard';
 
@@ -44,6 +45,7 @@ function App() {
             <Route path="/checkyouremail" element={<CheckYourEmail />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/shoppingcart" element={<ShoppingCart />} />
+            <Route path="/account" element={<Account />} />
           </Routes>
         </main>
       </div>
