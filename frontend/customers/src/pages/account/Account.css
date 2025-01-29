@@ -1,17 +1,14 @@
-/* Account.css */
-
-/* Main Container */
 .account-page {
     display: flex;
     min-height: 100vh;
     background-color: #f5f7fb;
-    gap: 20px; /* Adds space between sidebar and main content */
-    padding: 20px; /* Adds padding around the entire page */
+    gap: 20px; /* Add gap between sidebar and main-content */
+    padding: 20px; /* Add padding to the entire page */
 }
 
 /* Sidebar Styles */
 .sidebar {
-    flex: 0 0 280px; /* Fixed width for sidebar */
+    flex: 0 0 280px; /* Fixed width */
     background: white;
     border-radius: 15px;
     padding: 30px 20px;
@@ -61,7 +58,7 @@
 
 /* Main Content Styles */
 .main-content {
-    flex: 1; /* Takes remaining space */
+    flex: 1;
     background: white;
     border-radius: 20px;
     padding: 30px;
@@ -99,6 +96,7 @@
 }
 
 .user-details h2 {
+    padding: 8px 15px;
     color: #333;
     margin-bottom: 15px;
     font-size: 1.8rem;
@@ -197,20 +195,20 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
     .order-status-cards {
-        grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 992px) {
     .account-page {
-        flex-direction: column-reverse; /* Stack sidebar below main content on smaller screens */
+        flex-direction: column;
     }
-
+    
     .sidebar {
         width: 100%;
-        position: static; /* Remove sticky positioning */
+        position: static;
     }
-
+    
     .main-content {
         max-width: 100%;
     }
@@ -218,15 +216,15 @@
 
 @media (max-width: 576px) {
     .order-status-cards {
-        grid-template-columns: 1fr; /* Single column for small screens */
+        grid-template-columns: 1fr;
     }
-
+    
     .user-info {
-        flex-direction: column; /* Stack user info vertically */
+        flex-direction: column;
         text-align: center;
     }
-
+    
     .user-actions {
-        justify-content: center; /* Center action links */
+        justify-content: center;
     }
 }
