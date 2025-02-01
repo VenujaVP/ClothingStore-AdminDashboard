@@ -111,17 +111,7 @@ const AddNewAddress = () => {
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="country">Country</label>
-            <input
-              type="text"
-              id="country"
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              required
-            />
-          </div>
+
         </div>
 
         <div className="form-group">
@@ -137,8 +127,8 @@ const AddNewAddress = () => {
         </div>
 
         <div className="form-actions">
-          <button type="submit" className="submit-btn">Save Address</button>
           <button type="button" className="cancel-btn">Cancel</button>
+          <button type="submit" className="submit-btn">Save Address</button>
         </div>
       </form>
     </div>
