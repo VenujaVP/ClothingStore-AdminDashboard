@@ -1,4 +1,4 @@
-// ShippingAddress.jsx
+// ./pages/USER/shippingaddress/ShippingAddress
 
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
