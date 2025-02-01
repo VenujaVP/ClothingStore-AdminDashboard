@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-vars */
 
 import React, { useState } from 'react';
-import './PaymentCard.css';
+import './PaymentCardWindow.css';
 
 const PaymentCardWindow = () => {
   const [cards, setCards] = useState([

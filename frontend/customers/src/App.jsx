@@ -24,6 +24,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import Account from './pages/USER/account/Account';
 import ShippingAddress from './pages/USER/shippingaddress/ShippingAddress';
 import ShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm';
+import PaymentCardWindow from './pages/USER/paymentcardwindow/PaymentCardWindow';
 
 function App() {
   const location = useLocation();
@@ -50,6 +51,7 @@ function App() {
             <Route path="/account" element={<Account />} />
             <Route path="/shippingaddress" element={<ShippingAddress />} />
             <Route path="/shippingaddressform" element={<ShippingAddressForm/>} />
+            <Route path="/paymentcardwindow" element={<PaymentCardWindow/>} />
           </Routes>
         </main>
       </div>
