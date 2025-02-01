@@ -15,7 +15,6 @@ const AddNewAddress = () => {
     city: '',
     state: '',
     postalCode: '',
-    country: '',
     phoneNumber: '',
   });
 
@@ -111,24 +110,22 @@ const AddNewAddress = () => {
             />
           </div>
 
-
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="phoneNumber">Phone Number</label>
-          <input
-            type="tel"
-            id="phoneNumber"
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-            required
-          />
+          <div className="form-group">
+            <label htmlFor="phoneNumber">Phone Number</label>
+            <input
+              type="tel"
+              id="phoneNumber"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
         <div className="form-actions">
-          <button type="button" className="cancel-btn">Cancel</button>
           <button type="submit" className="submit-btn">Save Address</button>
+          <button type="button" className="cancel-btn">Cancel</button>
         </div>
       </form>
     </div>

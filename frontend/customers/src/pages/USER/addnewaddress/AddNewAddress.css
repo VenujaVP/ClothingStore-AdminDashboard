@@ -53,8 +53,14 @@
     gap: 20px;
 }
 
+/* Updated for single field in form-row */
 .form-row .form-group {
     flex: 1;
+}
+
+/* If only one field is in the form-row, make it full width */
+.form-row .form-group:only-child {
+    flex: 1 1 100%; /* Takes full width */
 }
 
 .form-actions {
