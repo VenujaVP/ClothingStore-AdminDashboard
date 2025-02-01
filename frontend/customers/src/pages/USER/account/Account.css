@@ -2,13 +2,13 @@
     display: flex;
     min-height: 100vh;
     background-color: #f5f7fb;
-    gap: 20px; /* Add gap between sidebar and main-content */
-    padding: 20px; /* Add padding to the entire page */
+    padding: 20px;
+    gap: 20px;
 }
 
 /* Sidebar Styles */
 .sidebar {
-    flex: 0 0 280px; /* Fixed width */
+    width: 280px;
     background: white;
     border-radius: 15px;
     padding: 30px 20px;
@@ -59,10 +59,7 @@
 /* Main Content Styles */
 .main-content {
     flex: 1;
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    background: transparent; /* Changed from white to transparent */
 }
 
 /* User Section Styles */
@@ -201,7 +198,7 @@
 
 @media (max-width: 992px) {
     .account-page {
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
     
     .sidebar {
@@ -210,7 +207,7 @@
     }
     
     .main-content {
-        max-width: 100%;
+        width: 100%;
     }
 }
 

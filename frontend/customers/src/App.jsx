@@ -19,7 +19,7 @@ import ForgotPassword from './pages/Enter/ForgotPassword/ForgotPassword';
 import PasswordResetFinish from './pages/Enter/PasswordReset/PasswordResetFinish';
 import CheckYourEmail from './pages/Enter/CheckYourEmail/CheckYourEmail';
 import ShoppingCart from './pages/shoppingcart/ShoppingCart';
-import Account from './pages/account/Account';
+import Account from './pages/USER/account/Account';
 
 import Dashboard from './pages/Dashboard/Dashboard';
 
