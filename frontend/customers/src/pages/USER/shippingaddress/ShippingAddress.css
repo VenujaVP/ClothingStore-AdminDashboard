@@ -1,6 +1,6 @@
 /* Shipping Address Page Styles */
 .shipping-address-page {
-    padding: 20px;
+    padding: 30px;
     background-color: #f5f7fb;
     border-radius: 20px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
@@ -8,9 +8,8 @@
 
 .shipping-header {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
+    justify-content: space-between; /* Ensures space between title and button */
+    align-items: center; /* Vertically centers the title and button */
     margin-bottom: 30px;
 }
 
@@ -18,7 +17,7 @@
     color: #2c3e50;
     font-size: 1.8rem;
     font-weight: 600;
-    margin: 0;
+    margin: 0; /* Removes default margin to align properly */
 }
 
 .add-address-btn {
@@ -41,7 +40,7 @@
 /* Address List Styles */
 .address-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
 }
 
@@ -115,6 +114,11 @@
         gap: 15px;
     }
 
+    .add-address-btn {
+        width: 100%; /* Full width on smaller screens */
+        text-align: center;
+    }
+
     .address-list {
         grid-template-columns: 1fr;
     }
@@ -127,11 +131,6 @@
 
     .shipping-header h2 {
         font-size: 1.5rem;
-    }
-
-    .add-address-btn {
-        width: 100%;
-        text-align: center;
     }
 
     .address-card {
