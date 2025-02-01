@@ -23,6 +23,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 
 import Account from './pages/USER/account/Account';
 import ShippingAddress from './pages/USER/shippingaddress/ShippingAddress';
+import AddNewAddress from './pages/USER/addnewaddress/AddNewAddress';
 
 
 function App() {
