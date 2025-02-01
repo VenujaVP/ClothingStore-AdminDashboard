@@ -23,7 +23,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 
 import Account from './pages/USER/account/Account';
 import ShippingAddress from './pages/USER/shippingaddress/ShippingAddress';
-import ShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm ';
+import ShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm';
 
 function App() {
   const location = useLocation();

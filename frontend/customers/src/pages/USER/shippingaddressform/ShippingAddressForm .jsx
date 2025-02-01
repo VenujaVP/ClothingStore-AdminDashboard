@@ -1,4 +1,4 @@
-// ./pages/USER/addnewaddress/AddNewAddress
+// ./pages/USER/shippingaddressform/ShippingAddressForm
 
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
