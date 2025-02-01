@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-vars */
 
 import React, { useState } from 'react';
-import './PaymentCard.css';
+import './PaymentCardWindow.css';
 
 const PaymentCardWindow = () => {
   const [cards, setCards] = useState([
@@ -79,6 +79,20 @@ const PaymentCardWindow = () => {
           <div className="add-card-popup">
             <h3>Add New Card</h3>
             <form onSubmit={handleAddCardSubmit}>
+
+            <div className="form-group">
+                <label htmlFor="cardHolderName">Cardholder Name</label>
+                <input
+                  type="text"
+                  id="cardHolderName"
+                  name="cardHolderName"
+                  value={newCard.cardHolderName}
+                  onChange={handleInputChange}
+                  placeholder="John Doe"
+                  required
+                />
+              </div>
+
               <div className="form-group">
                 <label htmlFor="cardNumber">Card Number</label>
                 <input
@@ -118,19 +132,6 @@ const PaymentCardWindow = () => {
                     required
                   />
                 </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="cardHolderName">Cardholder Name</label>
-                <input
-                  type="text"
-                  id="cardHolderName"
-                  name="cardHolderName"
-                  value={newCard.cardHolderName}
-                  onChange={handleInputChange}
-                  placeholder="John Doe"
-                  required
-                />
               </div>
 
               <div className="form-actions">
