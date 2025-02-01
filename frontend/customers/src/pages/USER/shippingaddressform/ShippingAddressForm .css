@@ -1,5 +1,5 @@
-/* Add New Address Page Styles */
-.add-address-page {
+/* Shipping Address Page Styles */
+.shipping-address-page {
     padding: 30px;
     background-color: #f5f7fb;
     border-radius: 20px;
@@ -8,7 +8,7 @@
     margin: 0 auto;
 }
 
-.add-address-page h2 {
+.shipping-address-page h2 {
     color: #2c3e50;
     font-size: 1.8rem;
     font-weight: 600;
@@ -34,7 +34,8 @@
     font-weight: 500;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
     padding: 10px;
     border: 1px solid #eef0f5;
     border-radius: 8px;
@@ -42,7 +43,8 @@
     transition: all 0.3s ease;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus {
     border-color: #23b893;
     outline: none;
     box-shadow: 0 0 5px rgba(35, 184, 147, 0.5);
@@ -55,6 +57,30 @@
 
 .form-row .form-group {
     flex: 1;
+}
+
+.input-with-prefix {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-with-prefix .prefix {
+    background: #eef0f5;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.checkbox-group input {
+    margin: 0;
 }
 
 .form-actions {
@@ -96,7 +122,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .add-address-page {
+    .shipping-address-page {
         padding: 20px;
     }
 
@@ -117,11 +143,12 @@
 }
 
 @media (max-width: 576px) {
-    .add-address-page h2 {
+    .shipping-address-page h2 {
         font-size: 1.5rem;
     }
 
-    .form-group input {
+    .form-group input,
+    .form-group select {
         padding: 8px;
         font-size: 0.8rem;
     }
