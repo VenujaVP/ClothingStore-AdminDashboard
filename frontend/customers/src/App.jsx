@@ -23,7 +23,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 
 import Account from './pages/USER/account/Account';
 import ShippingAddress from './pages/USER/shippingaddress/ShippingAddress';
-import AddNewAddress from './pages/USER/addnewaddress/AddNewAddress';
+import ShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm ';
 
 function App() {
   const location = useLocation();
@@ -49,7 +49,7 @@ function App() {
             <Route path="/shoppingcart" element={<ShoppingCart />} />
             <Route path="/account" element={<Account />} />
             <Route path="/shippingaddress" element={<ShippingAddress />} />
-            <Route path="/addnewaddress" element={<AddNewAddress/>} />
+            <Route path="/shippingaddressform" element={<ShippingAddressForm/>} />
           </Routes>
         </main>
       </div>
