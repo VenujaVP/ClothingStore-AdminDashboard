@@ -19,9 +19,11 @@ import ForgotPassword from './pages/Enter/ForgotPassword/ForgotPassword';
 import PasswordResetFinish from './pages/Enter/PasswordReset/PasswordResetFinish';
 import CheckYourEmail from './pages/Enter/CheckYourEmail/CheckYourEmail';
 import ShoppingCart from './pages/shoppingcart/ShoppingCart';
-import Account from './pages/USER/account/Account';
-
 import Dashboard from './pages/Dashboard/Dashboard';
+
+import Account from './pages/USER/account/Account';
+import ShippingAddress from './pages/USER/shippingaddress/ShippingAddress';
+
 
 function App() {
   const location = useLocation();
@@ -46,6 +48,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/shoppingcart" element={<ShoppingCart />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/shippingaddress" element={<ShippingAddress />} />
           </Routes>
         </main>
       </div>
