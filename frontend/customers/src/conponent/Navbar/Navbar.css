@@ -205,44 +205,33 @@
   font-size: 16px;
   color: #333;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  font-weight: 500;
 }
 
 .mobile-category:hover {
   color: #007bff;
 }
 
-.mobile-category-arrow {
-  font-size: 14px;
-  color: #333;
+.mobile-subcategories {
+  margin-left: 20px;
+  margin-top: 5px;
 }
 
 .mobile-subcategory {
-  padding: 8px 0 8px 20px;
+  padding: 8px 0;
   font-size: 14px;
   color: #555;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
-.mobile-subcategory-arrow {
-  font-size: 12px;
-  color: #555;
+.mobile-subcategory-items {
+  margin-left: 20px;
 }
 
 .mobile-subcategory-item {
-  padding: 8px 0 8px 40px;
-  font-size: 14px;
+  padding: 6px 0;
+  font-size: 13px;
   color: #777;
-  cursor: pointer;
-}
-
-.mobile-subcategory-item:hover {
-  color: #007bff;
 }
 
 /* Responsive Styles */
