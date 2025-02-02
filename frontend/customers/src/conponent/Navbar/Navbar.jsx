@@ -106,29 +106,6 @@ const Navbar = () => {
                     <div className="sub-dropdown">
                       <div className="sub-dropdown-item">Blouses</div>
                       <div className="sub-dropdown-item">Crop Tops</div>
-                      <div className="sub-dropdown-item">T-Shirts</div>
-                      <div className="sub-dropdown-item">Hoodies & Sweaters</div>
-                    </div>
-                  </div>
-                  <div className="dropdown-item">
-                    Dresses & Bottoms <RiArrowDownSLine className="dropdown-arrow" />
-                    <div className="sub-dropdown">
-                      <div className="sub-dropdown-item">Dresses & Frocks</div>
-                      <div className="sub-dropdown-item">Skirts</div>
-                      <div className="sub-dropdown-item">Trousers</div>
-                      <div className="sub-dropdown-item">Denims</div>
-                      <div className="sub-dropdown-item">Shorts</div>
-                      <div className="sub-dropdown-item">Pants</div>
-                    </div>
-                  </div>
-                  <div className="dropdown-item">
-                    Special Categories <RiArrowDownSLine className="dropdown-arrow" />
-                    <div className="sub-dropdown">
-                      <div className="sub-dropdown-item">Jumpsuits</div>
-                      <div className="sub-dropdown-item">Bodysuits</div>
-                      <div className="sub-dropdown-item">Office Wear</div>
-                      <div className="sub-dropdown-item">Gym Wear</div>
-                      <div className="sub-dropdown-item">Night & Loungewear</div>
                     </div>
                   </div>
                 </div>
@@ -136,46 +113,18 @@ const Navbar = () => {
             </div>
             <div
               className="category"
-              onMouseEnter={() => toggleDropdown('MEN')}
+              onMouseEnter={() => toggleDropdown('WATCHES')}
               onMouseLeave={() => toggleDropdown(null)}
             >
-              MEN <RiArrowDownSLine className="dropdown-arrow" />
-              {activeDropdown === 'MEN' && (
+              WATCHES <RiArrowDownSLine className="dropdown-arrow" />
+              {activeDropdown === 'WATCHES' && (
                 <div className="dropdown">
-                  <div className="dropdown-item">New Arrivals</div>
-                  <div className="dropdown-item">
-                    Tops <RiArrowDownSLine className="dropdown-arrow" />
-                    <div className="sub-dropdown">
-                      <div className="sub-dropdown-item">Shirts</div>
-                      <div className="sub-dropdown-item">T-Shirts</div>
-                      <div className="sub-dropdown-item">Hoodies & Sweaters</div>
-                    </div>
-                  </div>
-                  <div className="dropdown-item">
-                    Bottoms <RiArrowDownSLine className="dropdown-arrow" />
-                    <div className="sub-dropdown">
-                      <div className="sub-dropdown-item">Trousers</div>
-                      <div className="sub-dropdown-item">Denims</div>
-                      <div className="sub-dropdown-item">Shorts</div>
-                      <div className="sub-dropdown-item">Pants</div>
-                    </div>
-                  </div>
-                  <div className="dropdown-item">
-                    Special Categories <RiArrowDownSLine className="dropdown-arrow" />
-                    <div className="sub-dropdown">
-                      <div className="sub-dropdown-item">Office Wear</div>
-                      <div className="sub-dropdown-item">Gym Wear</div>
-                    </div>
-                  </div>
+                  <div className="dropdown-item">Men&apos;s Watches</div>
+                  <div className="dropdown-item">Women&apos;s Watches</div>
                 </div>
+
               )}
             </div>
-            <div className="category">KIDS & BABY</div>
-            <div className="category">WATCHES</div>
-            <div className="category">FOOTWEAR</div>
-            <div className="category">BAGS & WALLETS</div>
-            <div className="category">ACCESSORIES</div>
-            <div className="category">SALE & OFFERS</div>
           </div>
         </div>
       </div>
@@ -209,36 +158,42 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <div className="mobile-menu">
             <div className="mobile-category">HOME</div>
-            <div className="mobile-category">WOMEN</div>
-            <div className="mobile-category">MEN</div>
-            <div className="mobile-category">KIDS & BABY</div>
-            <div className="mobile-category">WATCHES</div>
-            <div className="mobile-category">FOOTWEAR</div>
-            <div className="mobile-category">BAGS & WALLETS</div>
-            <div className="mobile-category">ACCESSORIES</div>
-            <div className="mobile-category">SALE & OFFERS</div>
+            <div className="mobile-category">
+              WOMEN
+              <div className="mobile-subcategory">New Arrivals</div>
+              <div className="mobile-subcategory">
+                Tops & Tees
+                <div className="mobile-subcategory-item">Blouses</div>
+                <div className="mobile-subcategory-item">Crop Tops</div>
+                <div className="mobile-subcategory-item">T-Shirts</div>
+                <div className="mobile-subcategory-item">Hoodies & Sweaters</div>
+              </div>
+              <div className="mobile-subcategory">
+                Dresses & Bottoms
+                <div className="mobile-subcategory-item">Dresses & Frocks</div>
+                <div className="mobile-subcategory-item">Skirts</div>
+                <div className="mobile-subcategory-item">Trousers</div>
+                <div className="mobile-subcategory-item">Denims</div>
+                <div className="mobile-subcategory-item">Shorts</div>
+                <div className="mobile-subcategory-item">Pants</div>
+              </div>
+              <div className="mobile-subcategory">
+                Special Categories
+                <div className="mobile-subcategory-item">Jumpsuits</div>
+                <div className="mobile-subcategory-item">Bodysuits</div>
+                <div className="mobile-subcategory-item">Office Wear</div>
+                <div className="mobile-subcategory-item">Gym Wear</div>
+                <div className="mobile-subcategory-item">Night & Loungewear</div>
+              </div>
+            </div>
+            <div className="mobile-category">
+              WATCHES
+              <div className="mobile-subcategory">Men&apos;s Watches</div>
+              <div className="mobile-subcategory">Women&apos;s Watches</div>
+              <div className="mobile-subcategory">Kids&apos; Watches</div>
+            </div>
           </div>
         )}
-
-        {/* Bottom Navigation Bar */}
-        <div className="navbar-mobile-bottom">
-          <div className="bottom-icon">
-            <RiHomeLine />
-            <span>Home</span>
-          </div>
-          <div className="bottom-icon">
-            <RiHeartLine />
-            <span>Wishlist</span>
-          </div>
-          <div className="bottom-icon">
-            <RiShoppingCartLine />
-            <span>Cart</span>
-          </div>
-          <div className="bottom-icon">
-            <RiUserLine />
-            <span>Account</span>
-          </div>
-        </div>
       </div>
     </>
   );
