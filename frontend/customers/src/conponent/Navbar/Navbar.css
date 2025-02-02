@@ -187,6 +187,12 @@
   font-size: 24px;
   color: #333;
   cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.menu-icon:hover,
+.notification-icon:hover {
+  color: #007bff;
 }
 
 .navbar-mobile-row2 {
@@ -196,6 +202,18 @@
 .mobile-menu {
   background-color: #f8f9fa;
   padding: 10px 20px;
+  animation: slideDown 0.3s ease-in-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .mobile-category {
@@ -209,29 +227,19 @@
   color: #007bff;
 }
 
-.navbar-mobile-bottom {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: #f8f9fa;
-  padding: 10px 0;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
+.mobile-subcategory {
+  padding-left: 20px;
+  font-size: 14px;
+  color: #555;
 }
 
-.bottom-icon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 12px;
-  color: #333;
-  cursor: pointer;
+.mobile-subcategory-item {
+  padding: 8px 0;
+  font-size: 14px;
+  color: #777;
 }
 
-.bottom-icon:hover {
+.mobile-subcategory-item:hover {
   color: #007bff;
 }
 

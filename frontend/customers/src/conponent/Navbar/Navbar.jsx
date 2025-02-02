@@ -122,7 +122,6 @@ const Navbar = () => {
                   <div className="dropdown-item">Men&apos;s Watches</div>
                   <div className="dropdown-item">Women&apos;s Watches</div>
                 </div>
-
               )}
             </div>
           </div>
@@ -165,32 +164,12 @@ const Navbar = () => {
                 Tops & Tees
                 <div className="mobile-subcategory-item">Blouses</div>
                 <div className="mobile-subcategory-item">Crop Tops</div>
-                <div className="mobile-subcategory-item">T-Shirts</div>
-                <div className="mobile-subcategory-item">Hoodies & Sweaters</div>
-              </div>
-              <div className="mobile-subcategory">
-                Dresses & Bottoms
-                <div className="mobile-subcategory-item">Dresses & Frocks</div>
-                <div className="mobile-subcategory-item">Skirts</div>
-                <div className="mobile-subcategory-item">Trousers</div>
-                <div className="mobile-subcategory-item">Denims</div>
-                <div className="mobile-subcategory-item">Shorts</div>
-                <div className="mobile-subcategory-item">Pants</div>
-              </div>
-              <div className="mobile-subcategory">
-                Special Categories
-                <div className="mobile-subcategory-item">Jumpsuits</div>
-                <div className="mobile-subcategory-item">Bodysuits</div>
-                <div className="mobile-subcategory-item">Office Wear</div>
-                <div className="mobile-subcategory-item">Gym Wear</div>
-                <div className="mobile-subcategory-item">Night & Loungewear</div>
               </div>
             </div>
             <div className="mobile-category">
               WATCHES
               <div className="mobile-subcategory">Men&apos;s Watches</div>
               <div className="mobile-subcategory">Women&apos;s Watches</div>
-              <div className="mobile-subcategory">Kids&apos; Watches</div>
             </div>
           </div>
         )}
