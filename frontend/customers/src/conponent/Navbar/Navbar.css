@@ -187,12 +187,6 @@
   font-size: 24px;
   color: #333;
   cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.menu-icon:hover,
-.notification-icon:hover {
-  color: #007bff;
 }
 
 .navbar-mobile-row2 {
@@ -202,18 +196,8 @@
 .mobile-menu {
   background-color: #f8f9fa;
   padding: 10px 20px;
-  animation: slideDown 0.3s ease-in-out;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 .mobile-category {
@@ -221,22 +205,40 @@
   font-size: 16px;
   color: #333;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .mobile-category:hover {
   color: #007bff;
 }
 
-.mobile-subcategory {
-  padding-left: 20px;
+.mobile-category-arrow {
   font-size: 14px;
+  color: #333;
+}
+
+.mobile-subcategory {
+  padding: 8px 0 8px 20px;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-subcategory-arrow {
+  font-size: 12px;
   color: #555;
 }
 
 .mobile-subcategory-item {
-  padding: 8px 0;
+  padding: 8px 0 8px 40px;
   font-size: 14px;
   color: #777;
+  cursor: pointer;
 }
 
 .mobile-subcategory-item:hover {
