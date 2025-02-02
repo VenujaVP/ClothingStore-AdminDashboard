@@ -173,6 +173,11 @@
   flex-direction: column;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed; /* Fix the navbar to the top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999; /* Ensure it stays on top of other content */
 }
 
 .navbar-mobile-row1 {
@@ -198,6 +203,10 @@
   padding: 10px 20px;
   max-height: 70vh;
   overflow-y: auto;
+  position: absolute; /* Keep it within the navbar */
+  top: 60px; /* Adjust based on the height of the navbar */
+  left: 0;
+  right: 0;
 }
 
 .mobile-category {
