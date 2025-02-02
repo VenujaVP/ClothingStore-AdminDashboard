@@ -2,14 +2,15 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-//npm install react-icons react-router-dom axios yup
+//npm install react-icons react-router-dom axios yup 
+//npm install react-icons
 //npm install @mui/material @emotion/react @emotion/styled
 //npm install @react-oauth/google@latest
 
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { useState } from 'react'
 import './App.css'
-import Navbar from './conponent/navbar/navbar'
+import Navbar from './conponent/Navbar/Navbar';
 
 import Login from './pages/Enter/Login/Login'
 import Register from './pages/Enter/Register/Register'

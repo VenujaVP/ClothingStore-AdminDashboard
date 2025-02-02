@@ -3,6 +3,16 @@
 /* eslint-disable no-unused-vars */
 
 import React, { useState, useEffect } from 'react';
+import {
+  RiSearchLine,
+  RiHeartLine,
+  RiNotificationLine,
+  RiShoppingCartLine,
+  RiUserLine,
+  RiMenuLine,
+  RiHomeLine,
+  RiArrowDownSLine,
+} from 'react-icons/ri';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -14,7 +24,7 @@ const Navbar = () => {
       'Welcome to our website!',
       'Check out our latest updates!',
       "Don't miss our special offers!",
-      'Follow us on social media!'
+      'Follow us on social media!',
     ];
 
     let index = 0;
@@ -33,174 +43,180 @@ const Navbar = () => {
 
   return (
     <>
+      {/* Notice Bar */}
       <div className="notice-bar">
         <span>{notice}</span>
       </div>
 
-      <div className="navbarr">
-        <div className="menu-icon">
-          <i className="ri-menu-line" aria-hidden="true"></i>
+      {/* Web View */}
+      <div className="navbar-web">
+        {/* First Row */}
+        <div className="navbar-web-row1">
+          <div className="logo">
+            <img src="LOGO.jpeg" alt="Logo" className="logo-image" />
+          </div>
+          <div className="search-bar">
+            <input type="text" placeholder="Search for products..." />
+            <button>
+              <RiSearchLine />
+            </button>
+          </div>
+          <div className="icons">
+            <div className="icon-item">
+              <RiHeartLine />
+              <span>Wishlist</span>
+            </div>
+            <div className="icon-item">
+              <RiNotificationLine />
+              <span>Notification</span>
+            </div>
+            <div className="icon-item">
+              <RiShoppingCartLine />
+              <span>Cart</span>
+            </div>
+            <div className="icon-item">
+              <RiUserLine />
+              <span>Account</span>
+            </div>
+          </div>
         </div>
 
-        <div className="logo">
-          <img src="LOGO.jpeg" alt="Logo" className="logo-image" />
-        </div>
-
-        <div className="categories">
-          {/* HOME */}
-          <div className="category">HOME</div>
-
-          {/* WOMEN */}
-          <div
-            className="category"
-            onMouseEnter={() => toggleDropdown('WOMEN')}
-            onMouseLeave={() => toggleDropdown(null)}
-          >
-            WOMEN
-            {activeDropdown === 'WOMEN' && (
-              <div className="dropdown">
-                <div className="dropdown-item">New Arrivals</div>
-                <div className="dropdown-item">
-                  Tops & Tees
-                  <div className="sub-dropdown">
-                    <div className="sub-dropdown-item">Blouses</div>
-                    <div className="sub-dropdown-item">Crop Tops</div>
-                    <div className="sub-dropdown-item">T-Shirts</div>
-                    <div className="sub-dropdown-item">Hoodies & Sweaters</div>
+        {/* Second Row - Categories */}
+        <div className="navbar-web-row2">
+          <div className="categories">
+            <div className="category">HOME</div>
+            <div
+              className="category"
+              onMouseEnter={() => toggleDropdown('WOMEN')}
+              onMouseLeave={() => toggleDropdown(null)}
+            >
+              WOMEN <RiArrowDownSLine className="dropdown-arrow" />
+              {activeDropdown === 'WOMEN' && (
+                <div className="dropdown">
+                  <div className="dropdown-item">New Arrivals</div>
+                  <div className="dropdown-item">
+                    Tops & Tees <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Blouses</div>
+                      <div className="sub-dropdown-item">Crop Tops</div>
+                      <div className="sub-dropdown-item">T-Shirts</div>
+                      <div className="sub-dropdown-item">Hoodies & Sweaters</div>
+                    </div>
+                  </div>
+                  <div className="dropdown-item">
+                    Dresses & Bottoms <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Dresses & Frocks</div>
+                      <div className="sub-dropdown-item">Skirts</div>
+                      <div className="sub-dropdown-item">Trousers</div>
+                      <div className="sub-dropdown-item">Denims</div>
+                      <div className="sub-dropdown-item">Shorts</div>
+                      <div className="sub-dropdown-item">Pants</div>
+                    </div>
+                  </div>
+                  <div className="dropdown-item">
+                    Special Categories <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Jumpsuits</div>
+                      <div className="sub-dropdown-item">Bodysuits</div>
+                      <div className="sub-dropdown-item">Office Wear</div>
+                      <div className="sub-dropdown-item">Gym Wear</div>
+                      <div className="sub-dropdown-item">Night & Loungewear</div>
+                    </div>
                   </div>
                 </div>
-                <div className="dropdown-item">
-                  Dresses & Bottoms
-                  <div className="sub-dropdown">
-                    <div className="sub-dropdown-item">Dresses & Frocks</div>
-                    <div className="sub-dropdown-item">Skirts</div>
-                    <div className="sub-dropdown-item">Trousers</div>
-                    <div className="sub-dropdown-item">Denims</div>
-                    <div className="sub-dropdown-item">Shorts</div>
-                    <div className="sub-dropdown-item">Pants</div>
+              )}
+            </div>
+            <div
+              className="category"
+              onMouseEnter={() => toggleDropdown('MEN')}
+              onMouseLeave={() => toggleDropdown(null)}
+            >
+              MEN <RiArrowDownSLine className="dropdown-arrow" />
+              {activeDropdown === 'MEN' && (
+                <div className="dropdown">
+                  <div className="dropdown-item">New Arrivals</div>
+                  <div className="dropdown-item">
+                    Tops <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Shirts</div>
+                      <div className="sub-dropdown-item">T-Shirts</div>
+                      <div className="sub-dropdown-item">Hoodies & Sweaters</div>
+                    </div>
+                  </div>
+                  <div className="dropdown-item">
+                    Bottoms <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Trousers</div>
+                      <div className="sub-dropdown-item">Denims</div>
+                      <div className="sub-dropdown-item">Shorts</div>
+                      <div className="sub-dropdown-item">Pants</div>
+                    </div>
+                  </div>
+                  <div className="dropdown-item">
+                    Special Categories <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Office Wear</div>
+                      <div className="sub-dropdown-item">Gym Wear</div>
+                    </div>
                   </div>
                 </div>
-                <div className="dropdown-item">
-                  Special Categories
-                  <div className="sub-dropdown">
-                    <div className="sub-dropdown-item">Jumpsuits</div>
-                    <div className="sub-dropdown-item">Bodysuits</div>
-                    <div className="sub-dropdown-item">Office Wear</div>
-                    <div className="sub-dropdown-item">Gym Wear</div>
-                    <div className="sub-dropdown-item">Night & Loungewear</div>
-                  </div>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
+            <div className="category">KIDS & BABY</div>
+            <div className="category">WATCHES</div>
+            <div className="category">FOOTWEAR</div>
+            <div className="category">BAGS & WALLETS</div>
+            <div className="category">ACCESSORIES</div>
+            <div className="category">SALE & OFFERS</div>
           </div>
-
-          {/* MEN */}
-          <div
-            className="category"
-            onMouseEnter={() => toggleDropdown('MEN')}
-            onMouseLeave={() => toggleDropdown(null)}
-          >
-            MEN
-            {activeDropdown === 'MEN' && (
-              <div className="dropdown">
-                <div className="dropdown-item">New Arrivals</div>
-                <div className="dropdown-item">
-                  Tops
-                  <div className="sub-dropdown">
-                    <div className="sub-dropdown-item">Shirts</div>
-                    <div className="sub-dropdown-item">T-Shirts</div>
-                    <div className="sub-dropdown-item">Hoodies & Sweaters</div>
-                  </div>
-                </div>
-                <div className="dropdown-item">
-                  Bottoms
-                  <div className="sub-dropdown">
-                    <div className="sub-dropdown-item">Trousers</div>
-                    <div className="sub-dropdown-item">Denims</div>
-                    <div className="sub-dropdown-item">Shorts</div>
-                    <div className="sub-dropdown-item">Pants</div>
-                  </div>
-                </div>
-                <div className="dropdown-item">
-                  Special Categories
-                  <div className="sub-dropdown">
-                    <div className="sub-dropdown-item">Office Wear</div>
-                    <div className="sub-dropdown-item">Gym Wear</div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* KIDS & BABY */}
-          <div
-            className="category"
-            onMouseEnter={() => toggleDropdown('KIDS & BABY')}
-            onMouseLeave={() => toggleDropdown(null)}
-          >
-            KIDS & BABY
-            {activeDropdown === 'KIDS & BABY' && (
-              <div className="dropdown">
-                <div className="dropdown-item">New Arrivals</div>
-                <div className="dropdown-item">Boys&apos; Clothing (3-16)</div>
-                <div className="dropdown-item">Girls&apos; Clothing (3-16)</div>
-                <div className="dropdown-item">Baby Clothing</div>
-                <div className="dropdown-item">Footwear</div>
-                <div className="dropdown-item">
-                  Bags & Accessories
-                  <div className="sub-dropdown">
-                    <div className="sub-dropdown-item">Kids&apos; Bags</div>
-                    <div className="sub-dropdown-item">Kids&apos; Watches</div>
-                    <div className="sub-dropdown-item">Hats & Caps</div>
-                  </div>
-                </div>
-                <div className="dropdown-item">Mother & Baby Care</div>
-              </div>
-            )}
-          </div>
-
-          {/* WATCHES */}
-          <div className="category">WATCHES</div>
-
-          {/* FOOTWEAR */}
-          <div className="category">FOOTWEAR</div>
-
-          {/* BAGS & WALLETS */}
-          <div className="category">BAGS & WALLETS</div>
-
-          {/* ACCESSORIES */}
-          <div className="category">ACCESSORIES</div>
-
-          {/* SALE & OFFERS */}
-          <div className="category">SALE & OFFERS</div>
-        </div>
-
-        <div className="icons">
-          <span role="img" aria-label="search">
-            <i className="ri-search-line"></i>
-          </span>
-          <span role="img" aria-label="cart">
-            <i className="ri-shopping-cart-2-line"></i>
-          </span>
-          <span role="img" aria-label="person">
-            <i className="ri-user-line"></i>
-          </span>
         </div>
       </div>
 
-      <div className="mobile-navbar">
-        <span role="img" aria-label="home">
-          <i className="ri-home-2-line"></i>
-        </span>
-        <span role="img" aria-label="search">
-          <i className="ri-search-line"></i>
-        </span>
-        <span role="img" aria-label="cart">
-          <i className="ri-shopping-cart-2-line"></i>
-        </span>
-        <span role="img" aria-label="person">
-          <i className="ri-user-line"></i>
-        </span>
+      {/* Mobile View */}
+      <div className="navbar-mobile">
+        {/* First Row */}
+        <div className="navbar-mobile-row1">
+          <div className="menu-icon">
+            <RiMenuLine />
+          </div>
+          <div className="logo">
+            <img src="LOGO.jpeg" alt="Logo" className="logo-image" />
+          </div>
+          <div className="notification-icon">
+            <RiNotificationLine />
+          </div>
+        </div>
+
+        {/* Second Row - Search Bar */}
+        <div className="navbar-mobile-row2">
+          <div className="search-bar">
+            <input type="text" placeholder="Search for products..." />
+            <button>
+              <RiSearchLine />
+            </button>
+          </div>
+        </div>
+
+        {/* Bottom Navigation Bar */}
+        <div className="navbar-mobile-bottom">
+          <div className="bottom-icon">
+            <RiHomeLine />
+            <span>Home</span>
+          </div>
+          <div className="bottom-icon">
+            <RiHeartLine />
+            <span>Wishlist</span>
+          </div>
+          <div className="bottom-icon">
+            <RiShoppingCartLine />
+            <span>Cart</span>
+          </div>
+          <div className="bottom-icon">
+            <RiUserLine />
+            <span>Account</span>
+          </div>
+        </div>
       </div>
     </>
   );
