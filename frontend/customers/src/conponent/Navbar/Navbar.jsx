@@ -13,14 +13,14 @@ import {
   RiHomeLine,
   RiArrowDownSLine,
   RiCloseLine,
-  RiArrowRightSLine,
 } from 'react-icons/ri';
 import './Navbar.css';
 
 const Navbar = () => {
   const [notice, setNotice] = useState('Welcome to our website!');
-  const [activeDropdown, setActiveDropdown] = useState(null); // Track active dropdown
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Track mobile menu state
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState([]); // Track expanded categories in mobile view
 
   useEffect(() => {
     const notices = [
@@ -34,19 +34,25 @@ const Navbar = () => {
     const intervalId = setInterval(() => {
       index = (index + 1) % notices.length;
       setNotice(notices[index]);
-    }, 3000); // Change notice every 3 seconds
+    }, 3000);
 
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
-  // Function to handle dropdown toggle
   const toggleDropdown = (category) => {
     setActiveDropdown(activeDropdown === category ? null : category);
   };
 
-  // Function to toggle mobile menu
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const toggleMobileCategory = (category) => {
+    if (expandedCategories.includes(category)) {
+      setExpandedCategories(expandedCategories.filter((cat) => cat !== category));
+    } else {
+      setExpandedCategories([...expandedCategories, category]);
+    }
   };
 
   return (
@@ -157,34 +163,44 @@ const Navbar = () => {
         {/* Mobile Menu - Categories */}
         {isMobileMenuOpen && (
           <div className="mobile-menu">
-            <div className="mobile-category">
-              HOME <RiArrowRightSLine className="mobile-category-arrow" />
+            <div className="mobile-category" onClick={() => toggleMobileCategory('HOME')}>
+              HOME
             </div>
-            <div className="mobile-category">
-              WOMEN <RiArrowRightSLine className="mobile-category-arrow" />
-              <div className="mobile-subcategory">
-                New Arrivals <RiArrowRightSLine className="mobile-subcategory-arrow" />
-              </div>
-              <div className="mobile-subcategory">
-                Tops & Tees <RiArrowRightSLine className="mobile-subcategory-arrow" />
-                <div className="mobile-subcategory-item">Blouses</div>
-                <div className="mobile-subcategory-item">Crop Tops</div>
-              </div>
-              <div className="mobile-subcategory">
-                Dresses & Bottoms <RiArrowRightSLine className="mobile-subcategory-arrow" />
-                <div className="mobile-subcategory-item">Dresses & Frocks</div>
-                <div className="mobile-subcategory-item">Skirts</div>
-                <div className="mobile-subcategory-item">Trousers</div>
-              </div>
+            <div className="mobile-category" onClick={() => toggleMobileCategory('WOMEN')}>
+              WOMEN {expandedCategories.includes('WOMEN') ? '▼' : '▶'}
+              {expandedCategories.includes('WOMEN') && (
+                <div className="mobile-subcategories">
+                  <div className="mobile-subcategory">New Arrivals</div>
+                  <div className="mobile-subcategory">
+                    Tops & Tees {expandedCategories.includes('TOPS') ? '▼' : '▶'}
+                    {expandedCategories.includes('TOPS') && (
+                      <div className="mobile-subcategory-items">
+                        <div className="mobile-subcategory-item">Blouses</div>
+                        <div className="mobile-subcategory-item">Crop Tops</div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mobile-subcategory">
+                    Dresses & Bottoms {expandedCategories.includes('DRESSES') ? '▼' : '▶'}
+                    {expandedCategories.includes('DRESSES') && (
+                      <div className="mobile-subcategory-items">
+                        <div className="mobile-subcategory-item">Dresses & Frocks</div>
+                        <div className="mobile-subcategory-item">Skirts</div>
+                        <div className="mobile-subcategory-item">Trousers</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="mobile-category">
-              WATCHES <RiArrowRightSLine className="mobile-category-arrow" />
-              <div className="mobile-subcategory">
-                Men&apos;s Watches <RiArrowRightSLine className="mobile-subcategory-arrow" />
-              </div>
-              <div className="mobile-subcategory">
-                Women&apos;s Watches <RiArrowRightSLine className="mobile-subcategory-arrow" />
-              </div>
+            <div className="mobile-category" onClick={() => toggleMobileCategory('WATCHES')}>
+              WATCHES {expandedCategories.includes('WATCHES') ? '▼' : '▶'}
+              {expandedCategories.includes('WATCHES') && (
+                <div className="mobile-subcategories">
+                  <div className="mobile-subcategory">Men&apos;s Watches</div>
+                  <div className="mobile-subcategory">Women&apos;s Watches</div>
+                </div>
+              )}
             </div>
           </div>
         )}
