@@ -193,6 +193,22 @@
   padding: 10px 20px;
 }
 
+.mobile-menu {
+  background-color: #f8f9fa;
+  padding: 10px 20px;
+}
+
+.mobile-category {
+  padding: 10px 0;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+}
+
+.mobile-category:hover {
+  color: #007bff;
+}
+
 .navbar-mobile-bottom {
   display: flex;
   justify-content: space-around;
