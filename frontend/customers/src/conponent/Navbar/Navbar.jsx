@@ -12,12 +12,14 @@ import {
   RiMenuLine,
   RiHomeLine,
   RiArrowDownSLine,
+  RiCloseLine,
 } from 'react-icons/ri';
 import './Navbar.css';
 
 const Navbar = () => {
   const [notice, setNotice] = useState('Welcome to our website!');
   const [activeDropdown, setActiveDropdown] = useState(null); // Track active dropdown
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Track mobile menu state
 
   useEffect(() => {
     const notices = [
@@ -39,6 +41,11 @@ const Navbar = () => {
   // Function to handle dropdown toggle
   const toggleDropdown = (category) => {
     setActiveDropdown(activeDropdown === category ? null : category);
+  };
+
+  // Function to toggle mobile menu
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
@@ -177,8 +184,8 @@ const Navbar = () => {
       <div className="navbar-mobile">
         {/* First Row */}
         <div className="navbar-mobile-row1">
-          <div className="menu-icon">
-            <RiMenuLine />
+          <div className="menu-icon" onClick={toggleMobileMenu}>
+            {isMobileMenuOpen ? <RiCloseLine /> : <RiMenuLine />}
           </div>
           <div className="logo">
             <img src="LOGO.jpeg" alt="Logo" className="logo-image" />
@@ -197,6 +204,21 @@ const Navbar = () => {
             </button>
           </div>
         </div>
+
+        {/* Mobile Menu - Categories */}
+        {isMobileMenuOpen && (
+          <div className="mobile-menu">
+            <div className="mobile-category">HOME</div>
+            <div className="mobile-category">WOMEN</div>
+            <div className="mobile-category">MEN</div>
+            <div className="mobile-category">KIDS & BABY</div>
+            <div className="mobile-category">WATCHES</div>
+            <div className="mobile-category">FOOTWEAR</div>
+            <div className="mobile-category">BAGS & WALLETS</div>
+            <div className="mobile-category">ACCESSORIES</div>
+            <div className="mobile-category">SALE & OFFERS</div>
+          </div>
+        )}
 
         {/* Bottom Navigation Bar */}
         <div className="navbar-mobile-bottom">
