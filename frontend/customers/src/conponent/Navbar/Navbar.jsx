@@ -13,6 +13,7 @@ import {
   RiHomeLine,
   RiArrowDownSLine,
   RiCloseLine,
+  RiArrowRightSLine,
 } from 'react-icons/ri';
 import './Navbar.css';
 
@@ -156,20 +157,34 @@ const Navbar = () => {
         {/* Mobile Menu - Categories */}
         {isMobileMenuOpen && (
           <div className="mobile-menu">
-            <div className="mobile-category">HOME</div>
             <div className="mobile-category">
-              WOMEN
-              <div className="mobile-subcategory">New Arrivals</div>
+              HOME <RiArrowRightSLine className="mobile-category-arrow" />
+            </div>
+            <div className="mobile-category">
+              WOMEN <RiArrowRightSLine className="mobile-category-arrow" />
               <div className="mobile-subcategory">
-                Tops & Tees
+                New Arrivals <RiArrowRightSLine className="mobile-subcategory-arrow" />
+              </div>
+              <div className="mobile-subcategory">
+                Tops & Tees <RiArrowRightSLine className="mobile-subcategory-arrow" />
                 <div className="mobile-subcategory-item">Blouses</div>
                 <div className="mobile-subcategory-item">Crop Tops</div>
               </div>
+              <div className="mobile-subcategory">
+                Dresses & Bottoms <RiArrowRightSLine className="mobile-subcategory-arrow" />
+                <div className="mobile-subcategory-item">Dresses & Frocks</div>
+                <div className="mobile-subcategory-item">Skirts</div>
+                <div className="mobile-subcategory-item">Trousers</div>
+              </div>
             </div>
             <div className="mobile-category">
-              WATCHES
-              <div className="mobile-subcategory">Men&apos;s Watches</div>
-              <div className="mobile-subcategory">Women&apos;s Watches</div>
+              WATCHES <RiArrowRightSLine className="mobile-category-arrow" />
+              <div className="mobile-subcategory">
+                Men&apos;s Watches <RiArrowRightSLine className="mobile-subcategory-arrow" />
+              </div>
+              <div className="mobile-subcategory">
+                Women&apos;s Watches <RiArrowRightSLine className="mobile-subcategory-arrow" />
+              </div>
             </div>
           </div>
         )}
