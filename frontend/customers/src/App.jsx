@@ -19,9 +19,9 @@ import SetNewPassword from './pages/Enter/SetNewPassword/SetNewPassword';
 import ForgotPassword from './pages/Enter/ForgotPassword/ForgotPassword';
 import PasswordResetFinish from './pages/Enter/PasswordReset/PasswordResetFinish';
 import CheckYourEmail from './pages/Enter/CheckYourEmail/CheckYourEmail';
+
 import ShoppingCart from './pages/shoppingcart/ShoppingCart';
 import Dashboard from './pages/Dashboard/Dashboard';
-
 import Account from './pages/USER/account/Account';
 import ShippingAddress from './pages/USER/shippingaddress/ShippingAddress';
 import ShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm '

@@ -4,6 +4,7 @@
     background-color: #f5f7fb;
     border-radius: 20px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-top: 80px; /* Add margin to push content below the fixed navbar */
 }
 
 .shipping-header {
@@ -127,6 +128,7 @@
 @media (max-width: 576px) {
     .shipping-address-page {
         padding: 15px;
+        margin-top: 70px; /* Adjust margin for smaller screens */
     }
 
     .shipping-header h2 {
