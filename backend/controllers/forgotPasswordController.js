@@ -14,7 +14,6 @@ export const requestPasswordReset = (req, res) => {
         if (err) return res.status(500).json({ message: "Database error" });
         if (result.length === 0) return res.status(404).json({ message: "User not found" });
 
-        console.log(result)
         const user = result[0];
         
         // Generate a password reset token
