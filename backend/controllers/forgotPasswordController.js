@@ -39,13 +39,15 @@ export const requestPasswordReset = (req, res) => {
             const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
             console.log(resetLink)
             
+            // SMTP settings for Gmail
             const transporter = nodemailer.createTransport({
-                // Or use your preferred email provider
-                service: 'gmail',
+                host: 'smtp.gmail.com',
+                port: 587, // Port for STARTTLS
+                secure: false, // Use STARTTLS (not SSL/TLS)
                 auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS,
-                }
+                    user: process.env.EMAIL_USER, // Your Gmail email
+                    pass: process.env.EMAIL_PASS, // Your Gmail App Password (not regular Gmail password)
+                },
             });
 
             const mailOptions = {
