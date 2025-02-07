@@ -2,11 +2,12 @@ import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import { findUserByEmail, updatePassword } from '../models/userModel.js';  // Assuming you have these methods
+import { console } from 'inspector/promises';
 
 // Step 1: Request Password Reset
 export const requestPasswordReset = (req, res) => {
     const { email } = req.body;
-    
+    console.log(req)
     // Find user by email
     findUserByEmail(email, (err, result) => {
         if (err) return res.status(500).json({ message: "Database error" });

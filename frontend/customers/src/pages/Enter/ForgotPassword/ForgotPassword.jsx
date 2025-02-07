@@ -18,11 +18,12 @@ const ForgotPassword = () => {
     setIsLoading(true);
   
     try {
-      const response = await fetch('http://localhost:5000/forgot-password/request-reset', {
+      const response = await fetch('http://localhost:8081/forgot-password/request-reset', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }, 
         body: JSON.stringify({ email }),
       });
+      console.log(response)
   
       if (response.ok) {
         setIsSubmitted(true);

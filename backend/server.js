@@ -10,6 +10,8 @@
 
 // npm install mysql2 dotenv bcrypt jsonwebtoken express cors cookie-parser mongoose
 //npm install express-validator for validations = for Parameterized Queries:
+//npm install nodemailer
+
 
 import sqldb from './config/sqldb.js'
 import authRoutes from './routes/authRoutes.js'
