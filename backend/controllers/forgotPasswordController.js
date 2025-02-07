@@ -33,13 +33,13 @@ export const requestPasswordReset = (req, res) => {
           .replace('T', ' ');
 
         console.log(Date.now())
-        
+
         // Save token in the user record
         updateToken(user.ID, { resetToken, resetTokenExpiry }, (err) => {
             if (err) return res.status(500).json({ message: "Error saving reset token" });
 
             // Send email with reset link
-            const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+            const resetLink = `http://localhost:8081/reset-password/${resetToken}`;
             console.log(resetLink)
             
             // SMTP settings for Gmail
