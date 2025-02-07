@@ -17,7 +17,7 @@ import sqldb from './config/sqldb.js'
 import authRoutes from './routes/authRoutes.js'
 import verifyUser from './middleware/authMiddleware.js';
 import forgotPasswordRoutes from './routes/forgotPasswordRoutes.js';
-
+import cleanupExpiredTokens from './services/tokenCleanup.js';
 
 import dotenv from 'dotenv';
 import express from 'express';
@@ -46,6 +46,11 @@ app.use('/forgot-password', forgotPasswordRoutes);
 app.get('/tokenverification', verifyUser, (req, res) => {
     return res.status(200).json({ Status: "Success", name: req.name });
 });
+
+// Run token cleanup every 5 minutes
+setInterval(async () => {
+    await cleanupExpiredTokens();
+}, 5 * 60 * 1000); // Runs every 5 minutes
 
 // Start the server
 const PORT = process.env.PORT || 5000;
