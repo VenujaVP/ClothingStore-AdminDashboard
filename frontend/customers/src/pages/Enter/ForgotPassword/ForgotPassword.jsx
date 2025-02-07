@@ -52,8 +52,8 @@ const ForgotPassword = () => {
           <div className="image-wrapper">
             {!isSubmitted ? (
               <>
-                <h1 style={{ color: 'white' }}>Forgot Password?</h1>
-                <p style={{ color: 'white' }}>Don&apos;t worry! It happens. Please enter the email associated with your account.</p>
+                <h1 style={{ color: 'black' }}>Forgot Password?</h1>
+                <p style={{ color: 'black' }}>Don&apos;t worry! It happens. Please enter the email associated with your account.</p>
               </>
             ) : (
               <>
