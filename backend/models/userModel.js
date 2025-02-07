@@ -42,7 +42,7 @@ const findUserByEmail = (email, callback) => {
             return callback(err, null);
         }
         callback(null, results);
-        console.log(results)
+        // console.log(results)
     });
 };
 

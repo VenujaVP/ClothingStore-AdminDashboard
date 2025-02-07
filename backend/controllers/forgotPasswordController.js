@@ -4,13 +4,11 @@ import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import { findUserByEmail, updateToken } from '../models/userModel.js';
-import { console } from 'inspector/promises';
 
 // Step 1: Request Password Reset
 export const requestPasswordReset = (req, res) => {
-    console.log(req)
-
     const { email } = req.body;
+    console.log(email)
 
     // Find user by email
     findUserByEmail(email, (err, result) => {
