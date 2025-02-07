@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import { findUserByEmail, updateToken } from '../models/userModel.js';
+import { console } from 'inspector/promises';
 
 // Step 1: Request Password Reset
 export const requestPasswordReset = (req, res) => {
@@ -15,7 +16,7 @@ export const requestPasswordReset = (req, res) => {
         if (result.length === 0) return res.status(404).json({ message: "User not found" });
 
         const user = result[0];
-        console.log(user)        
+        // console.log(user)        
 
         // Generate a password reset token
         const resetToken = crypto.randomBytes(20).toString('hex');
@@ -31,6 +32,7 @@ export const requestPasswordReset = (req, res) => {
 
             // Send email with reset link
             const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+            console.log(resetLink)
             const transporter = nodemailer.createTransport({
                 service: 'gmail', // Or use your preferred email provider
                 auth: {
