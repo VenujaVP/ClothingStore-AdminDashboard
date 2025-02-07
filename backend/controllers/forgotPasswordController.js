@@ -31,7 +31,6 @@ export const requestPasswordReset = (req, res) => {
           .slice(0, 19)
           .replace('T', ' ');
 
-
         // Save token in the user record
         updateToken(user.ID, { resetToken, resetTokenExpiry }, (err) => {
             if (err) return res.status(500).json({ message: "Error saving reset token" });
@@ -39,6 +38,7 @@ export const requestPasswordReset = (req, res) => {
             // Send email with reset link
             const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
             console.log(resetLink)
+            
             const transporter = nodemailer.createTransport({
                 // Or use your preferred email provider
                 service: 'gmail',
