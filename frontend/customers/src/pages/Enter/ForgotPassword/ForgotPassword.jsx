@@ -2,6 +2,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
+//pages/Enter/ForgotPassword/ForgotPassword.jsx
+
 import React, { useState } from 'react';
 import { FaEnvelope } from 'react-icons/fa';
 import './ForgotPassword.css';

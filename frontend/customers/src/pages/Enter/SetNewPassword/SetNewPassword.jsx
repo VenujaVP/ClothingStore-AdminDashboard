@@ -2,6 +2,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
+//pages/Enter/SetNewPassword/SetNewPassword.jsx
+
 import React, { useState, useEffect } from 'react';
 import { FaLock, FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import './SetNewPassword.css';

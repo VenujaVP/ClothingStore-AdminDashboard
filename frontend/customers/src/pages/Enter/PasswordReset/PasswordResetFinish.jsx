@@ -2,6 +2,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
+//pages/Enter/PasswordReset/PasswordResetFinish.jsx
+
 import React from 'react';
 import { FaCheckCircle, FaSignInAlt } from 'react-icons/fa';
 import './PasswordResetFinish.css';
