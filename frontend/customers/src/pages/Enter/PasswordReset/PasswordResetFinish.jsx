@@ -52,7 +52,7 @@ const PasswordResetFinish = () => {
 
               <div className="additional-info">
                 <p>
-                  If you didn't request this password reset or need assistance,
+                  If you didn&apos;t request this password reset or need assistance,
                   please contact our support team.
                 </p>
                 <a href="/support" className="support-link">

@@ -35,7 +35,7 @@ const ForgotPassword = () => {
         <div className="login-image-section">
           <div className="image-wrapper">
             <h1>Forgot Password?</h1>
-            <p>Don't worry! It happens. Please enter the email associated with your account.</p>
+            <p>Don&apos;t worry! It happens. Please enter the email associated with your account.</p>
           </div>
         </div>
 
@@ -45,7 +45,7 @@ const ForgotPassword = () => {
               <>
                 <h2>Password Recovery</h2>
                 <p className="text-muted">
-                  Enter your email and we'll send you instructions to reset your password.
+                  Enter your email and we&apos;ll send you instructions to reset your password.
                 </p>
 
                 <form onSubmit={handleSubmit}>
@@ -84,7 +84,7 @@ const ForgotPassword = () => {
                 </p>
                 <p className="text-muted">
                   Please check your inbox and click on the link to reset your password. 
-                  If you don't see the email, please check your spam folder.
+                  If you don&apos;t see the email, please check your spam folder.
                 </p>
                 <button 
                   className="login-btn"

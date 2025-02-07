@@ -27,7 +27,7 @@ const CheckYourEmail = () => {
         <div className="login-image-section">
           <div className="image-wrapper">
             <h1 style={{ color: 'black' }}>Check Your Email</h1> {/* Changed to black */}
-            <p style={{ color: 'black' }}>We've sent you instructions to reset your password</p> {/* Changed to black */}
+            <p style={{ color: 'black' }}>We&apos;ve sent you instructions to reset your password</p> {/* Changed to black */}
           </div>
         </div>
 
@@ -48,7 +48,7 @@ const CheckYourEmail = () => {
                 </p>
                 <p className="secondary-text" style={{ color: 'black' }}>
                   Click the link in the email to reset your password. 
-                  If you don't see the email, check your spam folder.
+                  If you don&apos;t see the email, check your spam folder.
                 </p> {/* Changed to black */}
               </div>
 
@@ -72,7 +72,7 @@ const CheckYourEmail = () => {
 
               <div className="help-text">
                 <p style={{ color: 'black' }}>
-                  Didn't receive the email? Check your spam filter, or
+                  Didn&apos;t receive the email? Check your spam filter, or
                 </p> {/* Changed to black */}
                 <a href="/support" className="support-link">
                   Contact Support
