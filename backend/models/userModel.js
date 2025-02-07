@@ -55,5 +55,4 @@ const updateToken = (email, data, callback) => {
 };
 
 
-
 export { createUser, findUserByEmail, updateToken };
