@@ -2,7 +2,7 @@ import sqldb from '../config/sqldb.js';
 
 const cleanupExpiredTokens = async () => {
     try {
-        const currentTime = new Date(Date.now()); // Get current backend time
+        const currentTime = new Date(Date.now());
         await sqldb.query(`
             UPDATE User 
             SET resetToken = NULL, resetTokenExpiry = NULL
