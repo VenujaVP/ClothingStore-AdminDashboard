@@ -6,6 +6,6 @@ import { requestPasswordReset, resetPassword } from '../controllers/forgotPasswo
 const router = express.Router();
 
 router.post('/request-password-reset', requestPasswordReset);  // Step 1: Send reset email
-router.post('/reset', resetPassword);  // Step 2: Reset password
+router.post('/reset-password', resetPassword);  // Step 2: Reset password
 
 export default router;
