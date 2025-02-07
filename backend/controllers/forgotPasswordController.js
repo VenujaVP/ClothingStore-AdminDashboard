@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import { findUserByEmail, updateToken } from '../models/userModel.js';
 import dotenv from 'dotenv';
+import { console } from 'inspector/promises';
 
 dotenv.config();
 
@@ -26,11 +27,13 @@ export const requestPasswordReset = (req, res) => {
         // Generate a password reset token
         const resetToken = crypto.randomBytes(20).toString('hex');
 
-        const resetTokenExpiry = new Date(Date.now() + 3600000) // Convert to MySQL DATETIME format
+        const resetTokenExpiry = new Date(Date.now() + 900000) // Convert to MySQL DATETIME format
           .toISOString()
           .slice(0, 19)
           .replace('T', ' ');
 
+        console.log(Date.now())
+        
         // Save token in the user record
         updateToken(user.ID, { resetToken, resetTokenExpiry }, (err) => {
             if (err) return res.status(500).json({ message: "Error saving reset token" });
