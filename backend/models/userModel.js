@@ -42,7 +42,6 @@ const findUserByEmail = (email, callback) => {
             return callback(err, null);
         }
         callback(null, results);
-        console.log("User found:", results);
     });
 };
 
