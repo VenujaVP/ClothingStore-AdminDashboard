@@ -46,10 +46,25 @@ const findUserByEmail = (email, callback) => {
 };
 
 // Update password and reset token
-const updateToken = (userId, data, callback) => {
+const updateToken = (userId, { resetToken, resetTokenExpiry }, callback) => {
+    if (!userId) {
+        console.error("Error: userId is undefined or null");
+        return callback(new Error("Invalid user ID"), null);
+    }
     const query = 'UPDATE USER SET resetToken = ?, resetTokenExpiry = ? WHERE ID = ?';
-    sqldb.query(query, [data.resetToken, data.resetTokenExpiry, userId], (err, results) => {
-        if (err) return callback(err, null);
+    const values = [resetToken, resetTokenExpiry, userId];
+
+    sqldb.query(query, values, (err, results) => {
+        if (err) {
+            console.error("SQL Error:", err);
+            return callback(err, null);
+        }
+
+        if (results.affectedRows === 0) {
+            console.warn(`No user found with ID: ${userId}`);
+            return callback(new Error("User not found"), null);
+        }
+
         callback(null, results);
     });
 };
