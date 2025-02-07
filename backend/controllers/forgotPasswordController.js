@@ -39,7 +39,7 @@ export const requestPasswordReset = (req, res) => {
             if (err) return res.status(500).json({ message: "Error saving reset token" });
 
             // Send email with reset link
-            const resetLink = `http://localhost:8081/reset-password/${resetToken}`;
+            const resetLink = `http://localhost:8081/request-password-reset/${resetToken}`;
             console.log(resetLink)
             
             // SMTP settings for Gmail
