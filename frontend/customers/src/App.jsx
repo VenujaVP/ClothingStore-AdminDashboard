@@ -18,7 +18,6 @@ import Landing from './pages/Landing/Landing'
 import SetNewPassword from './pages/Enter/SetNewPassword/SetNewPassword';
 import ForgotPassword from './pages/Enter/ForgotPassword/ForgotPassword';
 import PasswordResetFinish from './pages/Enter/PasswordReset/PasswordResetFinish';
-import CheckYourEmail from './pages/Enter/CheckYourEmail/CheckYourEmail';
 
 import ShoppingCart from './pages/shoppingcart/ShoppingCart';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -44,8 +43,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/checkyouremail" element={<CheckYourEmail />} />
-            <Route path="/setnewpassword" element={<SetNewPassword />} />
+            <Route path="/reset-password/:resetToken" element={<SetNewPassword />} />
             <Route path="/passwordresetfinish" element={<PasswordResetFinish />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/shoppingcart" element={<ShoppingCart />} />
