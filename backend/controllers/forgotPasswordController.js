@@ -54,11 +54,11 @@ export const requestPasswordReset = (req, res) => {
             transporter.sendMail(mailOptions, (err, info) => {
                 if (err) {
                     console.error("Error sending email:", err);
-                    return res.status(500).json({ message: "Error sending email" });
+                    return res.status(500).json({ message: "Error sending email", error: err });
                 }
-                console.log("Email sent:", info);
-                res.status(200).json({ message: "Password reset email sent" });
-            });
+                console.log("Email sent:", info.response);
+                res.status(200).json({ message: "Password reset email sent successfully" });
+            });            
 
         });
     });
