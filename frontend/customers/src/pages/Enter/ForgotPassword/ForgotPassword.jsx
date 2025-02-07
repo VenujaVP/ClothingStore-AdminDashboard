@@ -18,7 +18,7 @@ const ForgotPassword = () => {
     setIsLoading(true);
   
     try {
-      const response = await fetch('http://localhost:8081/forgot-password/request-reset', {
+      const response = await fetch('http://localhost:8081/forgot-password/request-password-reset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }, 
         body: JSON.stringify({ email }),
