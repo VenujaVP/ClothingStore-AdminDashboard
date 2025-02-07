@@ -56,7 +56,7 @@ const updateToken = (userId, { resetToken, resetTokenExpiry }, callback) => {
     const query = `UPDATE USER SET resetToken = ?, resetTokenExpiry = ? WHERE ID = ?;`;
     const values = [resetToken, resetTokenExpiry, userId];
 
-    // console.log(values)
+    console.log(values)
 
     sqldb.query(query, values, (err, results) => {
         if (err) {

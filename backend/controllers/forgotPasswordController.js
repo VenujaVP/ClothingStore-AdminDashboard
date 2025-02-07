@@ -32,8 +32,6 @@ export const requestPasswordReset = (req, res) => {
           .slice(0, 19)
           .replace('T', ' ');
 
-        console.log(Date.now())
-
         // Save token in the user record
         updateToken(user.ID, { resetToken, resetTokenExpiry }, (err) => {
             if (err) return res.status(500).json({ message: "Error saving reset token" });
