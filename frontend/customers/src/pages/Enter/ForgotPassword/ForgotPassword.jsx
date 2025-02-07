@@ -50,8 +50,17 @@ const ForgotPassword = () => {
       <div className="login-container">
         <div className="login-image-section">
           <div className="image-wrapper">
-            <h1 style={{ color: 'black' }}>Forgot Password?</h1>
-            <p style={{ color: 'black' }}>Don&apos;t worry! It happens. Please enter the email associated with your account.</p>
+            {!isSubmitted ? (
+              <>
+                <h1 style={{ color: 'white' }}>Forgot Password?</h1>
+                <p style={{ color: 'white' }}>Don&apos;t worry! It happens. Please enter the email associated with your account.</p>
+              </>
+            ) : (
+              <>
+                <h1 style={{ color: 'white' }}>Check Your Email</h1>
+                <p style={{ color: 'white' }}>We&apos;ve sent you instructions to reset your password</p>
+              </>
+            )}
           </div>
         </div>
 
