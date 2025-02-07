@@ -33,29 +33,30 @@ export const requestPasswordReset = (req, res) => {
             // Send email with reset link
             const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
             console.log(resetLink)
-            const transporter = nodemailer.createTransport({
-                service: 'gmail', // Or use your preferred email provider
-                auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS,
-                }
-            });
+            // const transporter = nodemailer.createTransport({
+            //     // Or use your preferred email provider
+            //     service: 'gmail',
+            //     auth: {
+            //         user: process.env.EMAIL_USER,
+            //         pass: process.env.EMAIL_PASS,
+            //     }
+            // });
 
-            const mailOptions = {
-                from: process.env.EMAIL_USER,
-                to: email,
-                subject: 'Password Reset Request',
-                text: `Click on the link to reset your password: ${resetLink}`
-            };
+            // const mailOptions = {
+            //     from: process.env.EMAIL_USER,
+            //     to: email,
+            //     subject: 'Password Reset Request',
+            //     text: `Click on the link to reset your password: ${resetLink}`
+            // };
 
             // In forgotPasswordController.js
             transporter.sendMail(mailOptions, (err, info) => {
                 if (err) {
-                    console.error("Error sending email:", err);
-                    return res.status(500).json({ message: "Error sending email" });
+                    // console.error("Error sending email:", err);
+                    // return res.status(500).json({ message: "Error sending email" });
                 }
-                console.log("Email sent:", info);
-                res.status(200).json({ message: "Password reset email sent" });
+                // console.log("Email sent:", info);
+                // res.status(200).json({ message: "Password reset email sent" });
             });
 
         });
