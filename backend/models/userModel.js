@@ -42,6 +42,7 @@ const findUserByEmail = (email, callback) => {
             return callback(err, null);
         }
         callback(null, results);
+        // console.log(results)
     });
 };
 
@@ -53,8 +54,9 @@ const updateToken = (userId, { resetToken, resetTokenExpiry }, callback) => {
     }
 
     const query = `UPDATE USER SET resetToken = ?, resetTokenExpiry = ? WHERE ID = ?;`;
-
     const values = [resetToken, resetTokenExpiry, userId];
+
+    // console.log(values)
 
     sqldb.query(query, values, (err, results) => {
         if (err) {
@@ -69,7 +71,7 @@ const updateToken = (userId, { resetToken, resetTokenExpiry }, callback) => {
 
         console.log(`Reset token updated successfully for user ID: ${userId}`);
         callback(null, results);
-        console.log(results)
+        // console.log(results)
     });
 };
 

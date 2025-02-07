@@ -9,14 +9,15 @@ import { console } from 'inspector/promises';
 // Step 1: Request Password Reset
 export const requestPasswordReset = (req, res) => {
     const { email } = req.body;
+    console.log(email)
 
     // Find user by email
     findUserByEmail(email, (err, result) => {
+        console.log(result)
         if (err) return res.status(500).json({ message: "Database error" });
         if (result.length === 0) return res.status(404).json({ message: "User not found" });
 
         const user = result[0];
-        // console.log(user)        
 
         // Generate a password reset token
         const resetToken = crypto.randomBytes(20).toString('hex');
@@ -26,8 +27,7 @@ export const requestPasswordReset = (req, res) => {
           .slice(0, 19)
           .replace('T', ' ');
 
-        console.log("hiiiiiii")
-        
+
         // Save token in the user record
         updateToken(user.ID, { resetToken, resetTokenExpiry }, (err) => {
             console.log("hiiiiiii")
@@ -36,31 +36,30 @@ export const requestPasswordReset = (req, res) => {
             // Send email with reset link
             const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
             console.log(resetLink)
-            // const transporter = nodemailer.createTransport({
-            //     // Or use your preferred email provider
-            //     service: 'gmail',
-            //     auth: {
-            //         user: process.env.EMAIL_USER,
-            //         pass: process.env.EMAIL_PASS,
-            //     }
-            // });
+            const transporter = nodemailer.createTransport({
+                // Or use your preferred email provider
+                service: 'gmail',
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                }
+            });
 
-            // const mailOptions = {
-            //     from: process.env.EMAIL_USER,
-            //     to: email,
-            //     subject: 'Password Reset Request',
-            //     text: `Click on the link to reset your password: ${resetLink}`
-            // };
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: 'Password Reset Request',
+                text: `Click on the link to reset your password: ${resetLink}`
+            };
 
-            // In forgotPasswordController.js
-            // transporter.sendMail(mailOptions, (err, info) => {
-            //     if (err) {
-            //         console.error("Error sending email:", err);
-            //         return res.status(500).json({ message: "Error sending email" });
-            //     }
-            //     console.log("Email sent:", info);
-            //     res.status(200).json({ message: "Password reset email sent" });
-            // });
+            transporter.sendMail(mailOptions, (err, info) => {
+                if (err) {
+                    console.error("Error sending email:", err);
+                    return res.status(500).json({ message: "Error sending email" });
+                }
+                console.log("Email sent:", info);
+                res.status(200).json({ message: "Password reset email sent" });
+            });
 
         });
     });
