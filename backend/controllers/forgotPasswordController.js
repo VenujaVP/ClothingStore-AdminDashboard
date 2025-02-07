@@ -25,9 +25,12 @@ export const requestPasswordReset = (req, res) => {
           .toISOString()
           .slice(0, 19)
           .replace('T', ' ');
+
+        console.log("hiiiiiii")
         
         // Save token in the user record
         updateToken(user.ID, { resetToken, resetTokenExpiry }, (err) => {
+            console.log("hiiiiiii")
             if (err) return res.status(500).json({ message: "Error saving reset token" });
 
             // Send email with reset link
