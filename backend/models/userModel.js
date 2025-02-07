@@ -47,13 +47,23 @@ const findUserByEmail = (email, callback) => {
 
 // Update password and reset token
 const updateToken = (userId, data, callback) => {
-    const query = 'UPDATE USER SET resetToken = ?, resetTokenExpiry = ? WHERE ID = ?';
+    if (!userId) {
+        console.error("Error: userId is undefined!");
+        return callback(new Error("userId is undefined"), null);
+    }
+
+    const query = 'UPDATE Users SET resetToken = ?, resetTokenExpiry = ? WHERE ID = ?';
     sqldb.query(query, [data.resetToken, data.resetTokenExpiry, userId], (err, results) => {
-        console.log("Updating user ID:", userId);
-        if (err) return callback(err, null);
+        if (err) {
+            console.error("SQL Error:", err);
+            return callback(err, null);
+        }
+
+        console.log("Token update result:", results);
         callback(null, results);
     });
 };
+
 
 
 export { createUser, findUserByEmail, updateToken };
