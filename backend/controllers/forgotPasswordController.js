@@ -4,6 +4,10 @@ import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import { findUserByEmail, updateToken } from '../models/userModel.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 
 // Step 1: Request Password Reset
 export const requestPasswordReset = (req, res) => {
@@ -12,7 +16,7 @@ export const requestPasswordReset = (req, res) => {
 
     // Find user by email
     findUserByEmail(email, (err, result) => {
-        console.log(result)
+        // console.log(result)
         if (err) return res.status(500).json({ message: "Database error" });
         if (result.length === 0) return res.status(404).json({ message: "User not found" });
 
