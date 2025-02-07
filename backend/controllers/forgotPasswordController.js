@@ -15,12 +15,12 @@ export const requestPasswordReset = (req, res) => {
         if (result.length === 0) return res.status(404).json({ message: "User not found" });
 
         const user = result[0];
-        console.log(user)        
+        // console.log(user)        
 
         // Generate a password reset token
         const resetToken = crypto.randomBytes(20).toString('hex');
         
-        // Save token in the user record (you need a field to store it in the database)
+        // Save token in the user record
         updateToken(user.ID, { resetToken, resetTokenExpiry: Date.now() + 3600000 }, (err) => {
             if (err) return res.status(500).json({ message: "Error saving reset token" });
 
