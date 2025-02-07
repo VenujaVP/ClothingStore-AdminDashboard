@@ -22,7 +22,7 @@ export const requestPasswordReset = (req, res) => {
         const resetToken = crypto.randomBytes(20).toString('hex');
         
         // Save token in the user record (you need a field to store it in the database)
-        updateToken(user.id, { resetToken, resetTokenExpiry: Date.now() + 3600000 }, (err) => {
+        updateToken(user.ID, { resetToken, resetTokenExpiry: Date.now() + 3600000 }, (err) => {
             if (err) return res.status(500).json({ message: "Error saving reset token" });
 
             // Send email with reset link
