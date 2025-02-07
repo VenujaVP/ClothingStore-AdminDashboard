@@ -30,7 +30,7 @@ function App() {
   const location = useLocation();
 
   const shouldDisplaySidebar = () => {
-    return !['/login', '/register','/setnewpassword','/forgotpassword','/passwordresetfinish', '/checkyouremail'].includes(location.pathname);
+    return !['/login', '/register','/reset-password','/forgotpassword','/passwordresetfinish', '/checkyouremail'].includes(location.pathname);
   };
 
   return (

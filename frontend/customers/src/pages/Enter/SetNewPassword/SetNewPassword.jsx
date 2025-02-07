@@ -6,9 +6,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { FaLock, FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { useParams } from 'react-router-dom';
 import './SetNewPassword.css';
 
 const SetNewPassword = () => {
+  const { resetToken } = useParams(); // Extract token from URL
+  console.log(resetToken)
+
   const [formData, setFormData] = useState({
     password: '',
     confirmPassword: '',
