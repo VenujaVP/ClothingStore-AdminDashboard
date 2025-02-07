@@ -14,6 +14,8 @@
 import sqldb from './config/sqldb.js'
 import authRoutes from './routes/authRoutes.js'
 import verifyUser from './middleware/authMiddleware.js';
+import forgotPasswordRoutes from './routes/forgotPasswordRoutes.js';
+
 
 import dotenv from 'dotenv';
 import express from 'express';
@@ -37,6 +39,7 @@ app.use(cookieParser());
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/forgot-password', forgotPasswordRoutes); 
 
 app.get('/tokenverification', verifyUser, (req, res) => {
     return res.status(200).json({ Status: "Success", name: req.name });

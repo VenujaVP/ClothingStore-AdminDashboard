@@ -16,18 +16,26 @@ const ForgotPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
-    // Simulate API call
+  
     try {
-      // Add your password reset email logic here
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate delay
-      setIsSubmitted(true);
+      const response = await fetch('http://localhost:5000/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+  
+      if (response.ok) {
+        setIsSubmitted(true);
+      } else {
+        alert('Email not found');
+      }
     } catch (error) {
       console.error('Error:', error);
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="login-page">
