@@ -3,7 +3,7 @@
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
-import { findUserByEmail, updatePassword } from '../models/userModel.js';
+import { findUserByEmail, updateToken } from '../models/userModel.js';
 
 // Step 1: Request Password Reset
 export const requestPasswordReset = (req, res) => {
@@ -14,13 +14,15 @@ export const requestPasswordReset = (req, res) => {
         if (err) return res.status(500).json({ message: "Database error" });
         if (result.length === 0) return res.status(404).json({ message: "User not found" });
 
+        console.log(result)
         const user = result[0];
         
         // Generate a password reset token
         const resetToken = crypto.randomBytes(20).toString('hex');
+        console.log(resetToken)        
         
         // Save token in the user record (you need a field to store it in the database)
-        updatePassword(user.id, { resetToken, resetTokenExpiry: Date.now() + 3600000 }, (err) => {
+        updateToken(user.id, { resetToken, resetTokenExpiry: Date.now() + 3600000 }, (err) => {
             if (err) return res.status(500).json({ message: "Error saving reset token" });
 
             // Send email with reset link

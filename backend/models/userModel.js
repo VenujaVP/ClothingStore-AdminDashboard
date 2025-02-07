@@ -46,7 +46,7 @@ const findUserByEmail = (email, callback) => {
 };
 
 // Update password and reset token
-const updatePassword = (userId, data, callback) => {
+const updateToken = (userId, data, callback) => {
     const query = 'UPDATE USER SET resetToken = ?, resetTokenExpiry = ? WHERE id = ?';
     sqldb.query(query, [data.resetToken, data.resetTokenExpiry, userId], (err, results) => {
         if (err) return callback(err, null);
@@ -55,4 +55,4 @@ const updatePassword = (userId, data, callback) => {
 };
 
 
-export { createUser, findUserByEmail, updatePassword };
+export { createUser, findUserByEmail, updateToken };
