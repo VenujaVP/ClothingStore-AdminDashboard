@@ -43,10 +43,10 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/setnewpassword" element={<SetNewPassword />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/passwordresetfinish" element={<PasswordResetFinish />} />
             <Route path="/checkyouremail" element={<CheckYourEmail />} />
+            <Route path="/setnewpassword" element={<SetNewPassword />} />
+            <Route path="/passwordresetfinish" element={<PasswordResetFinish />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/shoppingcart" element={<ShoppingCart />} />
             <Route path="/account" element={<Account />} />
