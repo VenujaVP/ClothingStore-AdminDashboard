@@ -41,13 +41,12 @@ export const requestPasswordReset = (req, res) => {
             
             // SMTP settings for Gmail
             const transporter = nodemailer.createTransport({
-                host: 'smtp.gmail.com',
-                port: 587, // Port for STARTTLS
-                secure: false, // Use STARTTLS (not SSL/TLS)
+                // Or use your preferred email provider
+                service: 'gmail',
                 auth: {
-                    user: process.env.EMAIL_USER, // Your Gmail email
-                    pass: process.env.EMAIL_PASS, // Your Gmail App Password (not regular Gmail password)
-                },
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                }
             });
 
             const mailOptions = {
