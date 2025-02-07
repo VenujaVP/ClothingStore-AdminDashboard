@@ -1,9 +1,9 @@
-import mysql from 'mysql2';
+import mysql from 'mysql2/promise'; // Use promise-based MySQL
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const sqldb = mysql.createConnection({
+const sqldb = await mysql.createConnection({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
@@ -11,9 +11,6 @@ const sqldb = mysql.createConnection({
     database: process.env.DB_NAME
 });
 
-sqldb.connect((err) => {
-    if (err) throw err;
-    console.log("Database connected!");
-});
+console.log("✅ Database connected!");
 
 export default sqldb;
