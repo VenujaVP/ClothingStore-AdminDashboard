@@ -14,15 +14,15 @@ export const requestPasswordReset = (req, res) => {
         if (err) return res.status(500).json({ message: "Database error" });
         if (result.length === 0) return res.status(404).json({ message: "User not found" });
 
-        console.log(result);
         const user = result[0];
-        
+        console.log("hiiiiiiiiii",{user})
+
         // Generate a password reset token
         const resetToken = crypto.randomBytes(20).toString('hex');
-        console.log(resetToken);        
+        console.log(resetToken)        
         
         // Save token in the user record (you need a field to store it in the database)
-        updateToken(email, { resetToken, resetTokenExpiry: Date.now() + 3600000 }, (err) => {
+        updateToken(user.id, { resetToken, resetTokenExpiry: Date.now() + 3600000 }, (err) => {
             if (err) return res.status(500).json({ message: "Error saving reset token" });
 
             // Send email with reset link
@@ -51,10 +51,10 @@ export const requestPasswordReset = (req, res) => {
                 console.log("Email sent:", info);
                 res.status(200).json({ message: "Password reset email sent" });
             });
+
         });
     });
 };
-
 
 // Step 2: Reset Password
 export const resetPassword = (req, res) => {
