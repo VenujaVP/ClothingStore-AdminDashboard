@@ -1,10 +1,8 @@
-//services/tokenCleanup.js
-
 import sqldb from '../config/sqldb.js';
 
 const cleanupExpiredTokens = async () => {
     try {
-        const currentTime = new Date(Date.now());
+        const currentTime = new Date();
         await sqldb.query(`
             UPDATE User 
             SET resetToken = NULL, resetTokenExpiry = NULL
@@ -14,8 +12,5 @@ const cleanupExpiredTokens = async () => {
         console.error('❌ Error clearing expired tokens:', error);
     }
 };
-
-// Run cleanup every 5 minutes
-setInterval(cleanupExpiredTokens, 5 * 60 * 1000);
 
 export default cleanupExpiredTokens;
