@@ -57,8 +57,8 @@ const ForgotPassword = () => {
               </>
             ) : (
               <>
-                <h1 style={{ color: 'white' }}>Check Your Email</h1>
-                <p style={{ color: 'white' }}>We&apos;ve sent you instructions to reset your password</p>
+                <h1 style={{ color: 'black' }}>Check Your Email</h1>
+                <p style={{ color: 'black' }}>We&apos;ve sent you instructions to reset your password</p>
               </>
             )}
           </div>
