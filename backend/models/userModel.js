@@ -44,5 +44,17 @@ const findUserByEmail = (email, callback) => {
     });
 };
 
+// Update password and reset token
+const updatePassword = (userId, { resetToken, resetTokenExpiry }, callback) => {
+    const sql = 'UPDATE USER SET resetToken = ?, resetTokenExpiry = ? WHERE ID = ?';
+    const values = [resetToken, resetTokenExpiry, userId];
+    
+    sqldb.query(sql, values, (err, result) => {
+        if (err) {
+            return callback(err, null);
+        }
+        callback(null, result);
+    });
+};
 
-export { createUser, findUserByEmail };
+export { createUser, findUserByEmail, updatePassword };
