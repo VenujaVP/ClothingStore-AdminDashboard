@@ -17,7 +17,6 @@ export const requestPasswordReset = (req, res) => {
         const user = result[0];
         console.log(user)        
 
-
         // Generate a password reset token
         const resetToken = crypto.randomBytes(20).toString('hex');
         
