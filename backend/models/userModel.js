@@ -51,6 +51,7 @@ const updateToken = (email, data, callback) => {
     sqldb.query(query, [data.resetToken, data.resetTokenExpiry, email], (err, results) => {
         if (err) return callback(err, null);
         callback(null, results);
+        console.log(results)
     });
 };
 
