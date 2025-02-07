@@ -1,18 +1,20 @@
+// controllers/forgotPasswordController.js
+
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
-import { findUserByEmail, updatePassword } from '../models/userModel.js';  // Assuming you have these methods
-import { console } from 'inspector/promises';
+import { findUserByEmail, updatePassword } from '../models/userModel.js';
 
 // Step 1: Request Password Reset
 export const requestPasswordReset = (req, res) => {
     const { email } = req.body;
-    console.log(req)
+
     // Find user by email
     findUserByEmail(email, (err, result) => {
         if (err) return res.status(500).json({ message: "Database error" });
         if (result.length === 0) return res.status(404).json({ message: "User not found" });
 
+        console.log(result)
         const user = result[0];
         
         // Generate a password reset token
@@ -39,10 +41,16 @@ export const requestPasswordReset = (req, res) => {
                 text: `Click on the link to reset your password: ${resetLink}`
             };
 
+            // In forgotPasswordController.js
             transporter.sendMail(mailOptions, (err, info) => {
-                if (err) return res.status(500).json({ message: "Error sending email" });
+                if (err) {
+                    console.error("Error sending email:", err);
+                    return res.status(500).json({ message: "Error sending email" });
+                }
+                console.log("Email sent:", info);
                 res.status(200).json({ message: "Password reset email sent" });
             });
+
         });
     });
 };

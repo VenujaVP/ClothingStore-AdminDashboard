@@ -38,23 +38,22 @@ const findUserByEmail = (email, callback) => {
     const query = 'SELECT * FROM USER WHERE email = ?';
     sqldb.query(query, [email], (err, results) => {
         if (err) {
+            console.error("Database error:", err);
             return callback(err, null);
         }
         callback(null, results);
+        console.log("User found:", results);
     });
 };
 
 // Update password and reset token
-const updatePassword = (userId, { resetToken, resetTokenExpiry }, callback) => {
-    const sql = 'UPDATE USER SET resetToken = ?, resetTokenExpiry = ? WHERE ID = ?';
-    const values = [resetToken, resetTokenExpiry, userId];
-    
-    sqldb.query(sql, values, (err, result) => {
-        if (err) {
-            return callback(err, null);
-        }
-        callback(null, result);
+const updatePassword = (userId, data, callback) => {
+    const query = 'UPDATE USER SET resetToken = ?, resetTokenExpiry = ? WHERE id = ?';
+    sqldb.query(query, [data.resetToken, data.resetTokenExpiry, userId], (err, results) => {
+        if (err) return callback(err, null);
+        callback(null, results);
     });
 };
+
 
 export { createUser, findUserByEmail, updatePassword };
