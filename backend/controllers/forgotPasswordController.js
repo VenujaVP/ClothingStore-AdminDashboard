@@ -8,7 +8,7 @@ import { findUserByEmail, updateToken } from '../models/userModel.js';
 // Step 1: Request Password Reset
 export const requestPasswordReset = (req, res) => {
     const { email } = req.body;
-    console.log(email)
+    // console.log(email)
 
     // Find user by email
     findUserByEmail(email, (err, result) => {
@@ -17,6 +17,7 @@ export const requestPasswordReset = (req, res) => {
         if (result.length === 0) return res.status(404).json({ message: "User not found" });
 
         const user = result[0];
+        // console.log(user)
 
         // Generate a password reset token
         const resetToken = crypto.randomBytes(20).toString('hex');
@@ -29,7 +30,6 @@ export const requestPasswordReset = (req, res) => {
 
         // Save token in the user record
         updateToken(user.ID, { resetToken, resetTokenExpiry }, (err) => {
-            console.log("hiiiiiii")
             if (err) return res.status(500).json({ message: "Error saving reset token" });
 
             // Send email with reset link
