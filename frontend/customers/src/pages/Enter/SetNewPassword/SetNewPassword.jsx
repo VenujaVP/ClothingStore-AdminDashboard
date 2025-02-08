@@ -11,7 +11,7 @@ import './SetNewPassword.css';
 
 const SetNewPassword = () => {
   const { resetToken } = useParams(); // Extract token from URL
-  console.log(resetToken)
+  // console.log(resetToken)
 
   const [formData, setFormData] = useState({
     password: '',
