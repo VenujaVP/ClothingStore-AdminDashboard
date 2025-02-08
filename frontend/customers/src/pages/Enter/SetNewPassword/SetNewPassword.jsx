@@ -11,7 +11,7 @@ const SetNewPassword = () => {
   const { resetToken } = useParams(); // Extract token from URL
 
   const [formData, setFormData] = useState({
-    password: '',
+    newPassword: '',
     confirmPassword: '',
   });
 
@@ -40,9 +40,9 @@ const SetNewPassword = () => {
   useEffect(() => {
     setValidations(prev => ({
       ...prev,
-      match: formData.password === formData.confirmPassword && formData.password !== ''
+      match: formData.newPassword === formData.confirmPassword && formData.password !== ''
     }));
-  }, [formData.password, formData.confirmPassword]);
+  }, [formData.newPassword, formData.confirmPassword]);
 
   const validatePassword = (password) => {
     setValidations({

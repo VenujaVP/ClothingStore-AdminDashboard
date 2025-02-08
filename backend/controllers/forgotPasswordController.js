@@ -71,7 +71,6 @@ export const requestPasswordReset = (req, res) => {
 };
 
 // Step 2: Reset Password
-// Step 2: Reset Password
 export const resetPassword = (req, res) => {
     const { resetToken, newPassword, confirmPassword } = req.body;
 
