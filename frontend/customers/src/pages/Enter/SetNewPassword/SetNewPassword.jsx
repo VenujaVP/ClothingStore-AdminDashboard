@@ -1,106 +1,106 @@
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-
 import React, { useState, useEffect } from 'react';
 import { FaLock, FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+import axios from 'axios';
 import './SetNewPassword.css';
 
 const SetNewPassword = () => {
   const { resetToken } = useParams(); // Extract token from URL
+  const navigate = useNavigate();
 
+  // Initial form data state
   const [formData, setFormData] = useState({
     newPassword: '',
     confirmPassword: '',
   });
 
+  // Password visibility state
   const [showPassword, setShowPassword] = useState({
     password: false,
     confirm: false,
   });
 
-  const [validations, setValidations] = useState({
-    length: false,
-    uppercase: false,
-    lowercase: false,
-    number: false,
-    special: false,
-    match: false,
-  });
-
+  // Validation errors state
+  const [errors, setErrors] = useState({});
+  
+  // Submitting state
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Success/Error messages
   const [resetSuccess, setResetSuccess] = useState(false);
   const [resetError, setResetError] = useState(null);
 
-  useEffect(() => {
-    validatePassword(formData.password);
-  }, [formData.password]);
+  // Password validation schema
+  const passwordValidationSchema = Yup.object({
+    newPassword: Yup.string()
+      .min(8, 'Password must be at least 8 characters')
+      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .matches(/[0-9]/, 'Password must contain at least one number')
+      .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character')
+      .required('Password is required'),
 
-  useEffect(() => {
-    setValidations(prev => ({
-      ...prev,
-      match: formData.newPassword === formData.confirmPassword && formData.password !== ''
-    }));
-  }, [formData.newPassword, formData.confirmPassword]);
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
+      .required('Confirm Password is required'),
+  });
 
-  const validatePassword = (password) => {
-    setValidations({
-      length: password.length >= 8,
-      uppercase: /[A-Z]/.test(password),
-      lowercase: /[a-z]/.test(password),
-      number: /[0-9]/.test(password),
-      special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-      match: password === formData.confirmPassword && password !== ''
-    });
+  // Form submission handler
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validate form using Yup schema
+    passwordValidationSchema
+      .validate(formData, { abortEarly: false })
+      .then(() => {
+        setIsSubmitting(true);
+        // Make API call to reset password
+        axios.post('http://localhost:8081/forgot-password/reset-password', {
+          resetToken,
+          newPassword: formData.newPassword,
+          confirmPassword: formData.confirmPassword,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setResetSuccess(true);
+          } else {
+            setResetError(res.data.message || 'An error occurred');
+          }
+        })
+        .catch((err) => {
+          console.error('Error:', err);
+          setResetError('Failed to reset password');
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+      })
+      .catch((err) => {
+        const validationErrors = {};
+        err.inner.forEach((error) => {
+          validationErrors[error.path] = error.message; // Collect validation errors
+        });
+        setErrors(validationErrors); // Set errors to state for display
+        console.error('Validation Error:', validationErrors);
+      });
   };
 
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
+  // Toggle password visibility
   const togglePasswordVisibility = (field) => {
-    setShowPassword(prev => ({
+    setShowPassword((prev) => ({
       ...prev,
-      [field]: !prev[field]
+      [field]: !prev[field],
     }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (Object.values(validations).every(v => v)) {
-      setIsSubmitting(true);
-      try {
-        // Backend API Call to reset password
-        const response = await fetch('http://localhost:8081/forgot-password/reset-password', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            resetToken,
-            password: formData.password,
-            confirmPassword: formData.confirmPassword,
-          }),
-        });
-
-        const data = await response.json();
-        if (data.success) {
-          setResetSuccess(true);
-        } else {
-          setResetError(data.message || 'An error occurred');
-        }
-      } catch (error) {
-        setResetError('Failed to reset password');
-        console.error('Error:', error);
-      } finally {
-        setIsSubmitting(false);
-      }
-    }
   };
 
   const ValidationIcon = ({ isValid }) => (
@@ -109,6 +109,7 @@ const SetNewPassword = () => {
     </span>
   );
 
+  // Reset success page
   if (resetSuccess) {
     return (
       <div className="login-page">
@@ -124,9 +125,9 @@ const SetNewPassword = () => {
               <div className="success-icon">✓</div>
               <h2>All Done!</h2>
               <p>Your password has been reset successfully. You can now log in with your new password.</p>
-              <button 
+              <button
                 className="login-btn"
-                onClick={() => window.location.href = '/login'}
+                onClick={() => navigate('/login')}
               >
                 Go to Login
               </button>
@@ -137,6 +138,7 @@ const SetNewPassword = () => {
     );
   }
 
+  // Default Reset Password page
   return (
     <div className="login-page">
       <div className="login-container">
@@ -160,10 +162,10 @@ const SetNewPassword = () => {
                   <FaLock />
                 </span>
                 <input
-                  type={showPassword.password ? "text" : "password"}
-                  name="password"
+                  type={showPassword.password ? 'text' : 'password'}
+                  name="newPassword"
                   placeholder="Enter new password"
-                  value={formData.password}
+                  value={formData.newPassword}
                   onChange={handleChange}
                   required
                 />
@@ -175,13 +177,14 @@ const SetNewPassword = () => {
                   {showPassword.password ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
+              {errors.newPassword && <div className="error-message">{errors.newPassword}</div>}
 
               <div className="input-group">
                 <span className="input-icon">
                   <FaLock />
                 </span>
                 <input
-                  type={showPassword.confirm ? "text" : "password"}
+                  type={showPassword.confirm ? 'text' : 'password'}
                   name="confirmPassword"
                   placeholder="Confirm new password"
                   value={formData.confirmPassword}
@@ -196,30 +199,31 @@ const SetNewPassword = () => {
                   {showPassword.confirm ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
+              {errors.confirmPassword && <div className="error-message">{errors.confirmPassword}</div>}
 
               <div className="password-validations">
-                <div className={`validation-item ${validations.length ? 'valid' : ''}`}>
-                  <ValidationIcon isValid={validations.length} />
+                <div className={`validation-item ${formData.newPassword.length >= 8 ? 'valid' : ''}`}>
+                  <ValidationIcon isValid={formData.newPassword.length >= 8} />
                   <span>At least 8 characters</span>
                 </div>
-                <div className={`validation-item ${validations.uppercase ? 'valid' : ''}`}>
-                  <ValidationIcon isValid={validations.uppercase} />
+                <div className={`validation-item ${/[A-Z]/.test(formData.newPassword) ? 'valid' : ''}`}>
+                  <ValidationIcon isValid={/[A-Z]/.test(formData.newPassword)} />
                   <span>One uppercase letter</span>
                 </div>
-                <div className={`validation-item ${validations.lowercase ? 'valid' : ''}`}>
-                  <ValidationIcon isValid={validations.lowercase} />
+                <div className={`validation-item ${/[a-z]/.test(formData.newPassword) ? 'valid' : ''}`}>
+                  <ValidationIcon isValid={/[a-z]/.test(formData.newPassword)} />
                   <span>One lowercase letter</span>
                 </div>
-                <div className={`validation-item ${validations.number ? 'valid' : ''}`}>
-                  <ValidationIcon isValid={validations.number} />
+                <div className={`validation-item ${/[0-9]/.test(formData.newPassword) ? 'valid' : ''}`}>
+                  <ValidationIcon isValid={/[0-9]/.test(formData.newPassword)} />
                   <span>One number</span>
                 </div>
-                <div className={`validation-item ${validations.special ? 'valid' : ''}`}>
-                  <ValidationIcon isValid={validations.special} />
+                <div className={`validation-item ${/[!@#$%^&*(),.?":{}|<>]/.test(formData.newPassword) ? 'valid' : ''}`}>
+                  <ValidationIcon isValid={/[!@#$%^&*(),.?":{}|<>]/.test(formData.newPassword)} />
                   <span>One special character</span>
                 </div>
-                <div className={`validation-item ${validations.match ? 'valid' : ''}`}>
-                  <ValidationIcon isValid={validations.match} />
+                <div className={`validation-item ${formData.newPassword === formData.confirmPassword ? 'valid' : ''}`}>
+                  <ValidationIcon isValid={formData.newPassword === formData.confirmPassword} />
                   <span>Passwords match</span>
                 </div>
               </div>
@@ -230,10 +234,10 @@ const SetNewPassword = () => {
                 </div>
               )}
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className={`login-btn ${isSubmitting ? 'loading' : ''}`}
-                disabled={!Object.values(validations).every(v => v) || isSubmitting}
+                disabled={isSubmitting || Object.values(errors).some((error) => error)}
               >
                 {isSubmitting ? 'Resetting...' : 'Reset Password'}
               </button>
