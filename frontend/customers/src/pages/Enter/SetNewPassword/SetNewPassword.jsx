@@ -1,7 +1,11 @@
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+
 import React, { useState, useEffect } from 'react';
 import { FaLock, FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { useParams, useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
+import { passwordValidationSchema } from '../Enter/validationSchema';  // Import schema from the appropriate path
 import axios from 'axios';
 import './SetNewPassword.css';
 
@@ -30,21 +34,6 @@ const SetNewPassword = () => {
   // Success/Error messages
   const [resetSuccess, setResetSuccess] = useState(false);
   const [resetError, setResetError] = useState(null);
-
-  // Password validation schema
-  const passwordValidationSchema = Yup.object({
-    newPassword: Yup.string()
-      .min(8, 'Password must be at least 8 characters')
-      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .matches(/[0-9]/, 'Password must contain at least one number')
-      .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character')
-      .required('Password is required'),
-
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
-      .required('Confirm Password is required'),
-  });
 
   // Form submission handler
   const handleSubmit = (e) => {
