@@ -53,6 +53,19 @@ setInterval(async () => {
 }, 5 * 60 * 1000);
 // Runs every 5 minutes
 
+
+const currentTime = new Date();
+console.log("Server started at", currentTime);
+
+sqldb.execute('SELECT resetTokenExpiry FROM USER LIMIT 1', (err, result) => {
+    if (err) {
+        console.error('Error fetching resetTokenExpiry:', err);
+    } else {
+        console.log('First resetTokenExpiry:', result[0]?.resetTokenExpiry);
+    }
+});
+
+
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
