@@ -2,8 +2,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-//pages/Enter/SetNewPassword/SetNewPassword.jsx
-
 import React, { useState, useEffect } from 'react';
 import { FaLock, FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
@@ -11,7 +9,6 @@ import './SetNewPassword.css';
 
 const SetNewPassword = () => {
   const { resetToken } = useParams(); // Extract token from URL
-  // console.log(resetToken)
 
   const [formData, setFormData] = useState({
     password: '',
@@ -34,6 +31,7 @@ const SetNewPassword = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
+  const [resetError, setResetError] = useState(null);
 
   useEffect(() => {
     validatePassword(formData.password);
@@ -77,10 +75,26 @@ const SetNewPassword = () => {
     if (Object.values(validations).every(v => v)) {
       setIsSubmitting(true);
       try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        setResetSuccess(true);
+        // Backend API Call to reset password
+        const response = await fetch('https://your-backend-url/reset-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            resetToken,
+            password: formData.password,
+          }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          setResetSuccess(true);
+        } else {
+          setResetError(data.message || 'An error occurred');
+        }
       } catch (error) {
+        setResetError('Failed to reset password');
         console.error('Error:', error);
       } finally {
         setIsSubmitting(false);
@@ -208,6 +222,12 @@ const SetNewPassword = () => {
                   <span>Passwords match</span>
                 </div>
               </div>
+
+              {resetError && (
+                <div className="error-message">
+                  <p>{resetError}</p>
+                </div>
+              )}
 
               <button 
                 type="submit" 
