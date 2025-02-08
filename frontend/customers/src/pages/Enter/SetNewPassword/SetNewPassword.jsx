@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaLock, FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { useParams, useNavigate } from 'react-router-dom';
-import { passwordValidationSchema } from '../Enter/validationSchema';  // Import schema from the appropriate path
+import { passwordValidationSchema } from '../validationSchema';  // Import schema from the appropriate path
 import axios from 'axios';
 import './SetNewPassword.css';
 
@@ -211,10 +211,11 @@ const SetNewPassword = () => {
                   <ValidationIcon isValid={/[!@#$%^&*(),.?":{}|<>]/.test(formData.newPassword)} />
                   <span>One special character</span>
                 </div>
-                <div className={`validation-item ${formData.newPassword === formData.confirmPassword ? 'valid' : ''}`}>
-                  <ValidationIcon isValid={formData.newPassword === formData.confirmPassword} />
+                <div className={`validation-item ${formData.newPassword && formData.confirmPassword && formData.newPassword === formData.confirmPassword ? 'valid' : ''}`}>
+                  <ValidationIcon isValid={formData.newPassword === formData.confirmPassword && formData.newPassword && formData.confirmPassword} />
                   <span>Passwords match</span>
                 </div>
+
               </div>
 
               {resetError && (
