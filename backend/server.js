@@ -50,7 +50,8 @@ app.get('/tokenverification', verifyUser, (req, res) => {
 // Run token cleanup every 5 minutes
 setInterval(async () => {
     await cleanupExpiredTokens();
-}, 5 * 60 * 1000); // Runs every 5 minutes
+}, 5 * 60 * 1000);
+// Runs every 5 minutes
 
 // Start the server
 const PORT = process.env.PORT || 5000;

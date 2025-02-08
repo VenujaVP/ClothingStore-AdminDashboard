@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise'; // Use promise-based MySQL
+import mysql from 'mysql2'; // Use promise-based MySQL
 import dotenv from 'dotenv';
 
 dotenv.config();

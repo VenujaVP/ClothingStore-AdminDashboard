@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const registerUser = (req, res) => {
+    // console.log(req.body)
     const { fullName, email, phone, password, confirmPassword } = req.body;
 
     // Check if the user already exists by email

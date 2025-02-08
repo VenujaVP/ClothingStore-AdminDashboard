@@ -35,6 +35,7 @@ const createUser = (fullName, email, phone, password, callback) => {
 
 // Find a user by email
 const findUserByEmail = (email, callback) => {
+    // console.log(email)
     const query = 'SELECT * FROM USER WHERE email = ?';
     sqldb.query(query, [email], (err, results) => {
         if (err) {
@@ -42,7 +43,7 @@ const findUserByEmail = (email, callback) => {
             return callback(err, null);
         }
         callback(null, results);
-        // console.log(results)
+        // console.log(err)
     });
 };
 

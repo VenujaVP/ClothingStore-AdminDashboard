@@ -2,6 +2,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
+// pages/Enter/Register/Register.jsx
+
 import React, { useState } from 'react';
 import axios from 'axios';
 import './Register.css';
