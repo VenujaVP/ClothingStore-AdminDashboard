@@ -76,7 +76,7 @@ const SetNewPassword = () => {
       setIsSubmitting(true);
       try {
         // Backend API Call to reset password
-        const response = await fetch('https://your-backend-url/reset-password', {
+        const response = await fetch('http://localhost:8081/forgot-password/reset-password', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
