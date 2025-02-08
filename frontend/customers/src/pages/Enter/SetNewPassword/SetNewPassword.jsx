@@ -84,6 +84,7 @@ const SetNewPassword = () => {
           body: JSON.stringify({
             resetToken,
             password: formData.password,
+            confirmPassword: formData.confirmPassword,
           }),
         });
 
