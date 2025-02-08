@@ -5,10 +5,9 @@ import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import { findUserByEmail, updateToken } from '../models/userModel.js';
 import dotenv from 'dotenv';
-import { console } from 'inspector/promises';
+import sqldb from '../config/sqldb.js';
 
 dotenv.config();
-
 
 // Step 1: Request Password Reset
 export const requestPasswordReset = (req, res) => {
@@ -69,6 +68,8 @@ export const requestPasswordReset = (req, res) => {
         });
     });
 };
+
+
 
 // Step 2: Reset Password
 export const resetPassword = (req, res) => {
