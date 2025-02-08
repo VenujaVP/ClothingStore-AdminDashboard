@@ -47,11 +47,11 @@ app.get('/tokenverification', verifyUser, (req, res) => {
     return res.status(200).json({ Status: "Success", name: req.name });
 });
 
-// Run token cleanup every 5 minutes
+// Token cleanup every 5 minutes
 setInterval(async () => {
+    console.log("Token cleanup initiated.");
     await cleanupExpiredTokens();
-}, 5 * 60 * 1000);
-// Runs every 5 minutes
+}, 5 * 60 * 1000); // Runs every 5 minutes
 
 
 // Start the server
