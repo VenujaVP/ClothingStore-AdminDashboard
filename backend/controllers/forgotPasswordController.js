@@ -74,7 +74,7 @@ export const requestPasswordReset = (req, res) => {
 // Step 2: Reset Password
 export const resetPassword = (req, res) => {
     const { resetToken, newPassword, confirmPassword } = req.body;
-    // console.log(req.body)
+    console.log(req.body)
 
     if (!resetToken || !newPassword || !confirmPassword) {
         return res.status(400).json({ message: "All fields are required" });
