@@ -71,12 +71,24 @@ export const requestPasswordReset = (req, res) => {
 };
 
 // Step 2: Reset Password
+// Step 2: Reset Password
 export const resetPassword = (req, res) => {
-    const { resetToken, newPassword } = req.body;
+    const { resetToken, newPassword, confirmPassword } = req.body;
 
-    // Find the user by reset token
-    const sql = 'SELECT * FROM USER WHERE resetToken = ? AND resetTokenExpiry > ?';
-    sqldb.query(sql, [resetToken, Date.now()], (err, result) => {
+    if (!resetToken || !newPassword || !confirmPassword) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Check if passwords match
+    if (newPassword !== confirmPassword) {
+        return res.status(400).json({ message: "Passwords must match" });
+    }
+
+    const currentTime = new Date();
+
+    // Find the user by reset token and check expiry
+    const sql = 'SELECT * FROM user WHERE resetToken = ? AND resetTokenExpiry > ?';
+    sqldb.query(sql, [resetToken, currentTime], (err, result) => {
         if (err) return res.status(500).json({ message: "Database error" });
         if (result.length === 0) return res.status(400).json({ message: "Invalid or expired reset token" });
 
@@ -86,11 +98,14 @@ export const resetPassword = (req, res) => {
         bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
             if (err) return res.status(500).json({ message: "Error hashing password" });
 
-            // Update the password in the database
-            sqldb.query('UPDATE USER SET PASSWORD = ?, resetToken = NULL, resetTokenExpiry = NULL WHERE ID = ?', [hashedPassword, user.ID], (err) => {
+            // Clear the token and expiry before updating the password
+            const updateSql = 'UPDATE user SET password = ?, resetToken = NULL, resetTokenExpiry = NULL WHERE ID = ?';
+            sqldb.query(updateSql, [hashedPassword, user.ID], (err) => {
                 if (err) return res.status(500).json({ message: "Error updating password" });
+
                 res.status(200).json({ message: "Password reset successful" });
             });
         });
     });
 };
+
