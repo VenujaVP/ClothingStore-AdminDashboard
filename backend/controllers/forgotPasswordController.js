@@ -94,11 +94,12 @@ export const resetPassword = (req, res) => {
     // Find the user by reset token and check expiry
     const sql = 'SELECT * FROM user WHERE resetToken = ? AND resetTokenExpiry > ?';
 
-    console.log("SQL Query:", sql);
-    console.log("Query Parameters:", [resetToken, currentTime]);
+    // console.log("SQL Query:", sql);
+    // console.log("Query Parameters:", [resetToken, currentTime]);
+
     sqldb.query(sql, [resetToken, currentTime], (err, result) => {
         if (err) return res.status(500).json({ message: "Database error" });
-        console.log(result)
+        console.log(err)
         if (result.length === 0) return res.status(400).json({ message: "Invalid or expired reset token" });
 
         const user = result[0];
