@@ -40,17 +40,30 @@ const registerUser = (req, res) => {
 const loginUser = (req, res) => {
     const { email, password } = req.body;
 
+    // Validate input
+    if (!email || !password) {
+        return res.status(400).json({ Error: "Email and password are required" });
+    }
+
     const sql = 'SELECT * FROM USER WHERE EMAIL = ?';
     sqldb.query(sql, [email], (err, result) => {
-        if (err) return res.status(500).json({ Error: "Database query error" });
+        if (err) {
+            console.error("Database query error:", err);
+            return res.status(500).json({ Error: "Database query error" });
+        }
 
         if (result.length === 0) {
             return res.status(404).json({ Error: "Email not registered" });
         }
 
         const hashedPassword = result[0].PASSWORD;
+
+        // Compare passwords
         bcrypt.compare(password, hashedPassword, (err, match) => {
-            if (err) return res.status(500).json({ Error: "Error during password comparison" });
+            if (err) {
+                console.error("Error during password comparison:", err);
+                return res.status(500).json({ Error: "Error during password comparison" });
+            }
 
             if (match) {
                 const user = {
@@ -58,17 +71,31 @@ const loginUser = (req, res) => {
                     email: result[0].EMAIL,
                     name: result[0].NAME
                 };
-                const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1d' }); // Sign the token
 
-                res.cookie('token', token, { // Set token in cookies
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production', // Secure flag for production
-                    sameSite: 'Strict',
-                    maxAge: 24 * 60 * 60 * 1000
+                // Ensure JWT_SECRET is defined
+                if (!process.env.JWT_SECRET) {
+                    console.error("JWT_SECRET is not defined");
+                    return res.status(500).json({ Error: "Server configuration error" });
+                }
+
+                // Create JWT token
+                jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1d' }, (err, token) => {
+                    if (err) {
+                        console.error("Error creating JWT token:", err);
+                        return res.status(500).json({ Error: "Error creating token" });
+                    }
+
+                    // Set token in cookies
+                    res.cookie('token', token, {
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === 'production', // Secure flag for production
+                        sameSite: 'Strict',
+                        maxAge: 24 * 60 * 60 * 1000 // 1 day
+                    });
+
+                    console.log("Token created and sent:", token);
+                    return res.status(200).json({ Status: "Success", token });
                 });
-                console.log(res)
-
-                return res.status(200).json({ Status: "Success", token });
             } else {
                 return res.status(401).json({ message: "Invalid password" });
             }
