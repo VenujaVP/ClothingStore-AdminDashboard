@@ -237,7 +237,26 @@ const Register = () => {
           </div>
         </div>
       </div>
-
+      <Snackbar
+        open={open}
+        autoHideDuration={6000} // Automatically hide after 6 seconds
+        onClose={handleClose} // Close the Snackbar
+        TransitionComponent={SlideTransition} // Slide transition from left
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }} // Top-right position
+      >
+      <Alert 
+        onClose={handleClose} 
+        severity="error" 
+        sx={{
+          backgroundColor: '#f44336', // Bright red background
+          color: '#ffffff', // White text for contrast
+          fontWeight: 'bold', // Bold text for better visibility
+          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)', // Add a subtle shadow for better visibility
+        }}
+      >
+        {message}
+      </Alert>
+      </Snackbar>
     </div>
   );
 };
