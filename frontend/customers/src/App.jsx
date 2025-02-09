@@ -47,6 +47,7 @@ function App() {
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/reset-password/:resetToken" element={<SetNewPassword />} />
             <Route path="/passwordresetfinish" element={<PasswordResetFinish />} />
+            
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/shoppingcart" element={<AuthenticatedShoppingCart />} />
             <Route path="/account" element={<Account />} />
