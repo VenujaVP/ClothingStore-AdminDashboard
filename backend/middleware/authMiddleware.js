@@ -12,7 +12,7 @@ const verifyUser = (req, res, next) => {
             return res.status(403).json({ Status: "Error", message: "Invalid token" });
         }
 
-        req.name = decoded.name; // Attach user name to request
+        req.name = decoded.name; // Attach user name to request object
         next();
     });
 };

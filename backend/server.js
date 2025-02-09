@@ -44,6 +44,7 @@ app.use('/auth', authRoutes);
 app.use('/forgot-password', forgotPasswordRoutes); 
 
 app.get('/tokenverification', verifyUser, (req, res) => {
+    // If the token is verified, send back the user information
     return res.status(200).json({ Status: "Success", name: req.name });
 });
 
