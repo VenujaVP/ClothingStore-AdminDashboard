@@ -4,7 +4,7 @@
 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import withAuth from './withAuth'; // Import the HOC
+import withAuth from '../withAuth'; // Import the HOC
 import './Dashboard.css';
 
 const Dashboard = ({ name }) => {
