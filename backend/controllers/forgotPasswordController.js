@@ -74,7 +74,6 @@ export const requestPasswordReset = (req, res) => {
 // Step 2: Reset Password
 export const resetPassword = (req, res) => {
     const { resetToken, newPassword, confirmPassword } = req.body;
-    console.log(req.body)
 
     if (!resetToken || !newPassword || !confirmPassword) {
         return res.status(400).json({ message: "All fields are required" });
@@ -87,10 +86,16 @@ export const resetPassword = (req, res) => {
 
     const currentTime = new Date();
 
+    console.log("resetToken:", resetToken);
+    console.log("newPassword:", newPassword);
+    console.log("confirmPassword:", confirmPassword);
+    console.log("currentTime:", currentTime);
+
     // Find the user by reset token and check expiry
     const sql = 'SELECT * FROM user WHERE resetToken = ? AND resetTokenExpiry > ?';
     sqldb.query(sql, [resetToken, currentTime], (err, result) => {
         if (err) return res.status(500).json({ message: "Database error" });
+        console.log(result)
         if (result.length === 0) return res.status(400).json({ message: "Invalid or expired reset token" });
 
         const user = result[0];
