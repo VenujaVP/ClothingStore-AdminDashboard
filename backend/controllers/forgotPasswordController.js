@@ -92,17 +92,18 @@ export const resetPassword = (req, res) => {
     console.log("currentTime:", currentTime);
 
     // Find the user by reset token and check expiry
-    const sql = 'SELECT * FROM user WHERE resetToken = ? AND resetTokenExpiry > ?';
+    // const sql = 'SELECT * FROM user WHERE resetToken = ? AND resetTokenExpiry > ?';
+    const sql = 'SELECT * FROM user WHERE resetToken = ?';
 
     // console.log("SQL Query:", sql);
     // console.log("Query Parameters:", [resetToken, currentTime]);
 
-    sqldb.query(sql, [resetToken, currentTime], (err, result) => {
+    sqldb.query(sql, [resetToken], (err, result) => {
         if (err) return res.status(500).json({ message: "Database error" });
+        console.log("Query Result:", result);
         if (result.length === 0) return res.status(400).json({ message: "Invalid or expired reset token" });
 
         const user = result[0];
-        console.log(user)
 
         // Hash the new password
         bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
