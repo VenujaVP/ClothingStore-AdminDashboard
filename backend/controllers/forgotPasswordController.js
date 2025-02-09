@@ -99,7 +99,6 @@ export const resetPassword = (req, res) => {
 
     sqldb.query(sql, [resetToken, currentTime], (err, result) => {
         if (err) return res.status(500).json({ message: "Database error" });
-        console.log(err)
         if (result.length === 0) return res.status(400).json({ message: "Invalid or expired reset token" });
 
         const user = result[0];
