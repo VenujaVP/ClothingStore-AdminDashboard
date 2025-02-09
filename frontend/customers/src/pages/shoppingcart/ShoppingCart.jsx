@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import './ShoppingCart.css';
-import '../withAuth';
+import withAuth from '../withAuth';
 import { FaShoppingCart, FaCreditCard, FaShieldAlt, FaStore, FaTrash } from 'react-icons/fa';
 
 const ShoppingCart = () => {
@@ -217,5 +217,6 @@ const ShoppingCart = () => {
     );
 };
 
-export default ShoppingCart;
+const AuthenticatedShoppingCart = withAuth(ShoppingCart);  
+export default AuthenticatedShoppingCart;
 //ShoppingCart
