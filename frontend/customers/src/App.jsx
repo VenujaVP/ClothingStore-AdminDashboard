@@ -24,7 +24,7 @@ import AuthenticatedShoppingCart from './pages/shoppingcart/ShoppingCart';
 import AuthenticatedDashboard from './pages/Dashboard/Dashboard';
 import AuthenticatedAccount from './pages/USER/account/Account';
 import AuthenticatedShippingAddress from './pages/USER/shippingaddress/ShippingAddress';
-import ShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm '
+import AuthenticatedShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm '
 import PaymentCardWindow from './pages/USER/paymentcardwindow/PaymentCardWindow';
 
 function App() {
@@ -52,7 +52,7 @@ function App() {
             <Route path="/shoppingcart" element={<AuthenticatedShoppingCart />} />
             <Route path="/account" element={<AuthenticatedAccount />} />
             <Route path="/shippingaddress" element={<AuthenticatedShippingAddress />} />
-            <Route path="/shippingaddressform" element={<ShippingAddressForm/>} />
+            <Route path="/shippingaddressform" element={<AuthenticatedShippingAddressForm/>} />
             <Route path="/paymentcardwindow" element={<PaymentCardWindow/>} />
           </Routes>
         </main>
