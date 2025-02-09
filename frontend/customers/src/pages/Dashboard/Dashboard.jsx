@@ -2,69 +2,64 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-// import React from 'react';
 import axios from 'axios';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 
-
 const Dashboard = () => {
-  const[auth, setAuth] = useState(false)
-  const[massage, setMassage]  = useState("")
-  const[name, setName]  = useState("")
-  const navigate = useNavigate();
+  const [auth, setAuth] = useState(false);
+  const [message, setMessage] = useState("");
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  axios.defaults.withCredentials = true
+  axios.defaults.withCredentials = true;
 
-  useEffect(() =>{
-      axios.get('http://localhost:8081/tokenverification', { withCredentials: true })
-        .then(res =>{
-          if(res.data.Status === "Success"){
-            setAuth(true)
-            setName(res.data.name)
-          }else{
-            setAuth(false)
-            setMassage(res.data.err)
-          }
-          setLoading(false);
-        })
-        .catch(err => {
-          console.error("Error during authentication:", err);
-          setAuth(false)
-        });
-
-  },[])
+  useEffect(() => {
+    // Make a request to check the token on the server side
+    axios.get('http://localhost:8081/tokenverification', { withCredentials: true })
+      .then(res => {
+        if (res.data.Status === "Success") {
+          setAuth(true);
+          setName(res.data.name);  // Set name if token is valid
+        } else {
+          setAuth(false);
+          setMessage(res.data.err);  // Show error message if token is invalid
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error during authentication:", err);
+        setAuth(false);
+        setLoading(false);
+      });
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
   const handleLogout = () => {
-      axios.get('http://localhost:8081/logout')
-        .then(res => {
-          console.log(res);
-          setAuth(false);
-          setName("");
-          setMassage("Logged out successfully");
-          navigate('/login');
-        })
-        .catch(err => console.log(err));
+    axios.get('http://localhost:8081/logout')
+      .then(res => {
+        setAuth(false);
+        setName("");
+        setMessage("Logged out successfully");
+        navigate('/login');
+      })
+      .catch(err => console.log(err));
   };
-  
 
   return (
     <div className="home">
-      {auth?
+      {auth ? (
         <div>
           <h1>Welcome to the Home Page!</h1>
-          <p>{name} are successfully logged in.</p>
+          <p>{name} is successfully logged in.</p>
           <button onClick={handleLogout}>LogOut</button>
-
         </div>
-      :
+      ) : (
         <div className="login-now-container">
           <div className="login-now-section">
             <h3 className="login-title">Login Expired</h3>
@@ -72,7 +67,7 @@ const Dashboard = () => {
             <button className="login-button" onClick={() => navigate('/login')}>Log In Now</button>
           </div>
         </div>
-      };
+      )}
     </div>
   );
 };
