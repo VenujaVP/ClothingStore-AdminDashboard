@@ -219,4 +219,3 @@ const ShoppingCart = () => {
 
 const AuthenticatedShoppingCart = withAuth(ShoppingCart);  
 export default AuthenticatedShoppingCart;
-//ShoppingCart
