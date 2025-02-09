@@ -6,6 +6,7 @@
 
 import React, { useState } from 'react';
 import './ShippingAddressForm .css'
+import withAuth from '../../withAuth';
 
 const ShippingAddressForm = () => {
   const [formData, setFormData] = useState({
@@ -189,4 +190,5 @@ const ShippingAddressForm = () => {
   );
 };
 
-export default ShippingAddressForm;
+const AuthenticatedShippingAddressForm = withAuth(ShippingAddressForm);  
+export default AuthenticatedShippingAddressForm;
