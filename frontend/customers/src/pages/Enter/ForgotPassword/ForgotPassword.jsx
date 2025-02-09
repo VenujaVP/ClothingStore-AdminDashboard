@@ -14,7 +14,7 @@ const ForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setIsLoading(true);
 
     try {
@@ -38,7 +38,7 @@ const ForgotPassword = () => {
   };
 
   const handleResendEmail = () => {
-    setIsSubmitted(false);
+    handleSubmit();
   };
 
   const handleBackToLogin = () => {

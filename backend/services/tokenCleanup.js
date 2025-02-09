@@ -14,7 +14,7 @@ const cleanupExpiredTokens = async () => {
             WHERE resetTokenExpiry <= ?
         `, [currentTime]);
 
-        console.log("Expired tokens cleaned up.");
+        // console.log("Expired tokens cleaned up.");
 
     } catch (error) {
         console.error('❌ Error clearing expired tokens:', error);
