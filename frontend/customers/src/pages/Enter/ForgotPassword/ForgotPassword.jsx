@@ -6,13 +6,15 @@
 
 import React, { useState } from 'react';
 import { FaEnvelope, FaRedo, FaArrowLeft } from 'react-icons/fa';
+import { Snackbar, Alert, Slide } from '@mui/material'; // Import Material-UI components
 import './ForgotPassword.css';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [resendSuccess, setResendSuccess] = useState(false); // New state for resend success message
+  const [resendSuccess, setResendSuccess] = useState(false); // State for resend success message
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // State to control Snackbar visibility
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
@@ -29,6 +31,7 @@ const ForgotPassword = () => {
       if (response.ok) {
         setIsSubmitted(true);
         setResendSuccess(true); // Show success message after resend
+        setSnackbarOpen(true); // Open Snackbar
       } else {
         alert('Email not found or failed to send reset link');
       }
@@ -46,6 +49,13 @@ const ForgotPassword = () => {
 
   const handleBackToLogin = () => {
     window.location.href = '/login';
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return; // Don't close Snackbar if the user clicks away
+    }
+    setSnackbarOpen(false); // Close Snackbar
   };
 
   return (
@@ -120,13 +130,6 @@ const ForgotPassword = () => {
                   </p>
                 </div>
 
-                {/* Resend Success Message */}
-                {resendSuccess && (
-                  <div className="resend-success-message" style={{ color: 'green', marginTop: '10px' }}>
-                    Email resent successfully!
-                  </div>
-                )}
-
                 <div className="action-buttons">
                   <button
                     className="resend-btn"
@@ -159,6 +162,28 @@ const ForgotPassword = () => {
           </div>
         </div>
       </div>
+
+      {/* Snackbar for Resend Success Message */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000} // Snackbar will close after 6 seconds
+        onClose={handleCloseSnackbar}
+        TransitionComponent={Slide} // Slide animation
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // Position at the top center
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success" // Green success alert
+          sx={{
+            backgroundColor: '#4caf50', // Green background
+            color: '#ffffff', // White text
+            fontWeight: 'bold', // Bold text
+            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)', // Subtle shadow
+          }}
+        >
+          Email resent successfully!
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
