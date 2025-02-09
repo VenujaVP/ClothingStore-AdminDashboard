@@ -23,7 +23,7 @@ import PasswordResetFinish from './pages/Enter/PasswordReset/PasswordResetFinish
 import AuthenticatedShoppingCart from './pages/shoppingcart/ShoppingCart';
 import AuthenticatedDashboard from './pages/Dashboard/Dashboard';
 import AuthenticatedAccount from './pages/USER/account/Account';
-import ShippingAddress from './pages/USER/shippingaddress/ShippingAddress';
+import AuthenticatedShippingAddress from './pages/USER/shippingaddress/ShippingAddress';
 import ShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm '
 import PaymentCardWindow from './pages/USER/paymentcardwindow/PaymentCardWindow';
 
@@ -51,7 +51,7 @@ function App() {
             <Route path="/dashboard" element={<AuthenticatedDashboard />} />
             <Route path="/shoppingcart" element={<AuthenticatedShoppingCart />} />
             <Route path="/account" element={<AuthenticatedAccount />} />
-            <Route path="/shippingaddress" element={<ShippingAddress />} />
+            <Route path="/shippingaddress" element={<AuthenticatedShippingAddress />} />
             <Route path="/shippingaddressform" element={<ShippingAddressForm/>} />
             <Route path="/paymentcardwindow" element={<PaymentCardWindow/>} />
           </Routes>
