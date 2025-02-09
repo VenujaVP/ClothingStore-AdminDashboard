@@ -12,10 +12,12 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false); // New state for resend success message
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     setIsLoading(true);
+    setResendSuccess(false); // Reset resend success message
 
     try {
       const response = await fetch('http://localhost:8081/forgot-password/request-password-reset', {
@@ -23,22 +25,23 @@ const ForgotPassword = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-      console.log(response);
 
       if (response.ok) {
         setIsSubmitted(true);
+        setResendSuccess(true); // Show success message after resend
       } else {
-        alert('Email not found');
+        alert('Email not found or failed to send reset link');
       }
     } catch (error) {
       console.error('Error:', error);
+      alert('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleResendEmail = () => {
-    handleSubmit();
+    handleSubmit(); // Reuse the handleSubmit function to resend the email
   };
 
   const handleBackToLogin = () => {
@@ -117,13 +120,21 @@ const ForgotPassword = () => {
                   </p>
                 </div>
 
+                {/* Resend Success Message */}
+                {resendSuccess && (
+                  <div className="resend-success-message" style={{ color: 'green', marginTop: '10px' }}>
+                    Email resent successfully!
+                  </div>
+                )}
+
                 <div className="action-buttons">
                   <button
                     className="resend-btn"
                     onClick={handleResendEmail}
+                    disabled={isLoading} // Disable button while loading
                   >
                     <FaRedo className="button-icon" />
-                    Resend Email
+                    {isLoading ? 'Resending...' : 'Resend Email'}
                   </button>
 
                   <button
