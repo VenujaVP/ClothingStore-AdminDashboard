@@ -25,7 +25,7 @@ import AuthenticatedDashboard from './pages/Dashboard/Dashboard';
 import AuthenticatedAccount from './pages/USER/account/Account';
 import AuthenticatedShippingAddress from './pages/USER/shippingaddress/ShippingAddress';
 import AuthenticatedShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm '
-import PaymentCardWindow from './pages/USER/paymentcardwindow/PaymentCardWindow';
+import AuthenticatedPaymentCardWindow from './pages/USER/paymentcardwindow/PaymentCardWindow';
 
 function App() {
   const location = useLocation();
@@ -53,7 +53,7 @@ function App() {
             <Route path="/account" element={<AuthenticatedAccount />} />
             <Route path="/shippingaddress" element={<AuthenticatedShippingAddress />} />
             <Route path="/shippingaddressform" element={<AuthenticatedShippingAddressForm/>} />
-            <Route path="/paymentcardwindow" element={<PaymentCardWindow/>} />
+            <Route path="/paymentcardwindow" element={<AuthenticatedPaymentCardWindow/>} />
           </Routes>
         </main>
       </div>
