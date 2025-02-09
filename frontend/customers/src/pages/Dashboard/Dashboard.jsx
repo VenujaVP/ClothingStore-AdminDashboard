@@ -3,49 +3,16 @@
 /* eslint-disable no-unused-vars */
 
 import axios from 'axios';
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import withAuth from './withAuth'; // Import the HOC
 import './Dashboard.css';
 
-const Dashboard = () => {
-  const [auth, setAuth] = useState(false);
-  const [message, setMessage] = useState("");
-  const [name, setName] = useState("");
-  const [loading, setLoading] = useState(true);
+const Dashboard = ({ name }) => {
   const navigate = useNavigate();
-
-  axios.defaults.withCredentials = true;
-
-  useEffect(() => {
-    // Make a request to check the token on the server side
-    axios.get('http://localhost:8081/tokenverification', { withCredentials: true })
-      .then(res => {
-        if (res.data.Status === "Success") {
-          setAuth(true);
-          setName(res.data.name);  // Set name if token is valid
-        } else {
-          setAuth(false);
-          setMessage(res.data.err);  // Show error message if token is invalid
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Error during authentication:", err);
-        setAuth(false);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   const handleLogout = () => {
     axios.get('http://localhost:8081/logout')
-      .then(res => {
-        setAuth(false);
-        setName("");
-        setMessage("Logged out successfully");
+      .then(() => {
         navigate('/login');
       })
       .catch(err => console.log(err));
@@ -53,23 +20,11 @@ const Dashboard = () => {
 
   return (
     <div className="home">
-      {auth ? (
-        <div>
-          <h1>Welcome to the Home Page!</h1>
-          <p>{name} is successfully logged in.</p>
-          <button onClick={handleLogout}>LogOut</button>
-        </div>
-      ) : (
-        <div className="login-now-container">
-          <div className="login-now-section">
-            <h3 className="login-title">Login Expired</h3>
-            <p className="login-subtitle">Your login has expired. Please log in again to continue.</p>
-            <button className="login-button" onClick={() => navigate('/login')}>Log In Now</button>
-          </div>
-        </div>
-      )}
+      <h1>Welcome to the Home Page!</h1>
+      <p>{name} is successfully logged in.</p>
+      <button onClick={handleLogout}>Log Out</button>
     </div>
   );
 };
 
-export default Dashboard;
+export default withAuth(Dashboard); // Wrap Dashboard with withAuth
