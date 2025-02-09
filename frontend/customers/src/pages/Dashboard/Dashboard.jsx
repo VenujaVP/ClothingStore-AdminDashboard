@@ -27,4 +27,5 @@ const Dashboard = ({ name }) => {
   );
 };
 
-export default withAuth(Dashboard); // Wrap Dashboard with withAuth
+const AuthenticatedDashboard = withAuth(Dashboard);
+export default AuthenticatedDashboard;

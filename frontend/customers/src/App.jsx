@@ -21,7 +21,7 @@ import PasswordResetFinish from './pages/Enter/PasswordReset/PasswordResetFinish
 
 // import ShoppingCart from './pages/shoppingcart/ShoppingCart';
 import AuthenticatedShoppingCart from './pages/shoppingcart/ShoppingCart';
-import Dashboard from './pages/Dashboard/Dashboard';
+import AuthenticatedDashboard from './pages/Dashboard/Dashboard';
 import Account from './pages/USER/account/Account';
 import ShippingAddress from './pages/USER/shippingaddress/ShippingAddress';
 import ShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm '
@@ -47,8 +47,8 @@ function App() {
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/reset-password/:resetToken" element={<SetNewPassword />} />
             <Route path="/passwordresetfinish" element={<PasswordResetFinish />} />
-            
-            <Route path="/dashboard" element={<Dashboard />} />
+
+            <Route path="/dashboard" element={<AuthenticatedDashboard />} />
             <Route path="/shoppingcart" element={<AuthenticatedShoppingCart />} />
             <Route path="/account" element={<Account />} />
             <Route path="/shippingaddress" element={<ShippingAddress />} />
