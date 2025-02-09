@@ -6,6 +6,7 @@
 
 import React from 'react';
 import './Account.css';
+import withAuth from '../../withAuth';
 import { FaUser, FaShoppingCart, FaCreditCard, FaUndo, FaComment, 
          FaCog, FaTruck, FaEnvelope, FaQuestionCircle, FaBell, 
          FaHeart, FaSearch } from 'react-icons/fa';
@@ -99,4 +100,6 @@ const Account = () => {
     );
 };
 
-export default Account;
+
+const AuthenticatedAccount = withAuth(Account);  
+export default AuthenticatedAccount;
