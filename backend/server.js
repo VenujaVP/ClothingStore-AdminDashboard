@@ -43,8 +43,8 @@ app.use(cookieParser());
 app.use('/auth', authRoutes);
 app.use('/forgot-password', forgotPasswordRoutes); 
 
-router.get('/tokenverification', verifyUser, (req, res) => {
-    res.json({ Status: "Success", name: req.name });
+app.get('/tokenverification', verifyUser, (req, res) => {
+    return res.status(200).json({ Status: "Success", name: req.name });
 });
 
 // Token cleanup every 5 minutes
