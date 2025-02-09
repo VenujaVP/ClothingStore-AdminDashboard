@@ -5,10 +5,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './withAuth.css';  // Add your styles for the Login expired message
+import './withAuth.css';  // Add styles for login expired message
 
 const withAuth = (WrappedComponent) => {
-  return (props) => {
+  const AuthComponent = (props) => {
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [loading, setLoading] = useState(true);
     const [name, setName] = useState('');
@@ -16,34 +16,39 @@ const withAuth = (WrappedComponent) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-      // Make a request to check the token on the server side
       axios.get('http://localhost:8081/tokenverification', { withCredentials: true })
         .then(res => {
           if (res.data.Status === "Success") {
             setIsAuthenticated(true);
-            setName(res.data.name);  // Set name if token is valid
+            setName(res.data.name);
           } else {
             setIsAuthenticated(false);
-            setMessage(res.data.err);  // Show error message if token is invalid
+            setMessage(res.data.err || "Session expired. Please log in again.");
           }
           setLoading(false);
         })
         .catch(err => {
-          console.error("Error during authentication:", err);
+          console.error("Authentication error:", err);
           setIsAuthenticated(false);
           setMessage("An error occurred during authentication. Please try again.");
           setLoading(false);
         });
-    }, []);  // Empty array ensures this effect runs only once when component mounts
+    }, []);
 
-    if (loading) return <div className="loading-spinner">Loading...</div>;  // Use a spinner or skeleton screen
+    if (loading) {
+      return (
+        <div className="loading-spinner">
+          <p>Loading...</p>
+        </div>
+      );
+    }
 
     if (!isAuthenticated) {
       return (
         <div className="login-now-container">
           <div className="login-now-section">
             <h3 className="login-title">Login Expired</h3>
-            <p className="login-subtitle">{message || "Your login has expired. Please log in again to continue."}</p>
+            <p className="login-subtitle">{message}</p>
             <button className="login-button" onClick={() => navigate('/login')} aria-label="Log in now">
               Log In Now
             </button>
@@ -54,6 +59,11 @@ const withAuth = (WrappedComponent) => {
 
     return <WrappedComponent {...props} />;
   };
+
+  // ✅ Set display name for better debugging
+  AuthComponent.displayName = `withAuth(${WrappedComponent.displayName || WrappedComponent.name || "Component"})`;
+
+  return AuthComponent;
 };
 
 export default withAuth;
