@@ -6,6 +6,7 @@
 
 import React from 'react';
 import './ShippingAddress.css';
+import withAuth from '../../withAuth';
 
 const ShippingAddress = () => {
   return (
@@ -50,4 +51,5 @@ const ShippingAddress = () => {
   );
 };
 
-export default ShippingAddress;
+const AuthenticatedShippingAddress = withAuth(ShippingAddress);  
+export default AuthenticatedShippingAddress;
