@@ -169,7 +169,7 @@ const ForgotPassword = () => {
         autoHideDuration={6000} // Snackbar will close after 6 seconds
         onClose={handleCloseSnackbar}
         TransitionComponent={Slide} // Slide animation
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // Position at the top center
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }} // Position at the top-right corner
       >
         <Alert
           onClose={handleCloseSnackbar}
