@@ -6,6 +6,7 @@
 
 import React, { useState } from 'react';
 import './PaymentCardWindow.css';
+import withAuth from '../../withAuth';
 
 const PaymentCardWindow = () => {
   const [cards, setCards] = useState([
@@ -150,4 +151,5 @@ const PaymentCardWindow = () => {
   );
 };
 
-export default PaymentCardWindow;
+const AuthenticatedPaymentCardWindow = withAuth(PaymentCardWindow);  
+export default AuthenticatedPaymentCardWindow;
