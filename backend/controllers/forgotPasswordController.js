@@ -91,9 +91,6 @@ export const resetPassword = (req, res) => {
     console.log("confirmPassword:", confirmPassword);
     console.log("currentTime:", currentTime);
 
-    console.log("SQL Query:", sql);
-    console.log("Query Parameters:", [resetToken, currentTime]);
-
     // Find the user by reset token and check expiry
     const sql = 'SELECT * FROM user WHERE resetToken = ? AND resetTokenExpiry > ?';
 
