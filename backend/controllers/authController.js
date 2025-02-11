@@ -87,10 +87,10 @@ const loginUser = (req, res) => {
 
                     // Set token in cookies
                     res.cookie('token', token, {
-                        httpOnly: true, // prevents access to the cookie from JavaScript
-                        secure: process.env.NODE_ENV === 'production', // ensures cookie is sent only over HTTPS
-                        sameSite: 'Strict', // ensures the cookie is sent in a first-party context
-                        maxAge: 3600000, // cookie expiration time (1 hour in ms)
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+                        sameSite: 'Lax',
+                        maxAge: 24 * 60 * 60 * 1000, // 1 day expiration
                     });
 
                     console.log("Token created and sent:", token);

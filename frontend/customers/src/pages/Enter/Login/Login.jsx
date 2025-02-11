@@ -38,14 +38,20 @@ const Login = () => {
     loginValidationSchema
       .validate(formData)
       .then(() => {
-        axios.post('http://localhost:8081/auth/login', formData)
+        axios.post('http://localhost:8081/auth/login', formData ,{
+          withCredentials: true,
+        })
           .then(res => {
             if (res.data && res.data.Status === "Success") {
+              console.log("JWT Token Received:", res.data.token);
+              localStorage.setItem("token", res.data.token);
               console.log('Login successful:', res.data);
               navigate('/dashboard');
             } else {
               console.error('Login error:', res);
               alert(res.data.Error || 'Invalid login credentials. Please try again.');
+              setAlertSeverity("error");
+              setOpen(true);
             }
           })
           .catch(err => {
