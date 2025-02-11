@@ -27,6 +27,6 @@ const Dashboard = ({ name }) => {
   );
 };
 
-// const AuthenticatedDashboard = withAuth(Dashboard);
-// export default AuthenticatedDashboard;
-export default Dashboard;
+const AuthenticatedDashboard = withAuth(Dashboard);
+export default AuthenticatedDashboard;
+// export default Dashboard;
