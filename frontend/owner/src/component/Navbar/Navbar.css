@@ -148,3 +148,62 @@
         width: 150px;
     }
 }
+
+/* Add these new styles to your existing Navbar.css */
+
+.mobile-menu-btn {
+    display: none;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.mobile-menu-btn:hover {
+    color: #23b893;
+}
+
+.mobile-logo {
+    display: none;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-logo img {
+    height: 100%;
+    object-fit: contain;
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: bold;
+    color: #23b893;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 15px;
+        left: 0;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .mobile-logo {
+        display: flex;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .search-container {
+        display: none;
+    }
+
+    .nav-right {
+        margin-left: auto;
+        gap: 15px;
+    }
+}

@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-key */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Sidebar.css';
 import logo from '../../assets/logo.png';
 import {
@@ -15,10 +15,21 @@ import {
   FaFolder,
   FaCog,
   FaEnvelope,
+  FaTimes,
 } from 'react-icons/fa';
 
-const Sidebar = () => {
+const Sidebar = ({ isMobileMenuOpen, onMobileMenuClose }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const menuItems = [
     { icon: <FaHome />, title: 'Home' },
@@ -29,26 +40,46 @@ const Sidebar = () => {
     { icon: <FaEnvelope />, title: 'Messages' },
   ];
 
+  // Only show hover expand on desktop
+  const handleMouseEnter = () => {
+    if (!isMobile) setIsExpanded(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (!isMobile) setIsExpanded(false);
+  };
+
   return (
     <div
-      className={`sidebar ${isExpanded ? 'expanded' : ''}`}
-      onMouseEnter={() => setIsExpanded(true)}
-      onMouseLeave={() => setIsExpanded(false)}
+      className={`sidebar ${isExpanded ? 'expanded' : ''} ${
+        isMobile ? 'mobile' : ''
+      } ${isMobileMenuOpen ? 'mobile-open' : ''}`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <div className="logo-container">
-        {/* Add fallback text in case image fails to load */}
-        {logo ? (
-          <img src={logo} alt="Logo" className="logo" />
-        ) : (
-          <span style={{ 
-            fontSize: '20px', 
-            fontWeight: 'bold',
-            color: '#23b893' 
-          }}>
-            LOGO
-          </span>
-        )}
-      </div>
+      {/* Mobile Close Button */}
+      {isMobile && (
+        <div className="mobile-close" onClick={onMobileMenuClose}>
+          <FaTimes />
+        </div>
+      )}
+
+      {/* Only show logo on desktop or when mobile menu is open */}
+      {(!isMobile || isMobileMenuOpen) && (
+        <div className="logo-container">
+          {logo ? (
+            <img src={logo} alt="Logo" className="logo" />
+          ) : (
+            <span style={{
+              fontSize: '20px',
+              fontWeight: 'bold',
+              color: '#23b893'
+            }}>
+              LOGO
+            </span>
+          )}
+        </div>
+      )}
 
       <div className="menu-items">
         {menuItems.map((item, index) => (

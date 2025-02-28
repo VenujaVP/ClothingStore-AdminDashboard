@@ -119,13 +119,31 @@
 /* For smaller screens */
 @media (max-width: 768px) {
     .sidebar {
-        width: 55px;
-        padding: 20px 0;
+        transform: translateX(-100%);
+        width: 250px;
+        background: white;
     }
 
-    .sidebar.expanded {
-        width: 200px;
-        padding: 20px 12px;
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .mobile-close {
+        display: block;
+    }
+
+    .sidebar.mobile {
+        padding: 60px 15px 20px;
+    }
+
+    .menu-item {
+        justify-content: flex-start;
+        padding: 12px;
+    }
+
+    .title {
+        display: block;
+        opacity: 1;
     }
 }
 
@@ -137,4 +155,19 @@
 /* Add subtle shadow to active item */
 .menu-item.active {
     box-shadow: 0 4px 10px rgba(35, 184, 147, 0.2);
+}
+
+.mobile-close {
+    display: none;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.mobile-close:hover {
+    color: #23b893;
 }

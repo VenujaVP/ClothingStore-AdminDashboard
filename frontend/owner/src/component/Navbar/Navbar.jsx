@@ -7,23 +7,44 @@
 
 import React, { useState } from 'react';
 import './Navbar.css';
-import { FaBell, FaSearch, FaUserCircle } from 'react-icons/fa';
+import { FaBell, FaSearch, FaUserCircle, FaBars } from 'react-icons/fa';
+import logo from '../../assets/logo.png';
 
-const Navbar = () => {
+const Navbar = ({ onMobileMenuClick, isMobile }) => {
   const [searchFocused, setSearchFocused] = useState(false);
 
   return (
     <div className="navbar">
-      {/* Search Section */}
-      <div className={`search-container ${searchFocused ? 'focused' : ''}`}>
-        <FaSearch className="search-icon" />
-        <input
-          type="text"
-          placeholder="Search..."
-          onFocus={() => setSearchFocused(true)}
-          onBlur={() => setSearchFocused(false)}
-        />
-      </div>
+      {/* Mobile Menu Button */}
+      {isMobile && (
+        <div className="mobile-menu-btn" onClick={onMobileMenuClick}>
+          <FaBars />
+        </div>
+      )}
+
+      {/* Logo for mobile */}
+      {isMobile && (
+        <div className="mobile-logo">
+          {logo ? (
+            <img src={logo} alt="Logo" />
+          ) : (
+            <span className="logo-text">LOGO</span>
+          )}
+        </div>
+      )}
+
+      {/* Search Section - Hide on mobile */}
+      {!isMobile && (
+        <div className={`search-container ${searchFocused ? 'focused' : ''}`}>
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search..."
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+          />
+        </div>
+      )}
 
       {/* Right Section */}
       <div className="nav-right">
@@ -37,7 +58,7 @@ const Navbar = () => {
 
         {/* User Profile */}
         <div className="nav-item user-profile">
-          <span className="user-name">John Doe</span>
+          {!isMobile && <span className="user-name">John Doe</span>}
           <FaUserCircle className="user-avatar" />
         </div>
       </div>
