@@ -7,13 +7,15 @@
 
 import { useState } from 'react'
 import './App.css'
-import Sidebar from './component/Sidebar/Sidebar'
+import Sidebar from './component/Sidebar/Sidebar';
+import Navbar from './component/Navbar/Navbar';
 
 function App() {
 
   return (
     <>
      <Sidebar />
+     <Navbar />
     </>
   )
 }

@@ -1,0 +1,150 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 65px; /* Match sidebar width */
+    height: 70px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 999;
+    transition: all 0.3s ease;
+}
+
+/* Search Container */
+.search-container {
+    display: flex;
+    align-items: center;
+    background: #f5f7fb;
+    border-radius: 10px;
+    padding: 8px 15px;
+    width: 300px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.search-container.focused {
+    border-color: #23b893;
+    box-shadow: 0 0 0 3px rgba(35, 184, 147, 0.1);
+}
+
+.search-icon {
+    color: #666;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.search-container input {
+    background: none;
+    border: none;
+    outline: none;
+    width: 100%;
+    color: #333;
+    font-size: 14px;
+}
+
+.search-container input::placeholder {
+    color: #888;
+}
+
+/* Right Section */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-item {
+    position: relative;
+    cursor: pointer;
+    padding: 5px;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+    color: #23b893;
+}
+
+/* Notification Badge */
+.notification-icon {
+    position: relative;
+    font-size: 20px;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, #23b893, #1a8b6f);
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* User Profile */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.user-profile:hover {
+    background-color: rgba(35, 184, 147, 0.1);
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.user-avatar {
+    font-size: 24px;
+    color: #23b893;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        left: 55px; /* Match sidebar mobile width */
+        padding: 0 20px;
+    }
+
+    .search-container {
+        width: 200px;
+    }
+
+    .user-name {
+        display: none;
+    }
+}
+
+/* When sidebar is expanded */
+.sidebar.expanded ~ .navbar {
+    left: 250px;
+}
+
+@media (max-width: 768px) {
+    .sidebar.expanded ~ .navbar {
+        left: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-container {
+        width: 150px;
+    }
+}
