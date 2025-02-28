@@ -50,7 +50,7 @@ const Register = () => {
     registerValidationSchema
       .validate(formData, { abortEarly: false })
       .then(() => {
-        axios.post('http://localhost:8081/auth/register', formData)
+        axios.post('http://localhost:8082/auth/register', formData)
           .then(res => {
             if (res.status === 201) {
               console.log('Registration successful:', res.data);
@@ -94,7 +94,7 @@ const Register = () => {
       const { credential } = response; // Extract the Google credential (JWT)
       console.log(response)
       axios
-        .post('http://localhost:8081/auth/google-login', { token: credential })
+        .post('http://localhost:8082/auth/google-login', { token: credential })
         .then((res) => {
           setMessage('Login successful with Google!');
           setAlertSeverity('success');

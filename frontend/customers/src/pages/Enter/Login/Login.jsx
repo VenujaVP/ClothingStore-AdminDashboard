@@ -38,7 +38,7 @@ const Login = () => {
     loginValidationSchema
       .validate(formData)
       .then(() => {
-        axios.post('http://localhost:8081/auth/login', formData ,{
+        axios.post('http://localhost:8082/auth/login', formData ,{
           withCredentials: true,
         })
           .then(res => {
