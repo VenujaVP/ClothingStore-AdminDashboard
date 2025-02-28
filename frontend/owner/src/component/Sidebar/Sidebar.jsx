@@ -8,21 +8,29 @@
 import React, { useState } from 'react';
 import './Sidebar.css';
 import logo from '../../assets/logo.png';
+import {
+  FaHome,
+  FaChartLine,
+  FaUsers,
+  FaFolder,
+  FaCog,
+  FaEnvelope,
+} from 'react-icons/fa';
 
 const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const menuItems = [
-    { icon: "🏠", title: "Home" },
-    { icon: "📊", title: "Dashboard" },
-    { icon: "👥", title: "Users" },
-    { icon: "📁", title: "Projects" },
-    { icon: "⚙️", title: "Settings" },
-    { icon: "📫", title: "Messages" },
+    { icon: <FaHome />, title: 'Home' },
+    { icon: <FaChartLine />, title: 'Dashboard' },
+    { icon: <FaUsers />, title: 'Users' },
+    { icon: <FaFolder />, title: 'Projects' },
+    { icon: <FaCog />, title: 'Settings' },
+    { icon: <FaEnvelope />, title: 'Messages' },
   ];
 
   return (
-    <div 
+    <div
       className={`sidebar ${isExpanded ? 'expanded' : ''}`}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}

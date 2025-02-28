@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-key */
 
-// npm install react react-dom @react-oauth/google
+// npm install react react-dom @react-oauth/google react-icons
 
 import { useState } from 'react'
 import './App.css'
