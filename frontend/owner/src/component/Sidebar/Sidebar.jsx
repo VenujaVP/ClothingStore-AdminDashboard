@@ -1,3 +1,5 @@
+// component/Sidebar/Sidebar.jsx
+
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
@@ -5,7 +7,7 @@
 
 import React, { useState } from 'react';
 import './Sidebar.css';
-import logo from './logo.png'; // Replace with your logo path
+import logo from '../../assets/logo.png';
 
 const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
