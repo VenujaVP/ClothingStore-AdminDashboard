@@ -16,11 +16,17 @@ import {
   FaCog,
   FaEnvelope,
   FaTimes,
+  FaChevronDown,
+  FaPlus,
+  FaList,
 } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ isMobileMenuOpen, onMobileMenuClose }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [expandedItems, setExpandedItems] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -32,12 +38,26 @@ const Sidebar = ({ isMobileMenuOpen, onMobileMenuClose }) => {
   }, []);
 
   const menuItems = [
-    { icon: <FaHome />, title: 'Home' },
-    { icon: <FaChartLine />, title: 'Products' },
-    { icon: <FaUsers />, title: 'Users' },
-    { icon: <FaFolder />, title: 'Projects' },
-    { icon: <FaCog />, title: 'Settings' },
-    { icon: <FaEnvelope />, title: 'Messages' },
+    { icon: <FaHome />, title: 'Home', path: '/home' },
+    {
+      icon: <FaChartLine />,
+      title: 'Products',
+      subItems: [
+        { icon: <FaPlus />, title: 'Add Product', path: '/products/add' },
+        { icon: <FaList />, title: 'Product List', path: '/products/list' },
+      ],
+    },
+    {
+      icon: <FaUsers />,
+      title: 'Employees',
+      subItems: [
+        { icon: <FaPlus />, title: 'Add Employee', path: '/employees/add' },
+        { icon: <FaList />, title: 'Employee List', path: '/employees/list' },
+      ],
+    },
+    { icon: <FaFolder />, title: 'Projects', path: '/projects' },
+    { icon: <FaCog />, title: 'Settings', path: '/settings' },
+    { icon: <FaEnvelope />, title: 'Messages', path: '/messages' },
   ];
 
   // Only show hover expand on desktop
@@ -46,7 +66,24 @@ const Sidebar = ({ isMobileMenuOpen, onMobileMenuClose }) => {
   };
 
   const handleMouseLeave = () => {
-    if (!isMobile) setIsExpanded(false);
+    if (!isMobile) {
+      setIsExpanded(false);
+      setExpandedItems({}); // Close all dropdowns when sidebar collapses
+    }
+  };
+
+  const toggleDropdown = (title) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [title]: !prev[title]
+    }));
+  };
+
+  const handleItemClick = (path) => {
+    navigate(path);
+    if (isMobile) {
+      onMobileMenuClose();
+    }
   };
 
   return (
@@ -90,9 +127,31 @@ const Sidebar = ({ isMobileMenuOpen, onMobileMenuClose }) => {
 
         <div className="menu-items">
           {menuItems.map((item, index) => (
-            <div className="menu-item" key={index}>
-              <span className="icon">{item.icon}</span>
-              <span className="title">{item.title}</span>
+            <div key={index} className="menu-item-wrapper">
+              <div 
+                className={`menu-item ${item.subItems ? 'has-dropdown' : ''}`}
+                onClick={() => item.subItems ? toggleDropdown(item.title) : handleItemClick(item.path)}
+              >
+                <span className="icon">{item.icon}</span>
+                <span className="title">{item.title}</span>
+                {item.subItems && (isExpanded || isMobile) && (
+                  <FaChevronDown className={`dropdown-icon ${expandedItems[item.title] ? 'rotated' : ''}`} />
+                )}
+              </div>
+              {item.subItems && (isExpanded || isMobile) && expandedItems[item.title] && (
+                <div className="submenu">
+                  {item.subItems.map((subItem, subIndex) => (
+                    <div 
+                      key={subIndex} 
+                      className="submenu-item"
+                      onClick={() => handleItemClick(subItem.path)}
+                    >
+                      <span className="icon">{subItem.icon}</span>
+                      <span className="title">{subItem.title}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
