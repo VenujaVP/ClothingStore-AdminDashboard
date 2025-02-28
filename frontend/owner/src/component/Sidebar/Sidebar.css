@@ -104,7 +104,7 @@
 
 /* Hover effects */
 .menu-item:hover {
-    background-color: rgba(35, 184, 147, 0.1);
+    background-color: rgba(35, 184, 147, 0.2);
     color: #23b893;
 }
 
