@@ -50,46 +50,54 @@ const Sidebar = ({ isMobileMenuOpen, onMobileMenuClose }) => {
   };
 
   return (
-    <div
-      className={`sidebar ${isExpanded ? 'expanded' : ''} ${
-        isMobile ? 'mobile' : ''
-      } ${isMobileMenuOpen ? 'mobile-open' : ''}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {/* Mobile Close Button */}
+    <>
       {isMobile && (
-        <div className="mobile-close" onClick={onMobileMenuClose}>
-          <FaTimes />
-        </div>
+        <div 
+          className={`sidebar-overlay ${isMobileMenuOpen ? 'show' : ''}`}
+          onClick={onMobileMenuClose}
+        />
       )}
-
-      {/* Only show logo on desktop or when mobile menu is open */}
-      {(!isMobile || isMobileMenuOpen) && (
-        <div className="logo-container">
-          {logo ? (
-            <img src={logo} alt="Logo" className="logo" />
-          ) : (
-            <span style={{
-              fontSize: '20px',
-              fontWeight: 'bold',
-              color: '#23b893'
-            }}>
-              LOGO
-            </span>
-          )}
-        </div>
-      )}
-
-      <div className="menu-items">
-        {menuItems.map((item, index) => (
-          <div className="menu-item" key={index}>
-            <span className="icon">{item.icon}</span>
-            <span className="title">{item.title}</span>
+      <div
+        className={`sidebar ${isExpanded ? 'expanded' : ''} ${
+          isMobile ? 'mobile' : ''
+        } ${isMobileMenuOpen ? 'mobile-open' : ''}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {/* Mobile Close Button */}
+        {isMobile && (
+          <div className="mobile-close" onClick={onMobileMenuClose}>
+            <FaTimes />
           </div>
-        ))}
+        )}
+
+        {/* Only show logo on desktop or when mobile menu is open */}
+        {(!isMobile || isMobileMenuOpen) && (
+          <div className="logo-container">
+            {logo ? (
+              <img src={logo} alt="Logo" className="logo" />
+            ) : (
+              <span style={{
+                fontSize: '20px',
+                fontWeight: 'bold',
+                color: '#23b893'
+              }}>
+                LOGO
+              </span>
+            )}
+          </div>
+        )}
+
+        <div className="menu-items">
+          {menuItems.map((item, index) => (
+            <div className="menu-item" key={index}>
+              <span className="icon">{item.icon}</span>
+              <span className="title">{item.title}</span>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

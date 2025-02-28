@@ -10,28 +10,24 @@ import './Navbar.css';
 import { FaBell, FaSearch, FaUserCircle, FaBars } from 'react-icons/fa';
 import logo from '../../assets/logo.png';
 
-const Navbar = ({ onMobileMenuClick, isMobile }) => {
+const Navbar = ({ onMobileMenuClick, isMobile, isMenuOpen }) => {
   const [searchFocused, setSearchFocused] = useState(false);
 
   return (
-    <div className="navbar">
+    <div className={`navbar ${isMenuOpen ? 'menu-open' : ''}`}>
       {/* Mobile Menu Button */}
-      {isMobile && (
-        <div className="mobile-menu-btn" onClick={onMobileMenuClick}>
-          <FaBars />
-        </div>
-      )}
+      <div className="mobile-menu-btn" onClick={onMobileMenuClick}>
+        <FaBars />
+      </div>
 
-      {/* Logo for mobile */}
-      {isMobile && (
-        <div className="mobile-logo">
-          {logo ? (
-            <img src={logo} alt="Logo" />
-          ) : (
-            <span className="logo-text">LOGO</span>
-          )}
-        </div>
-      )}
+      {/* Logo - Always show in center */}
+      <div className="navbar-logo">
+        {logo ? (
+          <img src={logo} alt="Logo" className="nav-logo-img" />
+        ) : (
+          <span className="logo-text">LOGO</span>
+        )}
+      </div>
 
       {/* Search Section - Hide on mobile */}
       {!isMobile && (

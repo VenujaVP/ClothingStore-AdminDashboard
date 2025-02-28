@@ -119,31 +119,90 @@
 /* For smaller screens */
 @media (max-width: 768px) {
     .sidebar {
-        transform: translateX(-100%);
-        width: 250px;
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        max-width: 300px;
+        height: 100vh;
         background: white;
+        z-index: 1001;
+        padding: 80px 20px 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     }
 
     .sidebar.mobile-open {
-        transform: translateX(0);
+        left: 0;
     }
 
     .mobile-close {
         display: block;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 24px;
+        color: #666;
+        cursor: pointer;
+        padding: 8px;
     }
 
-    .sidebar.mobile {
-        padding: 60px 15px 20px;
+    .mobile-close:hover {
+        color: #23b893;
     }
 
     .menu-item {
         justify-content: flex-start;
-        padding: 12px;
+        padding: 15px;
+        margin: 5px 0;
     }
 
     .title {
         display: block;
         opacity: 1;
+        margin-left: 15px;
+    }
+
+    .icon {
+        color: #666;
+    }
+
+    /* Active state in mobile */
+    .menu-item.active {
+        background: linear-gradient(135deg, #23b893, #1a8b6f);
+        color: white;
+    }
+
+    .menu-item.active .icon {
+        color: white;
+    }
+
+    /* Hover state in mobile */
+    .menu-item:hover {
+        background-color: rgba(35, 184, 147, 0.1);
+        color: #23b893;
+    }
+
+    .menu-item:hover .icon {
+        color: #23b893;
+    }
+}
+
+/* Add overlay when mobile menu is open */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+@media (max-width: 768px) {
+    .sidebar-overlay.show {
+        display: block;
     }
 }
 
@@ -155,19 +214,4 @@
 /* Add subtle shadow to active item */
 .menu-item.active {
     box-shadow: 0 4px 10px rgba(35, 184, 147, 0.2);
-}
-
-.mobile-close {
-    display: none;
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 20px;
-    color: #666;
-    cursor: pointer;
-    padding: 8px;
-}
-
-.mobile-close:hover {
-    color: #23b893;
 }

@@ -119,16 +119,59 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .navbar {
-        left: 55px; /* Match sidebar mobile width */
-        padding: 0 20px;
+        left: 0;
+        padding: 0 15px;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+        font-size: 22px;
+        color: #666;
+        cursor: pointer;
+        padding: 8px;
+        z-index: 1000;
+    }
+
+    .mobile-menu-btn:hover {
+        color: #23b893;
+    }
+
+    .navbar-logo {
+        display: flex;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 40px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-logo-img {
+        height: 35px;
+    }
+
+    .logo-text {
+        font-size: 20px;
+        font-weight: bold;
+        color: #23b893;
     }
 
     .search-container {
-        width: 200px;
+        display: none;
     }
 
-    .user-name {
-        display: none;
+    .nav-right {
+        margin-left: auto;
+        gap: 15px;
+    }
+
+    /* Adjust right section for better spacing */
+    .nav-item {
+        padding: 8px;
+    }
+
+    .user-profile {
+        padding: 8px;
     }
 }
 
@@ -151,18 +194,6 @@
 
 /* Add these new styles to your existing Navbar.css */
 
-.mobile-menu-btn {
-    display: none;
-    font-size: 20px;
-    color: #666;
-    cursor: pointer;
-    padding: 8px;
-}
-
-.mobile-menu-btn:hover {
-    color: #23b893;
-}
-
 .mobile-logo {
     display: none;
     height: 40px;
@@ -181,29 +212,17 @@
     color: #23b893;
 }
 
-@media (max-width: 768px) {
-    .navbar {
-        padding: 0 15px;
-        left: 0;
-    }
+/* When menu is open */
+.navbar.menu-open {
+    background: white;
+}
 
-    .mobile-menu-btn {
-        display: block;
-    }
+/* Navbar Logo */
+.navbar-logo {
+    display: none; /* Hidden by default on desktop */
+}
 
-    .mobile-logo {
-        display: flex;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .search-container {
-        display: none;
-    }
-
-    .nav-right {
-        margin-left: auto;
-        gap: 15px;
-    }
+.nav-logo-img {
+    height: 40px;
+    object-fit: contain;
 }
