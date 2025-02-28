@@ -1,6 +1,11 @@
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/react-in-jsx-scope */
+
 import React, { useState } from 'react';
 import './AddEmployee.css';
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaCalendar, FaUserTag } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaLock, FaPhone, FaCalendar, FaUserTag, FaIdCard } from 'react-icons/fa';
 
 const AddEmployee = () => {
   const [formData, setFormData] = useState({
@@ -36,12 +41,13 @@ const AddEmployee = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-row">
             <div className="form-group">
+              <label>Employee ID</label>
               <div className="input-group">
-                <FaUser className="input-icon" />
+                <FaIdCard className="input-icon" />
                 <input
                   type="text"
                   name="employee_id"
-                  placeholder="Employee ID"
+                  placeholder="Enter employee ID"
                   value={formData.employee_id}
                   onChange={handleChange}
                   required
@@ -49,12 +55,13 @@ const AddEmployee = () => {
               </div>
             </div>
             <div className="form-group">
+              <label>Email Address</label>
               <div className="input-group">
                 <FaEnvelope className="input-icon" />
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email"
+                  placeholder="Enter email address"
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -65,12 +72,13 @@ const AddEmployee = () => {
 
           <div className="form-row">
             <div className="form-group">
+              <label>Password</label>
               <div className="input-group">
                 <FaLock className="input-icon" />
                 <input
                   type="password"
                   name="password"
-                  placeholder="Password"
+                  placeholder="Enter password"
                   value={formData.password}
                   onChange={handleChange}
                   required
@@ -78,6 +86,7 @@ const AddEmployee = () => {
               </div>
             </div>
             <div className="form-group">
+              <label>Role</label>
               <div className="input-group">
                 <FaUserTag className="input-icon" />
                 <select
@@ -86,7 +95,7 @@ const AddEmployee = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select Role</option>
+                  <option value="">Select role</option>
                   <option value="admin">Admin</option>
                   <option value="manager">Manager</option>
                   <option value="employee">Employee</option>
@@ -97,12 +106,13 @@ const AddEmployee = () => {
 
           <div className="form-row">
             <div className="form-group">
+              <label>First Name</label>
               <div className="input-group">
                 <FaUser className="input-icon" />
                 <input
                   type="text"
                   name="f_name"
-                  placeholder="First Name"
+                  placeholder="Enter first name"
                   value={formData.f_name}
                   onChange={handleChange}
                   required
@@ -110,12 +120,13 @@ const AddEmployee = () => {
               </div>
             </div>
             <div className="form-group">
+              <label>Last Name</label>
               <div className="input-group">
                 <FaUser className="input-icon" />
                 <input
                   type="text"
                   name="l_name"
-                  placeholder="Last Name"
+                  placeholder="Enter last name"
                   value={formData.l_name}
                   onChange={handleChange}
                   required
@@ -126,12 +137,13 @@ const AddEmployee = () => {
 
           <div className="form-row">
             <div className="form-group">
+              <label>Primary Phone</label>
               <div className="input-group">
                 <FaPhone className="input-icon" />
                 <input
                   type="tel"
                   name="phone_1"
-                  placeholder="Primary Phone"
+                  placeholder="Enter primary phone"
                   value={formData.phone_1}
                   onChange={handleChange}
                   required
@@ -139,12 +151,13 @@ const AddEmployee = () => {
               </div>
             </div>
             <div className="form-group">
+              <label>Secondary Phone (Optional)</label>
               <div className="input-group">
                 <FaPhone className="input-icon" />
                 <input
                   type="tel"
                   name="phone_2"
-                  placeholder="Secondary Phone (Optional)"
+                  placeholder="Enter secondary phone"
                   value={formData.phone_2}
                   onChange={handleChange}
                 />
@@ -154,6 +167,7 @@ const AddEmployee = () => {
 
           <div className="form-row">
             <div className="form-group">
+              <label>Entry Date</label>
               <div className="input-group">
                 <FaCalendar className="input-icon" />
                 <input
@@ -168,8 +182,8 @@ const AddEmployee = () => {
           </div>
 
           <div className="form-actions">
-            <button type="submit" className="submit-btn">Add Employee</button>
             <button type="button" className="cancel-btn">Cancel</button>
+            <button type="submit" className="submit-btn">Add Employee</button>
           </div>
         </form>
       </div>

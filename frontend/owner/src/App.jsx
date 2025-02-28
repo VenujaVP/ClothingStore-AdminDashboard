@@ -3,10 +3,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-key */
 
-// npm install react react-dom @react-oauth/google react-icons
+// npm install react react-dom @react-oauth/google react-icons react-router-dom
 
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css'
 import Sidebar from './component/Sidebar/Sidebar';
 import Navbar from './component/Navbar/Navbar';
@@ -43,44 +43,42 @@ const App = () => {
   };
 
   return (
-    <Router>
-      <div className="app">
-        <Sidebar 
-          isMobileMenuOpen={isMobileMenuOpen} 
-          onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
-        />
-        <Navbar 
-          onMobileMenuClick={handleMobileMenuToggle}
-          isMobile={isMobile}
-          isMenuOpen={isMobileMenuOpen}
-        />
-        <div className="main-content">
-          <Routes>
-            {/* Default route */}
-            <Route path="/" element={<Navigate to="/home" replace />} />
+    <div className="app">
+      <Sidebar 
+        isMobileMenuOpen={isMobileMenuOpen} 
+        onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
+      />
+      <Navbar 
+        onMobileMenuClick={handleMobileMenuToggle}
+        isMobile={isMobile}
+        isMenuOpen={isMobileMenuOpen}
+      />
+      <div className="main-content">
+        <Routes>
+          {/* Default route */}
+          <Route path="/" element={<Navigate to="/home" replace />} />
 
-            {/* Main routes */}
-            {/* <Route path="/home" element={<Home />} /> */}
+          {/* Main routes */}
+          {/* <Route path="/home" element={<Home />} /> */}
 
-            {/* Employee routes */}
-            <Route path="/employees/add" element={<AddEmployee />} />
-            {/* <Route path="/employees/list" element={<EmployeeList />} /> */}
+          {/* Employee routes */}
+          <Route path="/employees/add" element={<AddEmployee />} />
+          {/* <Route path="/employees/list" element={<EmployeeList />} /> */}
 
-            {/* Product routes */}
-            {/* <Route path="/products" element={<Products />} />
-            <Route path="/products/add" element={<AddProduct />} />
-            <Route path="/products/list" element={<ProductList />} /> */}
+          {/* Product routes */}
+          {/* <Route path="/products" element={<Products />} />
+          <Route path="/products/add" element={<AddProduct />} />
+          <Route path="/products/list" element={<ProductList />} /> */}
 
-            {/* Other routes */}
-            {/* <Route path="/settings" element={<Settings />} />
-            <Route path="/messages" element={<Messages />} /> */}
+          {/* Other routes */}
+          {/* <Route path="/settings" element={<Settings />} />
+          <Route path="/messages" element={<Messages />} /> */}
 
-            {/* 404 route */}
-            <Route path="*" element={<Navigate to="/home" replace />} />
-          </Routes>
-        </div>
+          {/* 404 route */}
+          <Route path="*" element={<Navigate to="/home" replace />} />
+        </Routes>
       </div>
-    </Router>
+    </div>
   );
 };
 
