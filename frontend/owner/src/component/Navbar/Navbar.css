@@ -125,6 +125,8 @@
     .navbar {
         left: 0;
         padding: 0 15px;
+        position: fixed;
+        width: 100%;
     }
 
     .mobile-menu-btn {
@@ -134,6 +136,7 @@
         cursor: pointer;
         padding: 8px;
         z-index: 1000;
+        margin-right: auto; /* Push to left */
     }
 
     .mobile-menu-btn:hover {
@@ -154,12 +157,6 @@
         height: 35px;
     }
 
-    .logo-text {
-        font-size: 20px;
-        font-weight: bold;
-        color: #23b893;
-    }
-
     .search-container {
         display: none;
     }
@@ -169,24 +166,16 @@
         gap: 15px;
     }
 
-    /* Adjust right section for better spacing */
-    .nav-item {
-        padding: 8px;
-    }
-
-    .user-profile {
-        padding: 8px;
+    /* Hide username in mobile */
+    .user-name {
+        display: none;
     }
 }
 
-/* When sidebar is expanded */
-.sidebar.expanded ~ .navbar {
-    left: 250px;
-}
-
+/* Remove the sidebar expanded styles in mobile */
 @media (max-width: 768px) {
     .sidebar.expanded ~ .navbar {
-        left: 200px;
+        left: 0;
     }
 }
 

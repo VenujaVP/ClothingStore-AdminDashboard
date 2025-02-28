@@ -151,20 +151,28 @@
         color: #23b893;
     }
 
+    /* Menu items in mobile view */
+    .menu-items {
+        margin-top: 20px;
+    }
+
     .menu-item {
         justify-content: flex-start;
         padding: 15px;
         margin: 5px 0;
+        border-radius: 10px;
     }
 
     .title {
         display: block;
         opacity: 1;
         margin-left: 15px;
+        color: #666;
     }
 
     .icon {
         color: #666;
+        margin-right: 5px;
     }
 
     /* Active state in mobile */
@@ -173,22 +181,23 @@
         color: white;
     }
 
-    .menu-item.active .icon {
+    .menu-item.active .icon,
+    .menu-item.active .title {
         color: white;
     }
 
     /* Hover state in mobile */
     .menu-item:hover {
         background-color: rgba(35, 184, 147, 0.1);
-        color: #23b893;
     }
 
-    .menu-item:hover .icon {
+    .menu-item:hover .icon,
+    .menu-item:hover .title {
         color: #23b893;
     }
 }
 
-/* Add overlay when mobile menu is open */
+/* Overlay styles */
 .sidebar-overlay {
     display: none;
     position: fixed;
@@ -198,12 +207,13 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-@media (max-width: 768px) {
-    .sidebar-overlay.show {
-        display: block;
-    }
+.sidebar-overlay.show {
+    display: block;
+    opacity: 1;
 }
 
 /* Add transition for hover effects */
