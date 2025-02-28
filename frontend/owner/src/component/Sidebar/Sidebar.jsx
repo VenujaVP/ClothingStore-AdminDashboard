@@ -36,7 +36,18 @@ const Sidebar = () => {
       onMouseLeave={() => setIsExpanded(false)}
     >
       <div className="logo-container">
-        <img src={logo} alt="Logo" className="logo" />
+        {/* Add fallback text in case image fails to load */}
+        {logo ? (
+          <img src={logo} alt="Logo" className="logo" />
+        ) : (
+          <span style={{ 
+            fontSize: '20px', 
+            fontWeight: 'bold',
+            color: '#23b893' 
+          }}>
+            LOGO
+          </span>
+        )}
       </div>
 
       <div className="menu-items">
