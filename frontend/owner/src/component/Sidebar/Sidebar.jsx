@@ -33,7 +33,7 @@ const Sidebar = ({ isMobileMenuOpen, onMobileMenuClose }) => {
 
   const menuItems = [
     { icon: <FaHome />, title: 'Home' },
-    { icon: <FaChartLine />, title: 'Dashboard' },
+    { icon: <FaChartLine />, title: 'Products' },
     { icon: <FaUsers />, title: 'Users' },
     { icon: <FaFolder />, title: 'Projects' },
     { icon: <FaCog />, title: 'Settings' },

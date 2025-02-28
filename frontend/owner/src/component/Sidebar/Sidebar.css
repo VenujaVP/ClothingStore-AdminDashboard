@@ -130,6 +130,7 @@
         padding: 80px 20px 20px;
         transition: all 0.3s ease;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
     }
 
     .sidebar.mobile-open {
@@ -145,13 +146,9 @@
         color: #666;
         cursor: pointer;
         padding: 8px;
+        z-index: 1002;
     }
 
-    .mobile-close:hover {
-        color: #23b893;
-    }
-
-    /* Menu items in mobile view */
     .menu-items {
         margin-top: 20px;
     }
@@ -161,38 +158,33 @@
         padding: 15px;
         margin: 5px 0;
         border-radius: 10px;
+        width: 100%;
     }
 
     .title {
-        display: block;
-        opacity: 1;
+        display: block !important;
+        opacity: 1 !important;
         margin-left: 15px;
         color: #666;
+        font-size: 14px;
     }
 
     .icon {
         color: #666;
         margin-right: 5px;
+        min-width: 24px;
     }
 
-    /* Active state in mobile */
+    /* Active and hover states */
+    .menu-item:hover,
     .menu-item.active {
-        background: linear-gradient(135deg, #23b893, #1a8b6f);
-        color: white;
-    }
-
-    .menu-item.active .icon,
-    .menu-item.active .title {
-        color: white;
-    }
-
-    /* Hover state in mobile */
-    .menu-item:hover {
         background-color: rgba(35, 184, 147, 0.1);
     }
 
     .menu-item:hover .icon,
-    .menu-item:hover .title {
+    .menu-item:hover .title,
+    .menu-item.active .icon,
+    .menu-item.active .title {
         color: #23b893;
     }
 }
