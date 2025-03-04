@@ -1,5 +1,4 @@
-/* Existing CSS remains the same, with minor adjustments for new columns */
-
+/* General container styling */
 .product-list-container {
     padding: 20px;
     background: #f5f7fb;
@@ -25,6 +24,7 @@
     font-weight: 600;
   }
   
+  /* Search bar styling */
   .search-bar {
     margin-bottom: 20px;
   }
@@ -60,6 +60,7 @@
     outline: none;
   }
   
+  /* Filter section styling */
   .filter-section {
     margin-bottom: 20px;
     padding: 20px;
@@ -128,6 +129,7 @@
     color: #666;
   }
   
+  /* Table Styling */
   .product-table {
     width: 100%;
     border-collapse: collapse;
@@ -136,9 +138,10 @@
   
   .product-table th,
   .product-table td {
-    padding: 12px;
+    padding: 12px 15px; /* Adjusted padding for better spacing */
     text-align: left;
     border-bottom: 1px solid #eee;
+    vertical-align: middle; /* Aligns content vertically */
   }
   
   .product-table th {
@@ -175,6 +178,7 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
+    margin: 0 5px; /* Added margin for spacing between buttons */
   }
   
   .view-btn {
@@ -203,7 +207,6 @@
     background: #ff4d4f;
     color: white;
     border: none;
-    margin-left: 10px;
   }
   
   .delete-btn:hover {

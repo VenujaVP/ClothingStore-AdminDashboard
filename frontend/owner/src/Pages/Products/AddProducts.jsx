@@ -77,8 +77,9 @@ const AddProducts = () => {
     color: '',
     units: '',
     total_units: '',
-    gender: '',
-    limited_edition: false,
+    Category1: '',
+    Category2: '',
+    Category3: '',
     material: '',
     fabric_type: '',
     return_policy: '',
@@ -128,14 +129,7 @@ const AddProducts = () => {
     setUploadedImages(updatedImages);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
+//---------------------------------------------------------------------------------------------------------------------------  
   const handleVariationChange = (index, e) => {
     const { name, value } = e.target;
     const updatedVariations = [...formData.product_variations];
@@ -162,10 +156,19 @@ const AddProducts = () => {
     }
   };
 
+//---------------------------------------------------------------------------------------------------------------------------  
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
     // Add your submit logic here
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
   };
 
   return (
