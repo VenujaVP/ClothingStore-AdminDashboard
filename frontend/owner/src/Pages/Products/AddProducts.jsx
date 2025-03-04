@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import './AddProducts.css';
-import { FaBox, FaTag, FaInfoCircle, FaWeightHanging, FaPlus, FaCalendar, FaTshirt, FaPalette, FaBalanceScale, FaVenusMars, FaStar, FaHeart } from 'react-icons/fa';
+import { FaBox, FaTag, FaInfoCircle, FaWeightHanging, FaPlus, FaCalendar, FaTshirt, FaPalette, FaBalanceScale, FaVenusMars, FaStar, FaHeart, FaMinus } from 'react-icons/fa';
 
 const AddProducts = () => {
   const [formData, setFormData] = useState({
@@ -55,6 +55,15 @@ const AddProducts = () => {
     }));
   };
 
+  const removeVariation = (indexToRemove) => {
+    if (formData.product_variations.length > 1) {
+      setFormData(prevState => ({
+        ...prevState,
+        product_variations: prevState.product_variations.filter((_, index) => index !== indexToRemove)
+      }));
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
@@ -66,6 +75,55 @@ const AddProducts = () => {
       <div className="add-product-card">
         <h2>Add New Product</h2>
         <form onSubmit={handleSubmit}>
+
+          {/* Availability Status, Wishlist Count, Final Rating */}
+          <div className="form-row">
+            <div className="form-group">
+              <label>Availability Status</label>
+              <div className="input-group">
+                <FaBox className="input-icon" />
+                <select
+                  name="availability_status"
+                  value={formData.availability_status}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="In Stock">In Stock</option>
+                  <option value="Out of Stock">Out of Stock</option>
+                  <option value="Pre-Order">Pre-Order</option>
+                </select>
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Wishlist Count</label>
+              <div className="input-group">
+                <FaHeart className="input-icon" />
+                <input
+                  type="number"
+                  name="wishlist_count"
+                  placeholder="Enter wishlist count"
+                  value={formData.wishlist_count}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Final Rating</label>
+              <div className="input-group">
+                <FaStar className="input-icon" />
+                <input
+                  type="number"
+                  name="final_rating"
+                  placeholder="Enter final rating"
+                  value={formData.final_rating}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Product ID and Name */}
           <div className="form-row">
             <div className="form-group">
@@ -114,7 +172,6 @@ const AddProducts = () => {
               </div>
             </div>
           </div>
-
           {/* Unit Price, Date Added, Shipping Weight */}
           <div className="form-row">
             <div className="form-group">
@@ -161,57 +218,68 @@ const AddProducts = () => {
           </div>
 
           {/* Product Variations */}
-          {formData.product_variations.map((variation, index) => (
-            <div className="form-row" key={index}>
-              <div className="form-group">
-                <label>Size</label>
-                <div className="input-group">
-                  <FaTshirt className="input-icon" />
-                  <input
-                    type="text"
-                    name="size"
-                    placeholder="Enter size"
-                    value={variation.size}
-                    onChange={(e) => handleVariationChange(index, e)}
-                    required
-                  />
+          <div className="variations-container">
+            <label>Product Variations</label>
+            <div className="variations-wrapper">
+              {formData.product_variations.map((variation, index) => (
+                <div className="variation-row" key={index}>
+                  <div className="form-group">
+                    <label>Size</label>
+                    <div className="input-group">
+                      <FaTshirt className="input-icon" />
+                      <input
+                        type="text"
+                        name="size"
+                        placeholder="Enter size"
+                        value={variation.size}
+                        onChange={(e) => handleVariationChange(index, e)}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>Color</label>
+                    <div className="input-group">
+                      <FaPalette className="input-icon" />
+                      <input
+                        type="text"
+                        name="color"
+                        placeholder="Enter color"
+                        value={variation.color}
+                        onChange={(e) => handleVariationChange(index, e)}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>Units</label>
+                    <div className="input-group">
+                      <FaBalanceScale className="input-icon" />
+                      <input
+                        type="number"
+                        name="units"
+                        placeholder="Enter units"
+                        value={variation.units}
+                        onChange={(e) => handleVariationChange(index, e)}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="remove-variation-btn"
+                    onClick={() => removeVariation(index)}
+                    disabled={formData.product_variations.length === 1}
+                  >
+                    <FaMinus />
+                  </button>
                 </div>
-              </div>
-              <div className="form-group">
-                <label>Color</label>
-                <div className="input-group">
-                  <FaPalette className="input-icon" />
-                  <input
-                    type="text"
-                    name="color"
-                    placeholder="Enter color"
-                    value={variation.color}
-                    onChange={(e) => handleVariationChange(index, e)}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="form-group">
-                <label>Units</label>
-                <div className="input-group">
-                  <FaBalanceScale className="input-icon" />
-                  <input
-                    type="number"
-                    name="units"
-                    placeholder="Enter units"
-                    value={variation.units}
-                    onChange={(e) => handleVariationChange(index, e)}
-                    required
-                  />
-                </div>
-              </div>
-              {index === formData.product_variations.length - 1 && (
-                <button type="button" className="add-variation-btn" onClick={addVariation}>
-                  <FaPlus />
-                </button>
-              )}
+              ))}
+              <button type="button" className="add-variation-btn" onClick={addVariation}>
+                <FaPlus />
+              </button>
             </div>
-          ))}
+          </div>
 
           {/* Total Units */}
           <div className="form-row">
@@ -230,7 +298,6 @@ const AddProducts = () => {
               </div>
             </div>
           </div>
-
           {/* Gender and Limited Edition */}
           <div className="form-row">
             <div className="form-group">
@@ -253,12 +320,16 @@ const AddProducts = () => {
             <div className="form-group">
               <label>Limited Edition</label>
               <div className="input-group">
-                <input
-                  type="checkbox"
+                <FaVenusMars className="input-icon" />
+                <select
                   name="limited_edition"
-                  checked={formData.limited_edition}
-                  onChange={(e) => setFormData(prevState => ({ ...prevState, limited_edition: e.target.checked }))}
-                />
+                  value={formData.gender}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="No">No</option>
+                  <option value="Yes">Yes</option>
+                </select>
               </div>
             </div>
           </div>
@@ -305,54 +376,6 @@ const AddProducts = () => {
                   name="return_policy"
                   placeholder="Enter return policy"
                   value={formData.return_policy}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Availability Status, Wishlist Count, Final Rating */}
-          <div className="form-row">
-            <div className="form-group">
-              <label>Availability Status</label>
-              <div className="input-group">
-                <FaBox className="input-icon" />
-                <select
-                  name="availability_status"
-                  value={formData.availability_status}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="In Stock">In Stock</option>
-                  <option value="Out of Stock">Out of Stock</option>
-                  <option value="Pre-Order">Pre-Order</option>
-                </select>
-              </div>
-            </div>
-            <div className="form-group">
-              <label>Wishlist Count</label>
-              <div className="input-group">
-                <FaHeart className="input-icon" />
-                <input
-                  type="number"
-                  name="wishlist_count"
-                  placeholder="Enter wishlist count"
-                  value={formData.wishlist_count}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <label>Final Rating</label>
-              <div className="input-group">
-                <FaStar className="input-icon" />
-                <input
-                  type="number"
-                  name="final_rating"
-                  placeholder="Enter final rating"
-                  value={formData.final_rating}
                   onChange={handleChange}
                   required
                 />
