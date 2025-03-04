@@ -1,4 +1,4 @@
-CREATE TABLE User (
+CREATE TABLE customers (
     ID INT AUTO_INCREMENT PRIMARY KEY,       -- Unique ID for each user
     NAME VARCHAR(255) NOT NULL,               -- User's name
     EMAIL VARCHAR(255) NOT NULL UNIQUE,       -- User's email (unique)
@@ -9,3 +9,31 @@ CREATE TABLE User (
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp for when the user account was created
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Timestamp for last update
 );
+
+
+CREATE TABLE product_table (
+    ProductID INT AUTO_INCREMENT PRIMARY KEY,
+    ProductName VARCHAR(255) NOT NULL,
+    ProductDescription TEXT,
+    Picture VARCHAR(255),  -- Store image filename or URL
+    UnitPrice DECIMAL(10,2) NOT NULL,
+    DateAdded DATE DEFAULT CURDATE(),
+    Gender ENUM('Male', 'Female', 'Unisex') NOT NULL,
+    LimitedEdition BOOLEAN DEFAULT FALSE,
+    Material VARCHAR(100),
+    FabricType VARCHAR(100),
+    ReturnPolicy VARCHAR(50),
+    ShippingWeight DECIMAL(5,2),  -- Weight in kg
+    AvailabilityStatus ENUM('In Stock', 'Out of Stock', 'Pre-Order') DEFAULT 'In Stock',
+    WishlistCount INT DEFAULT 0,
+    FinalRating DECIMAL(3,2) DEFAULT 0.0
+);
+CREATE TABLE product_variations (
+    VariationID INT AUTO_INCREMENT PRIMARY KEY,
+    ProductID INT NOT NULL,
+    Size VARCHAR(50) NOT NULL,
+    Color VARCHAR(50) NOT NULL,
+    UnitInStock INT DEFAULT 0,
+    FOREIGN KEY (ProductID) REFERENCES product_table(ProductID) ON DELETE CASCADE
+);
+
