@@ -23,6 +23,8 @@
     font-weight: 600;
 }
 
+
+
 /* Add these new CSS rules */
 .display-row {
     display: flex;
@@ -45,6 +47,54 @@
 .display-field .input-icon {
     margin-right: 8px;
 }
+
+
+
+/* Image Upload Section */
+.image-upload-section {
+    margin: 20px 0;
+  }
+  
+  .image-upload-section label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .image-upload-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .image-placeholder,
+  .uploaded-image-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    border: 1px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+  }
+  
+  .image-placeholder {
+    color: #888;
+  }
+  
+  .uploaded-image-preview {
+    object-fit: cover;
+  }
+  
+  .image-upload-input {
+    cursor: pointer;
+  }
+
+  
+  
 
 .form-row {
     display: flex;

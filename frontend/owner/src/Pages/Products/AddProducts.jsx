@@ -8,6 +8,7 @@ import './AddProducts.css';
 import { FaBox, FaTag, FaInfoCircle, FaWeightHanging, FaPlus, FaCalendar, FaTshirt, FaPalette, FaBalanceScale, FaVenusMars, FaStar, FaHeart, FaMinus } from 'react-icons/fa';
 
 const AddProducts = () => {
+  const [uploadedImage, setUploadedImage] = useState(null);
   const [formData, setFormData] = useState({
     product_id: '',
     product_name: '',
@@ -24,11 +25,16 @@ const AddProducts = () => {
     material: '',
     fabric_type: '',
     return_policy: '',
-    availability_status: 'In Stock',
-    wishlist_count: 0,
-    final_rating: 0,
     product_variations: [{ size: '', color: '', units: '' }]
   });
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageURL = URL.createObjectURL(file);
+      setUploadedImage(imageURL);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -133,6 +139,24 @@ const AddProducts = () => {
             </div>
           </div>
 
+          {/* Image Upload Section */}
+          <div className="image-upload-section">
+            <label>Upload Product Image</label>
+            <div className="image-upload-wrapper">
+              {uploadedImage ? (
+                <img src={uploadedImage} alt="Uploaded Preview" className="uploaded-image-preview" />
+              ) : (
+                <div className="image-placeholder">No Image Uploaded</div>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="image-upload-input"
+              />
+            </div>
+          </div>
+
           {/* Product Description */}
           <div className="form-row">
             <div className="form-group">
@@ -185,7 +209,7 @@ const AddProducts = () => {
                 <input
                   type="number"
                   name="shipping_weight"
-                  placeholder="Enter shipping weight"
+                  placeholder="Enter shipping weight (KG)"
                   value={formData.shipping_weight}
                   onChange={handleChange}
                   required
