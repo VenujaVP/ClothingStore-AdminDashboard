@@ -1,3 +1,5 @@
+/* Existing CSS remains the same, with minor adjustments for new columns */
+
 .product-list-container {
     padding: 20px;
     background: #f5f7fb;
@@ -5,42 +7,42 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-}
-
-.product-list-card {
+  }
+  
+  .product-list-card {
     background: white;
     border-radius: 15px;
     padding: 30px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
     width: 100%;
-}
-
-.product-list-card h2 {
+  }
+  
+  .product-list-card h2 {
     color: #23b893; /* Theme color */
     margin-bottom: 30px;
     font-size: 30px;
     text-align: center;
     font-weight: 600;
-}
-
-.search-bar {
+  }
+  
+  .search-bar {
     margin-bottom: 20px;
-}
-
-.search-bar .input-group {
+  }
+  
+  .search-bar .input-group {
     position: relative;
     display: flex;
     align-items: center;
-}
-
-.search-bar .input-icon {
+  }
+  
+  .search-bar .input-icon {
     position: absolute;
     left: 12px;
     color: #23b893; /* Theme color */
     font-size: 16px;
-}
-
-.search-bar input {
+  }
+  
+  .search-bar input {
     width: 100%;
     padding: 12px 12px 12px 40px;
     border: 1px solid #ddd;
@@ -49,52 +51,52 @@
     color: #333;
     transition: all 0.3s ease;
     background-color: #f8f9fa;
-}
-
-.search-bar input:focus {
+  }
+  
+  .search-bar input:focus {
     border-color: #23b893;
     background-color: white;
     box-shadow: 0 0 0 3px rgba(35, 184, 147, 0.1);
     outline: none;
-}
-
-.filter-section {
+  }
+  
+  .filter-section {
     margin-bottom: 20px;
     padding: 20px;
     background: #f8f9fa;
     border-radius: 10px;
-}
-
-.filter-section h3 {
+  }
+  
+  .filter-section h3 {
     color: #23b893;
     margin-bottom: 15px;
     font-size: 18px;
     display: flex;
     align-items: center;
     gap: 8px;
-}
-
-.filter-options {
+  }
+  
+  .filter-options {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
-}
-
-.filter-group {
+  }
+  
+  .filter-group {
     flex: 1;
     min-width: 200px;
-}
-
-.filter-group label {
+  }
+  
+  .filter-group label {
     display: block;
     margin-bottom: 8px;
     color: #666;
     font-size: 14px;
     font-weight: 500;
-}
-
-.filter-group select,
-.filter-group input {
+  }
+  
+  .filter-group select,
+  .filter-group input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
@@ -103,66 +105,67 @@
     color: #333;
     transition: all 0.3s ease;
     background-color: white;
-}
-
-.filter-group select:focus,
-.filter-group input:focus {
+  }
+  
+  .filter-group select:focus,
+  .filter-group input:focus {
     border-color: #23b893;
     box-shadow: 0 0 0 3px rgba(35, 184, 147, 0.1);
     outline: none;
-}
-
-.price-range {
+  }
+  
+  .price-range {
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-.price-range input {
+  }
+  
+  .price-range input {
     flex: 1;
-}
-
-.price-range span {
+  }
+  
+  .price-range span {
     color: #666;
-}
-
-.product-table {
+  }
+  
+  .product-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-}
-
-.product-table th,
-.product-table td {
+  }
+  
+  .product-table th,
+  .product-table td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #eee;
-}
-
-.product-table th {
+  }
+  
+  .product-table th {
     background-color: #f8f9fa;
     color: #666;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
-}
-
-.product-table th:hover {
+  }
+  
+  .product-table th:hover {
     background-color: #e9ecef;
-}
-
-.product-table td {
+  }
+  
+  .product-table td {
     color: #333;
-}
-
-.sort-icon {
+  }
+  
+  .sort-icon {
     margin-left: 5px;
     color: #23b893;
     font-size: 12px;
-}
-
-.edit-btn,
-.delete-btn {
+  }
+  
+  .view-btn,
+  .edit-btn,
+  .delete-btn {
     padding: 8px 12px;
     border-radius: 6px;
     font-size: 14px;
@@ -172,53 +175,66 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
-}
-
-.edit-btn {
+  }
+  
+  .view-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+  }
+  
+  .view-btn:hover {
+    background: #2e6da4;
+    transform: translateY(-1px);
+  }
+  
+  .edit-btn {
     background: #23b893;
     color: white;
     border: none;
-}
-
-.edit-btn:hover {
+  }
+  
+  .edit-btn:hover {
     background: #1a8b6f;
     transform: translateY(-1px);
-}
-
-.delete-btn {
+  }
+  
+  .delete-btn {
     background: #ff4d4f;
     color: white;
     border: none;
     margin-left: 10px;
-}
-
-.delete-btn:hover {
+  }
+  
+  .delete-btn:hover {
     background: #ff1a1d;
     transform: translateY(-1px);
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
+  }
+  
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
     .product-list-container {
-        padding: 15px;
+      padding: 15px;
     }
-
+  
     .product-list-card {
-        padding: 20px;
+      padding: 20px;
     }
-
+  
     .filter-options {
-        flex-direction: column;
+      flex-direction: column;
     }
-
+  
     .product-table th,
     .product-table td {
-        padding: 8px;
+      padding: 8px;
     }
-
+  
+    .view-btn,
     .edit-btn,
     .delete-btn {
-        padding: 6px 10px;
-        font-size: 12px;
+      padding: 6px 10px;
+      font-size: 12px;
     }
-}
+  }
+  
