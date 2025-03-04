@@ -7,8 +7,65 @@ import React, { useState } from 'react';
 import './AddProducts.css';
 import { FaBox, FaTag, FaInfoCircle, FaWeightHanging, FaPlus, FaCalendar, FaTshirt, FaPalette, FaBalanceScale, FaVenusMars, FaStar, FaHeart, FaMinus } from 'react-icons/fa';
 
+
+const categories = {
+    "WOMEN": {
+      "Tops & Tees": ["Blouses", "Crop Tops", "T-Shirts", "Hoodies & Sweaters"],
+      "Dresses & Bottoms": ["Dresses & Frocks", "Skirts", "Trousers", "Denims", "Shorts", "Pants"],
+      "Special Categories": ["Jumpsuits", "Bodysuits", "Office Wear", "Gym Wear", "Night & Loungewear"]
+    },
+    "MEN": {
+      "Tops": ["Shirts", "T-Shirts", "Hoodies & Sweaters"],
+      "Bottoms": ["Trousers", "Denims", "Shorts", "Pants"],
+      "Special Categories": ["Office Wear", "Gym Wear"]
+    },
+    "KIDS & BABY": {
+      "Boys' Clothing (3-16)": [],
+      "Girls' Clothing (3-16)": [],
+      "Baby Clothing": [],
+      "Footwear": [],
+      "Bags & Accessories": ["Kids' Bags", "Kids' Watches", "Hats & Caps"],
+      "Mother & Baby Care": []
+    },
+    "WATCHES": {
+      "Men's Watches": [],
+      "Women's Watches": [],
+      "Kids' Watches": []
+    },
+    "FOOTWEAR": {
+      "Women's Footwear": [],
+      "Men's Footwear": [],
+      "Kids' Footwear": []
+    },
+    "BAGS & WALLETS": {
+      "Handbags": [],
+      "Backpacks": [],
+      "Wallets": [],
+      "Travel Bags": []
+    },
+    "ACCESSORIES": {
+      "Bags & Backpacks": ["Handbags", "Backpacks", "Travel Bags"],
+      "Belts": [],
+      "Headwear": ["Caps", "Ice Caps", "Hats", "Beanies"],
+      "Jewelry": ["Necklaces", "Bracelets", "Earrings"],
+      "Perfumes & Fragrances": [],
+      "Wallets & Cardholders": [],
+      "Tie Pins & Cufflinks": []
+    },
+    "SALE & OFFERS": {
+      "Best Deals": [],
+      "Clearance Sale": [],
+      "Limited-Time Discounts": []
+    }
+  };
+
+
 const AddProducts = () => {
     const [uploadedImages, setUploadedImages] = useState([]);
+
+    const [optionsCategory2, setOptionsCategory2] = useState([]);
+    const [optionsCategory3, setOptionsCategory3] = useState([]);
+
     const [formData, setFormData] = useState({
     product_id: '',
     product_name: '',
@@ -28,6 +85,30 @@ const AddProducts = () => {
     product_variations: [{ size: '', color: '', units: '' }]
   });
 
+//---------------------------------------------------------------------------------------------------------------------------  
+  const handleChangeCategory1 = (e) => {
+    const selectedCategory1 = e.target.value;
+    setFormData(prevState => ({ ...prevState, category1: selectedCategory1 }));
+    const subCategories = Object.keys(categories[selectedCategory1]);
+    setOptionsCategory2(subCategories);
+    setOptionsCategory3([]);
+    setFormData(prevState => ({ ...prevState, category2: '', category3: '' }));
+  };
+
+  const handleChangeCategory2 = (e) => {
+    const selectedCategory2 = e.target.value;
+    setFormData(prevState => ({ ...prevState, category2: selectedCategory2 }));
+    const subSubCategories = categories[formData.category1][selectedCategory2];
+    setOptionsCategory3(subSubCategories);
+    setFormData(prevState => ({ ...prevState, category3: '' }));
+  };
+
+  const handleChangeCategory3 = (e) => {
+    setFormData(prevState => ({ ...prevState, category3: e.target.value }));
+  };
+
+  
+//---------------------------------------------------------------------------------------------------------------------------  
   const handleImageChange = (event) => {
     const files = event.target.files;
     if (files.length > 0) {
@@ -320,10 +401,11 @@ const AddProducts = () => {
               </div>
             </div>
           </div>
-          {/* Gender and Limited Edition */}
+
+{/* Category selection Section */}
           <div className="form-row">
             <div className="form-group">
-              <label>Gender</label>
+              <label>Category 1</label>
               <div className="input-group">
                 <FaVenusMars className="input-icon" />
                 <select
@@ -341,46 +423,67 @@ const AddProducts = () => {
               </div>
             </div>
             <div className="form-group">
-              <label>Limited Edition</label>
+              <label>Category 2</label>
               <div className="input-group">
                 <FaVenusMars className="input-icon" />
                 <select
-                  name="limited_edition"
+                  name="gender"
                   value={formData.gender}
                   onChange={handleChange}
                   required
                 >
-                  <option value="No">No</option>
-                  <option value="Yes">Yes</option>
+                  <option value="">Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Female">Kids</option>
+                  <option value="Unisex">Unisex</option>
+                </select>
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Category 3</label>
+              <div className="input-group">
+                <FaVenusMars className="input-icon" />
+                <select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Female">Kids</option>
+                  <option value="Unisex">Unisex</option>
                 </select>
               </div>
             </div>
           </div>
 
-          {/* Material and Fabric Type */}
+
+{/* Material and Fabric Type */}
           <div className="form-row">
-  {/* Material Selection */}
-  <div className="form-group">
-    <label>Material</label>
-    <div className="input-group">
-      <FaTshirt className="input-icon" />
-      <select
-        name="material"
-        value={formData.material}
-        onChange={handleChange}
-        required
-      >
-        <option value="">Select Material</option>
-        <option value="Cotton">Cotton</option>
-        <option value="Silk">Silk</option>
-        <option value="Linen">Linen</option>
-        <option value="Polyester">Polyester</option>
-        <option value="Wool">Wool</option>
-        <option value="Denim">Denim</option>
-        <option value="Leather">Leather</option>
-      </select>
-    </div>
-  </div>
+            <div className="form-group">
+                <label>Material</label>
+                <div className="input-group">
+                <FaTshirt className="input-icon" />
+                <select
+                    name="material"
+                    value={formData.material}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Select Material</option>
+                    <option value="Cotton">Cotton</option>
+                    <option value="Silk">Silk</option>
+                    <option value="Linen">Linen</option>
+                    <option value="Polyester">Polyester</option>
+                    <option value="Wool">Wool</option>
+                    <option value="Denim">Denim</option>
+                    <option value="Leather">Leather</option>
+                </select>
+                </div>
+            </div>
 
   {/* Fabric Type Selection */}
   <div className="form-group">
