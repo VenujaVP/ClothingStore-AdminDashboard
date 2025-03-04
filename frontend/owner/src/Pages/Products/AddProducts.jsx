@@ -77,49 +77,26 @@ const AddProducts = () => {
         <form onSubmit={handleSubmit}>
 
           {/* Availability Status, Wishlist Count, Final Rating */}
-          <div className="form-row">
+          <div className="form-row display-row">
             <div className="form-group">
               <label>Availability Status</label>
-              <div className="input-group">
+              <div className="display-field">
                 <FaBox className="input-icon" />
-                <select
-                  name="availability_status"
-                  value={formData.availability_status}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="In Stock">In Stock</option>
-                  <option value="Out of Stock">Out of Stock</option>
-                  <option value="Pre-Order">Pre-Order</option>
-                </select>
+                <span>{formData.availability_status}</span>
               </div>
             </div>
             <div className="form-group">
               <label>Wishlist Count</label>
-              <div className="input-group">
+              <div className="display-field">
                 <FaHeart className="input-icon" />
-                <input
-                  type="number"
-                  name="wishlist_count"
-                  placeholder="Enter wishlist count"
-                  value={formData.wishlist_count}
-                  onChange={handleChange}
-                  required
-                />
+                <span>{formData.wishlist_count}</span>
               </div>
             </div>
             <div className="form-group">
               <label>Final Rating</label>
-              <div className="input-group">
+              <div className="display-field">
                 <FaStar className="input-icon" />
-                <input
-                  type="number"
-                  name="final_rating"
-                  placeholder="Enter final rating"
-                  value={formData.final_rating}
-                  onChange={handleChange}
-                  required
-                />
+                <span>{formData.final_rating}</span>
               </div>
             </div>
           </div>
