@@ -290,6 +290,7 @@ const AddProducts = () => {
                   <option value="">Select gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
+                  <option value="Female">Kids</option>
                   <option value="Unisex">Unisex</option>
                 </select>
               </div>
@@ -313,35 +314,53 @@ const AddProducts = () => {
 
           {/* Material and Fabric Type */}
           <div className="form-row">
-            <div className="form-group">
-              <label>Material</label>
-              <div className="input-group">
-                <FaTshirt className="input-icon" />
-                <input
-                  type="text"
-                  name="material"
-                  placeholder="Enter material"
-                  value={formData.material}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <label>Fabric Type</label>
-              <div className="input-group">
-                <FaTshirt className="input-icon" />
-                <input
-                  type="text"
-                  name="fabric_type"
-                  placeholder="Enter fabric type"
-                  value={formData.fabric_type}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-          </div>
+  {/* Material Selection */}
+  <div className="form-group">
+    <label>Material</label>
+    <div className="input-group">
+      <FaTshirt className="input-icon" />
+      <select
+        name="material"
+        value={formData.material}
+        onChange={handleChange}
+        required
+      >
+        <option value="">Select Material</option>
+        <option value="Cotton">Cotton</option>
+        <option value="Silk">Silk</option>
+        <option value="Linen">Linen</option>
+        <option value="Polyester">Polyester</option>
+        <option value="Wool">Wool</option>
+        <option value="Denim">Denim</option>
+        <option value="Leather">Leather</option>
+      </select>
+    </div>
+  </div>
+
+  {/* Fabric Type Selection */}
+  <div className="form-group">
+    <label>Fabric Type</label>
+    <div className="input-group">
+      <FaTshirt className="input-icon" />
+      <select
+        name="fabric_type"
+        value={formData.fabric_type}
+        onChange={handleChange}
+        required
+      >
+        <option value="">Select Fabric Type</option>
+        <option value="Twill">Twill</option>
+        <option value="Satin">Satin</option>
+        <option value="Jersey">Jersey</option>
+        <option value="Ribbed">Ribbed</option>
+        <option value="Chiffon">Chiffon</option>
+        <option value="Velvet">Velvet</option>
+        <option value="Canvas">Canvas</option>
+      </select>
+    </div>
+  </div>
+</div>
+
 
           {/* Return Policy */}
           <div className="form-row">
