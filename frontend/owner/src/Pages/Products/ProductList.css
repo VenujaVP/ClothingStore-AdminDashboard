@@ -58,6 +58,74 @@
     outline: none;
 }
 
+.filter-section {
+    margin-bottom: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.filter-section h3 {
+    color: #23b893;
+    margin-bottom: 15px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-options {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.filter-group select,
+.filter-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    transition: all 0.3s ease;
+    background-color: white;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+    border-color: #23b893;
+    box-shadow: 0 0 0 3px rgba(35, 184, 147, 0.1);
+    outline: none;
+}
+
+.price-range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price-range input {
+    flex: 1;
+}
+
+.price-range span {
+    color: #666;
+}
+
 .product-table {
     width: 100%;
     border-collapse: collapse;
@@ -137,6 +205,10 @@
 
     .product-list-card {
         padding: 20px;
+    }
+
+    .filter-options {
+        flex-direction: column;
     }
 
     .product-table th,
