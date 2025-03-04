@@ -1,14 +1,10 @@
 .add-employee-container {
     padding: 20px;
-    margin-left: 65px; /* Match sidebar width */
-    margin-top: 70px; /* Match navbar height */
-    min-height: calc(100vh - 70px);
     background: #f5f7fb;
     transition: all 0.3s ease;
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding-top: 40px;
 }
 
 /* When sidebar is expanded */
