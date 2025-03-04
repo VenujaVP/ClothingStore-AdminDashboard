@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import './AddProducts.css';
-import { FaBox, FaTag, FaInfoCircle, FaWeightHanging, FaPlus, FaCalendar, FaTshirt, FaPalette, FaBalanceScale, FaVenusMars, FaStar, FaHeart, FaMinus } from 'react-icons/fa';
+import { FaBox, FaTag, FaList , FaInfoCircle, FaWeightHanging, FaPlus, FaCalendar, FaTshirt, FaPalette, FaBalanceScale, FaVenusMars, FaStar, FaHeart, FaMinus } from 'react-icons/fa';
 
 
 const categories = {
@@ -107,7 +107,7 @@ const AddProducts = () => {
     setFormData(prevState => ({ ...prevState, category3: e.target.value }));
   };
 
-  
+
 //---------------------------------------------------------------------------------------------------------------------------  
   const handleImageChange = (event) => {
     const files = event.target.files;
@@ -403,58 +403,58 @@ const AddProducts = () => {
           </div>
 
 {/* Category selection Section */}
+          {/* Category selection Section */}
           <div className="form-row">
             <div className="form-group">
               <label>Category 1</label>
               <div className="input-group">
-                <FaVenusMars className="input-icon" />
+                <FaList  className="input-icon" />
                 <select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
+                  name="category1"
+                  value={formData.category1}
+                  onChange={handleChangeCategory1}
                   required
                 >
-                  <option value="">Select gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Female">Kids</option>
-                  <option value="Unisex">Unisex</option>
+                  <option value="">Select Category 1</option>
+                  {Object.keys(categories).map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
                 </select>
               </div>
             </div>
             <div className="form-group">
               <label>Category 2</label>
               <div className="input-group">
-                <FaVenusMars className="input-icon" />
+                <FaList  className="input-icon" />
                 <select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
+                  name="category2"
+                  value={formData.category2}
+                  onChange={handleChangeCategory2}
                   required
+                  disabled={!formData.category1}
                 >
-                  <option value="">Select gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Female">Kids</option>
-                  <option value="Unisex">Unisex</option>
+                  <option value="">Select Category 2</option>
+                  {optionsCategory2.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
                 </select>
               </div>
             </div>
             <div className="form-group">
               <label>Category 3</label>
               <div className="input-group">
-                <FaVenusMars className="input-icon" />
+                <FaList  className="input-icon" />
                 <select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
+                  name="category3"
+                  value={formData.category3}
+                  onChange={handleChangeCategory3}
                   required
+                  disabled={!formData.category2}
                 >
-                  <option value="">Select gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Female">Kids</option>
-                  <option value="Unisex">Unisex</option>
+                  <option value="">Select Category 3</option>
+                  {optionsCategory3.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
                 </select>
               </div>
             </div>

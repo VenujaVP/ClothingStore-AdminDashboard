@@ -5,21 +5,62 @@
 
 import React, { useState } from 'react';
 import './ProductList.css';
-import { FaSearch, FaEdit, FaTrash, FaSort, FaFilter } from 'react-icons/fa';
+import { FaSearch, FaEdit, FaTrash, FaSort, FaFilter, FaEye } from 'react-icons/fa';
 
 const ProductList = () => {
   const [products, setProducts] = useState([
-    { id: 1, name: 'Product A', category: 'Electronics', price: 299.99, stock: 10 },
-    { id: 2, name: 'Product B', category: 'Clothing', price: 49.99, stock: 5 },
-    { id: 3, name: 'Product C', category: 'Home & Kitchen', price: 99.99, stock: 20 },
-    { id: 4, name: 'Product D', category: 'Electronics', price: 199.99, stock: 15 },
-    { id: 5, name: 'Product E', category: 'Clothing', price: 79.99, stock: 0 },
+    {
+      id: 1,
+      name: 'Product A',
+      dateAdded: '2023-01-01',
+      category1: 'Electronics',
+      category2: 'Gadgets',
+      price: 299.99,
+      stock: 10,
+    },
+    {
+      id: 2,
+      name: 'Product B',
+      dateAdded: '2023-02-01',
+      category1: 'Clothing',
+      category2: 'Menswear',
+      price: 49.99,
+      stock: 5,
+    },
+    {
+      id: 3,
+      name: 'Product C',
+      dateAdded: '2023-03-01',
+      category1: 'Home & Kitchen',
+      category2: 'Kitchenware',
+      price: 99.99,
+      stock: 20,
+    },
+    {
+      id: 4,
+      name: 'Product D',
+      dateAdded: '2023-04-01',
+      category1: 'Electronics',
+      category2: 'Accessories',
+      price: 199.99,
+      stock: 15,
+    },
+    {
+      id: 5,
+      name: 'Product E',
+      dateAdded: '2023-05-01',
+      category1: 'Clothing',
+      category2: 'Womenswear',
+      price: 79.99,
+      stock: 0,
+    },
   ]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [filters, setFilters] = useState({
-    category: '',
+    category1: '',
+    category2: '',
     minPrice: '',
     maxPrice: '',
     inStock: false,
@@ -64,13 +105,14 @@ const ProductList = () => {
   // Filter products based on search query and filters
   const filteredProducts = sortedProducts.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = filters.category ? product.category === filters.category : true;
+    const matchesCategory1 = filters.category1 ? product.category1 === filters.category1 : true;
+    const matchesCategory2 = filters.category2 ? product.category2 === filters.category2 : true;
     const matchesPrice =
       (filters.minPrice ? product.price >= parseFloat(filters.minPrice) : true) &&
       (filters.maxPrice ? product.price <= parseFloat(filters.maxPrice) : true);
     const matchesStock = filters.inStock ? product.stock > 0 : true;
 
-    return matchesSearch && matchesCategory && matchesPrice && matchesStock;
+    return matchesSearch && matchesCategory1 && matchesCategory2 && matchesPrice && matchesStock;
   });
 
   // Handle delete product
@@ -99,12 +141,21 @@ const ProductList = () => {
           </h3>
           <div className="filter-options">
             <div className="filter-group">
-              <label>Category</label>
-              <select name="category" value={filters.category} onChange={handleFilterChange}>
+              <label>Category 1</label>
+              <select name="category1" value={filters.category1} onChange={handleFilterChange}>
                 <option value="">All Categories</option>
                 <option value="Electronics">Electronics</option>
                 <option value="Clothing">Clothing</option>
                 <option value="Home & Kitchen">Home & Kitchen</option>
+              </select>
+            </div>
+            <div className="filter-group">
+              <label>Category 2</label>
+              <select name="category2" value={filters.category2} onChange={handleFilterChange}>
+                <option value="">All Subcategories</option>
+                <option value="Gadgets">Gadgets</option>
+                <option value="Menswear">Menswear</option>
+                <option value="Kitchenware">Kitchenware</option>
               </select>
             </div>
             <div className="filter-group">
@@ -143,29 +194,30 @@ const ProductList = () => {
         <table className="product-table">
           <thead>
             <tr>
-              <th onClick={() => handleSort('name')}>
-                Name <FaSort className="sort-icon" />
-              </th>
-              <th onClick={() => handleSort('category')}>
-                Category <FaSort className="sort-icon" />
-              </th>
-              <th onClick={() => handleSort('price')}>
-                Price <FaSort className="sort-icon" />
-              </th>
-              <th onClick={() => handleSort('stock')}>
-                Stock <FaSort className="sort-icon" />
-              </th>
+              <th onClick={() => handleSort('id')}>Product ID <FaSort className="sort-icon" /></th>
+              <th onClick={() => handleSort('name')}>Name <FaSort className="sort-icon" /></th>
+              <th onClick={() => handleSort('dateAdded')}>Date Added <FaSort className="sort-icon" /></th>
+              <th onClick={() => handleSort('category1')}>Category 1 <FaSort className="sort-icon" /></th>
+              <th onClick={() => handleSort('category2')}>Category 2 <FaSort className="sort-icon" /></th>
+              <th onClick={() => handleSort('price')}>Price <FaSort className="sort-icon" /></th>
+              <th onClick={() => handleSort('stock')}>Stock <FaSort className="sort-icon" /></th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredProducts.map((product) => (
               <tr key={product.id}>
+                <td>{product.id}</td>
                 <td>{product.name}</td>
-                <td>{product.category}</td>
+                <td>{product.dateAdded}</td>
+                <td>{product.category1}</td>
+                <td>{product.category2}</td>
                 <td>${product.price.toFixed(2)}</td>
                 <td>{product.stock}</td>
                 <td>
+                  <button className="view-btn">
+                    <FaEye /> View
+                  </button>
                   <button className="edit-btn">
                     <FaEdit /> Edit
                   </button>
