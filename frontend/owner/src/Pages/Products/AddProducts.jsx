@@ -8,8 +8,8 @@ import './AddProducts.css';
 import { FaBox, FaTag, FaInfoCircle, FaWeightHanging, FaPlus, FaCalendar, FaTshirt, FaPalette, FaBalanceScale, FaVenusMars, FaStar, FaHeart, FaMinus } from 'react-icons/fa';
 
 const AddProducts = () => {
-  const [uploadedImage, setUploadedImage] = useState(null);
-  const [formData, setFormData] = useState({
+    const [uploadedImages, setUploadedImages] = useState([]);
+    const [formData, setFormData] = useState({
     product_id: '',
     product_name: '',
     product_description: '',
@@ -29,11 +29,22 @@ const AddProducts = () => {
   });
 
   const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageURL = URL.createObjectURL(file);
-      setUploadedImage(imageURL);
+    const files = event.target.files;
+    if (files.length > 0) {
+      const newImages = Array.from(files).map((file) => URL.createObjectURL(file));
+      const updatedImages = [...uploadedImages, ...newImages];
+      if (updatedImages.length > 10) {
+        alert("You can upload up to 10 images.");
+        return;
+      }
+      setUploadedImages(updatedImages);
     }
+  };
+
+  const handleRemoveImage = (index) => {
+    const updatedImages = [...uploadedImages];
+    updatedImages.splice(index, 1);
+    setUploadedImages(updatedImages);
   };
 
   const handleChange = (e) => {
@@ -141,19 +152,29 @@ const AddProducts = () => {
 
           {/* Image Upload Section */}
           <div className="image-upload-section">
-            <label>Upload Product Image</label>
+            <label>Upload Product Images (Up to 10)</label>
             <div className="image-upload-wrapper">
-              {uploadedImage ? (
-                <img src={uploadedImage} alt="Uploaded Preview" className="uploaded-image-preview" />
-              ) : (
-                <div className="image-placeholder">No Image Uploaded</div>
+              {uploadedImages.map((image, index) => (
+                <div key={index} className="uploaded-image-preview-container">
+                  <img src={image} alt="Uploaded Preview" className="uploaded-image-preview" />
+                  <button
+                    type="button"
+                    className="remove-image-btn"
+                    onClick={() => handleRemoveImage(index)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              {uploadedImages.length < 10 && (
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="image-upload-input"
+                />
               )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="image-upload-input"
-              />
             </div>
           </div>
 
