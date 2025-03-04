@@ -3,7 +3,6 @@
 /* eslint-disable no-unused-vars */
 
 //npm install react-icons react-router-dom axios yup 
-//npm install react-icons
 //npm install @mui/material @emotion/react @emotion/styled
 //npm install @react-oauth/google@latest
 

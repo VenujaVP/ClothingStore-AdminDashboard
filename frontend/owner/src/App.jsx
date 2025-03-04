@@ -3,28 +3,31 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-key */
 
-// npm install react react-dom @react-oauth/google react-icons react-router-dom
+// npm install react react-dom @react-oauth/google react-icons react-router-dom  axios yup @mui/material @emotion/react @emotion/styled
 
 import React, { useState, useEffect } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './App.css'
 import Sidebar from './component/Sidebar/Sidebar';
 import Navbar from './component/Navbar/Navbar';
 
+import Login from './Pages/Enter/Login/Login'
+
 // Import pages
 import AddEmployee from './Pages/Employee/AddEmployee';
-// Import other pages as needed
-// import EmployeeList from './Pages/Employee/EmployeeList';
-// import Products from './Pages/Products/Products';
 import AddProducts from './Pages/Products/AddProducts';
 import ProductList from './Pages/Products/ProductList';
-// import Home from './Pages/Home/Home';
-// import Settings from './Pages/Settings/Settings';
-// import Messages from './Pages/Messages/Messages';
+
 
 const App = () => {
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  const shouldDisplaySidebar = () => {
+    const excludedPaths = ['/login', '/register', '/forgotpassword', '/passwordresetfinish', '/checkyouremail'];
+    return !excludedPaths.includes(location.pathname) && !location.pathname.startsWith('/reset-password');
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -44,38 +47,37 @@ const App = () => {
 
   return (
     <div className="app">
-      <Sidebar 
-        isMobileMenuOpen={isMobileMenuOpen} 
-        onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
-      />
+
+      {shouldDisplaySidebar() &&       
       <Navbar 
         onMobileMenuClick={handleMobileMenuToggle}
         isMobile={isMobile}
         isMenuOpen={isMobileMenuOpen}
-      />
+      /> &&       
+      <Sidebar 
+      isMobileMenuOpen={isMobileMenuOpen} 
+      onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
+      />}
+
+      <Routes>
+      <Route path="/login" element={<Login />} />
+      </Routes>
+
       <div className="main-content">
         <Routes>
           {/* Default route */}
           <Route path="/" element={<Navigate to="/home" replace />} />
-
-          {/* Main routes */}
-          {/* <Route path="/home" element={<Home />} /> */}
 
           {/* Employee routes */}
           <Route path="/employees/add" element={<AddEmployee />} />
           {/* <Route path="/employees/list" element={<EmployeeList />} /> */}
 
           {/* Product routes */}
-          {/* <Route path="/products" element={<Products />} /> */}
           <Route path="/products/add" element={<AddProducts />} />
           <Route path="/products/list" element={<ProductList />} />
 
-          {/* Other routes */}
-          {/* <Route path="/settings" element={<Settings />} />
-          <Route path="/messages" element={<Messages />} /> */}
-
           {/* 404 route */}
-          <Route path="*" element={<Navigate to="/home" replace />} />
+          {/* <Route path="*" element={<Navigate to="/home" replace />} /> */}
         </Routes>
       </div>
     </div>
