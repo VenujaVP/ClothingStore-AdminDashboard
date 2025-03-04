@@ -72,6 +72,37 @@ const AddEmployee = () => {
 
           <div className="form-row">
             <div className="form-group">
+              <label>First Name</label>
+              <div className="input-group">
+                <FaUser className="input-icon" />
+                <input
+                  type="text"
+                  name="f_name"
+                  placeholder="Enter first name"
+                  value={formData.f_name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Last Name</label>
+              <div className="input-group">
+                <FaUser className="input-icon" />
+                <input
+                  type="text"
+                  name="l_name"
+                  placeholder="Enter last name"
+                  value={formData.l_name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
               <label>Password</label>
               <div className="input-group">
                 <FaLock className="input-icon" />
@@ -100,37 +131,6 @@ const AddEmployee = () => {
                   <option value="manager">Manager</option>
                   <option value="employee">Employee</option>
                 </select>
-              </div>
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>First Name</label>
-              <div className="input-group">
-                <FaUser className="input-icon" />
-                <input
-                  type="text"
-                  name="f_name"
-                  placeholder="Enter first name"
-                  value={formData.f_name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <label>Last Name</label>
-              <div className="input-group">
-                <FaUser className="input-icon" />
-                <input
-                  type="text"
-                  name="l_name"
-                  placeholder="Enter last name"
-                  value={formData.l_name}
-                  onChange={handleChange}
-                  required
-                />
               </div>
             </div>
           </div>
