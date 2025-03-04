@@ -1,0 +1,348 @@
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+
+.email-check-wrapper {
+    text-align: center;
+    padding: 30px 20px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.email-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    background: #23b893;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 28px;
+    animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+    0% {
+        transform: scale(0);
+    }
+    70% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.email-check-content {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.email-check-content h2 {
+    color: black; /* Changed to black */
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.email-message {
+    margin-bottom: 20px;
+}
+
+.primary-text {
+    color: black; /* Changed to black */
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+.email-address {
+    color: #23b893;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    word-break: break-all;
+    padding: 0 20px;
+}
+
+.secondary-text {
+    color: black; /* Changed to black */
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.resend-btn, .back-to-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.resend-btn {
+    background: #23b893;
+    border: none;
+    color: white;
+}
+
+.resend-btn:hover {
+    background: #1a8b6f;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(35, 184, 147, 0.2);
+}
+
+.resend-btn:active {
+    transform: translateY(0);
+}
+
+.back-to-login {
+    background: transparent;
+    border: 1px solid #23b893;
+    color: #23b893;
+}
+
+.back-to-login:hover {
+    background: rgba(35, 184, 147, 0.1);
+    transform: translateY(-2px);
+}
+
+.back-to-login:active {
+    transform: translateY(0);
+}
+
+.button-icon {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.resend-btn:hover .button-icon {
+    transform: rotate(180deg);
+}
+
+.back-to-login:hover .button-icon {
+    transform: translateX(-3px);
+}
+
+.help-text {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.help-text p {
+    color: black; /* Changed to black */
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.support-link {
+    color: #23b893;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: color 0.3s ease;
+}
+
+.support-link:hover {
+    color: #1a8b6f;
+    text-decoration: underline;
+}
+
+/* Update login container height */
+.login-container {
+    min-height: 500px !important;
+}
+
+/* Focus States */
+.resend-btn:focus, 
+.back-to-login:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(35, 184, 147, 0.3);
+}
+
+.support-link:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(35, 184, 147, 0.2);
+    border-radius: 4px;
+}
+
+/* Loading State */
+.resend-btn.loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.resend-btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin: -10px 0 0 -10px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .login-container {
+        min-height: 400px !important;
+    }
+
+    .email-check-wrapper {
+        padding: 20px 15px;
+    }
+
+    .email-icon-wrapper {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+
+    .email-check-content h2 {
+        font-size: 1.3rem;
+    }
+
+    .email-address {
+        font-size: 1rem;
+    }
+
+    .action-buttons {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        min-height: 350px !important;
+    }
+
+    .email-check-wrapper {
+        padding: 15px 10px;
+    }
+
+    .email-icon-wrapper {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+
+    .email-check-content h2 {
+        font-size: 1.2rem;
+    }
+
+    .primary-text {
+        font-size: 0.9rem;
+    }
+
+    .email-address {
+        font-size: 0.95rem;
+        padding: 0 10px;
+    }
+
+    .secondary-text {
+        font-size: 0.85rem;
+    }
+
+    .resend-btn, .back-to-login {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .help-text {
+        margin-top: 15px;
+        padding-top: 12px;
+    }
+
+    .help-text p,
+    .support-link {
+        font-size: 0.8rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .email-check-wrapper {
+        padding: 15px;
+        box-shadow: none;
+    }
+
+    .action-buttons,
+    .support-link {
+        display: none;
+    }
+
+    .help-text {
+        border-top: none;
+    }
+}
+
+/* High Contrast Mode */
+@media (forced-colors: active) {
+    .email-icon-wrapper {
+        border: 2px solid currentColor;
+    }
+
+    .resend-btn,
+    .back-to-login {
+        border: 2px solid currentColor;
+    }
+
+    .resend-btn {
+        color: black;
+    }
+
+    .back-to-login {
+        color: black;
+    }
+
+    .primary-text,
+    .secondary-text {
+        color: black;
+    }
+
+    .email-address {
+        color: black;
+    }
+
+    .help-text p {
+        color: black;
+    }
+
+    .support-link {
+        color: black;
+    }
+}

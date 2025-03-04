@@ -11,9 +11,10 @@ const AddEmployee = () => {
   const [formData, setFormData] = useState({
     employee_id: '',
     email: '',
-    password: '',
     f_name: '',
     l_name: '',
+    password: '',
+    com_password: '',
     role: '',
     phone_1: '',
     phone_2: '',
@@ -117,6 +118,36 @@ const AddEmployee = () => {
               </div>
             </div>
             <div className="form-group">
+              <label>Password</label>
+              <div className="input-group">
+                <FaLock className="input-icon" />
+                <input
+                  type="password"
+                  name="com_password"
+                  placeholder="Re-Enter password"
+                  value={formData.com_password}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Entry Date</label>
+              <div className="input-group">
+                <FaCalendar className="input-icon" />
+                <input
+                  type="date"
+                  name="entry_date"
+                  value={formData.entry_date}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="form-group">
               <label>Role</label>
               <div className="input-group">
                 <FaUserTag className="input-icon" />
@@ -127,7 +158,7 @@ const AddEmployee = () => {
                   required
                 >
                   <option value="">Select role</option>
-                  <option value="admin">Admin</option>
+                  <option value="admin">Cahsier</option>
                   <option value="manager">Manager</option>
                   <option value="employee">Employee</option>
                 </select>
@@ -165,21 +196,7 @@ const AddEmployee = () => {
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Entry Date</label>
-              <div className="input-group">
-                <FaCalendar className="input-icon" />
-                <input
-                  type="date"
-                  name="entry_date"
-                  value={formData.entry_date}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-          </div>
+
 
           <div className="form-actions">
             <button type="button" className="cancel-btn">Cancel</button>
