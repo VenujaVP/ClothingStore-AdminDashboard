@@ -11,7 +11,8 @@ import './App.css'
 import Sidebar from './component/Sidebar/Sidebar';
 import Navbar from './component/Navbar/Navbar';
 
-import Login from './Pages/Enter/Login/Login'
+import Login from './Pages/Enter/Login/Login';
+
 
 // Import pages
 import AddEmployee from './Pages/Employee/AddEmployee';
@@ -47,37 +48,27 @@ const App = () => {
 
   return (
     <div className="app">
+      {shouldDisplaySidebar() && (
+        <>
+          <Navbar 
+            onMobileMenuClick={handleMobileMenuToggle}
+            isMobile={isMobile}
+            isMenuOpen={isMobileMenuOpen}
+          />
+          <Sidebar 
+            isMobileMenuOpen={isMobileMenuOpen} 
+            onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
+          />
+        </>
+      )}
 
-      {shouldDisplaySidebar() &&       
-      <Navbar 
-        onMobileMenuClick={handleMobileMenuToggle}
-        isMobile={isMobile}
-        isMenuOpen={isMobileMenuOpen}
-      /> &&       
-      <Sidebar 
-      isMobileMenuOpen={isMobileMenuOpen} 
-      onMobileMenuClose={() => setIsMobileMenuOpen(false)} 
-      />}
-
-      <Routes>
-      <Route path="/login" element={<Login />} />
-      </Routes>
-
-      <div className="main-content">
+      <div className={`main-content ${shouldDisplaySidebar() ? '' : 'full-screen'}`}>
         <Routes>
-          {/* Default route */}
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Navigate to="/home" replace />} />
-
-          {/* Employee routes */}
           <Route path="/employees/add" element={<AddEmployee />} />
-          {/* <Route path="/employees/list" element={<EmployeeList />} /> */}
-
-          {/* Product routes */}
           <Route path="/products/add" element={<AddProducts />} />
           <Route path="/products/list" element={<ProductList />} />
-
-          {/* 404 route */}
-          {/* <Route path="*" element={<Navigate to="/home" replace />} /> */}
         </Routes>
       </div>
     </div>
