@@ -16,7 +16,7 @@ import AddEmployee from './Pages/Employee/AddEmployee';
 // Import other pages as needed
 // import EmployeeList from './Pages/Employee/EmployeeList';
 // import Products from './Pages/Products/Products';
-// import AddProduct from './Pages/Products/AddProduct';
+import AddProducts from './Pages/Products/AddProducts';
 // import ProductList from './Pages/Products/ProductList';
 // import Home from './Pages/Home/Home';
 // import Settings from './Pages/Settings/Settings';
@@ -66,9 +66,9 @@ const App = () => {
           {/* <Route path="/employees/list" element={<EmployeeList />} /> */}
 
           {/* Product routes */}
-          {/* <Route path="/products" element={<Products />} />
-          <Route path="/products/add" element={<AddProduct />} />
-          <Route path="/products/list" element={<ProductList />} /> */}
+          {/* <Route path="/products" element={<Products />} /> */}
+          <Route path="/products/add" element={<AddProducts />} />
+          {/* <Route path="/products/list" element={<ProductList />} /> */}
 
           {/* Other routes */}
           {/* <Route path="/settings" element={<Settings />} />
