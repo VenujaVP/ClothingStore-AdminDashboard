@@ -7,10 +7,6 @@
     align-items: flex-start;
 }
 
-/* When sidebar is expanded */
-.sidebar.expanded ~ .add-employee-container {
-    margin-left: 250px;
-}
 
 .add-employee-card {
     background: white;
@@ -18,7 +14,6 @@
     padding: 30px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
     width: 100%;
-    max-width: 800px; /* Reduced from 1000px */
 }
 
 .add-employee-card h2 {

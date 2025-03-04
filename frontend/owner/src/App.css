@@ -24,10 +24,6 @@ body {
   min-height: calc(100vh - 70px);
 }
 
-/* When sidebar is expanded */
-.sidebar.expanded ~ .main-content {
-  margin-left: 250px;
-}
 
 /* Mobile styles */
 @media (max-width: 768px) {
