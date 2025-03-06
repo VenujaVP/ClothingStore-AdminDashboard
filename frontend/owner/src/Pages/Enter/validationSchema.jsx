@@ -3,9 +3,13 @@
 import * as Yup from 'yup';
 
 export const registerValidationSchema = Yup.object({
-  fullName: Yup.string()
-    .required('Full Name is required')
-    .min(3, 'Full Name must be at least 3 characters'),
+  firstName: Yup.string()
+    .required('First Name is required')
+    .min(3, 'First Name must be at least 3 characters'),
+
+  lastName: Yup.string()
+    .required('Last Name is required')
+    .min(3, 'Last Name must be at least 3 characters'),
 
   email: Yup.string()
     .email('Invalid email format')

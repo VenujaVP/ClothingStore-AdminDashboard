@@ -21,7 +21,8 @@ const Register = () => {
   const [alertSeverity, setAlertSeverity] = useState(''); // To handle success or error severity
 
   const [formData, setFormData] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
     password: '',
@@ -50,14 +51,14 @@ const Register = () => {
     registerValidationSchema
       .validate(formData, { abortEarly: false })
       .then(() => {
-        axios.post('http://localhost:8082/auth/register', formData)
+        axios.post('http://localhost:8082/api/auth/owner-register', formData)
           .then(res => {
             if (res.status === 201) {
               console.log('Registration successful:', res.data);
               setMessage('Registration successful!');
               setAlertSeverity('success'); // Show success
               setOpen(true);
-              navigate('/login');
+              navigate('/owner-login');
             } else {
               console.error('Unexpected response:', res);
               setMessage('Registration failed. Please try again.');
@@ -142,9 +143,23 @@ const Register = () => {
                 </div>
                 <input
                   type="text"
-                  name="fullName"
-                  placeholder="Full Name"
-                  value={formData.fullName}
+                  name="firstName"
+                  placeholder="First Name"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                />
+                {errors.fullName && <p className="error-text">{errors.fullName}</p>}
+              </div>
+              <div className="input-group">
+                <div className="input-icon">
+                  <FaUser />
+                </div>
+                <input
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name"
+                  value={formData.lastName}
                   onChange={handleChange}
                   required
                 />
@@ -224,7 +239,7 @@ const Register = () => {
             </form>
 
             <p className="login-link">
-              Already have an account? <Link to="/login">Sign In</Link>
+              Already have an account? <Link to="/owner-login">Sign In</Link>
             </p>
           </div>
         </div>

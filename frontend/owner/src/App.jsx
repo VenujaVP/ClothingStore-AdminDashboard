@@ -29,8 +29,8 @@ const App = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const shouldDisplaySidebar = () => {
-    const excludedPaths = ['/login', '/register', '/forgotpassword', '/passwordresetfinish', '/checkyouremail'];
-    return !excludedPaths.includes(location.pathname) && !location.pathname.startsWith('/reset-password');
+    const excludedPaths = ['/owner-login', '/owner-register', '/owner-forgot-password', '/owner-password-reset-finish', '/owner-check-your-email'];
+    return !excludedPaths.includes(location.pathname) && !location.pathname.startsWith('/owner-reset-password');
   };
 
   useEffect(() => {
@@ -67,11 +67,11 @@ const App = () => {
 
       <div className={`main-content ${shouldDisplaySidebar() ? '' : 'full-screen'}`}>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
-          <Route path="/reset-password/:resetToken" element={<SetNewPassword />} />
-          <Route path="/passwordresetfinish" element={<PasswordResetFinish />} />
+          <Route path="/owner-login" element={<Login />} />
+          <Route path="/owner-register" element={<Register />} />
+          <Route path="/owner-forgot-password" element={<ForgotPassword />} />
+          <Route path="/owner-reset-password/:resetToken" element={<SetNewPassword />} />
+          <Route path="/owner-password-reset-finish" element={<PasswordResetFinish />} />
           
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/employees/add" element={<AddEmployee />} />

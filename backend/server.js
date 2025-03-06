@@ -8,7 +8,7 @@
 
 //npm i -D nodemon ->developer depemdancy
 
-// npm install mysql2 dotenv bcrypt jsonwebtoken express cors cookie-parser mongoose
+// npm install mysql2 dotenv bcrypt jsonwebtoken express cors cookie-parser mongoose express-validator
 //npm install express-validator for validations = for Parameterized Queries:
 //npm install nodemailer
 
@@ -42,7 +42,7 @@ app.use(cors({          //---------------------------------Allows requests from 
 app.use(cookieParser());
 
 // Routes
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/forgot-password', forgotPasswordRoutes); 
 
 //Owner

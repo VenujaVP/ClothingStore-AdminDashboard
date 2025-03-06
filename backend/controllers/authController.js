@@ -2,22 +2,27 @@
 
 import { createUser, findUserByEmail } from '../models/userModel.js';
 import { validationResult } from 'express-validator';
-import sqldb from '../config/sqldb.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import sqldb from '../config/sqldb.js';
 
-const registerUser = (req, res) => {
-    // console.log(req.body)
-    const { fullName, email, phone, password, confirmPassword } = req.body;
+const saltRounds = 10;
 
-    // Check if the user already exists by email
-    findUserByEmail(email, (err, results) => {
+// Register a new owner
+export const registerOwner = (req, res) => {
+    const { firstName, lastName, email, phone, password, confirmPassword } = req.body;
+
+    // Check if the owner already exists by email
+    const checkOwnerExistence = 'SELECT * FROM OWNERS WHERE EMAIL = ?';
+    
+    sqldb.query(checkOwnerExistence, [email], (err, results) => {
         if (err) {
-            return res.status(500).json({ message: "Error checking for existing user" });
+            return res.status(500).json({ message: "Error checking for existing owner" });
         }
 
         if (results.length > 0) {
-            return res.status(400).json({ message: "User with this email already exists" });
+            return res.status(400).json({ message: "owner with this email already exists" });
         }
 
         // Check if passwords match
@@ -25,19 +30,34 @@ const registerUser = (req, res) => {
             return res.status(400).json({ message: "Passwords must match" });
         }
 
-        // Call the createUser function to insert a new user
-        createUser(fullName, email, phone, password, (err, result) => {
+        // Hash the password
+        bcrypt.hash(password, saltRounds, (err, passwordHash) => {
             if (err) {
-                return res.status(500).json(err);
+                console.log("Error hashing password:", err);
+                return res.status(500).json({ message: "Error hashing password" });
             }
 
-            // Return success response
-            return res.status(201).json(result);
+            // SQL query to insert a new owner into the database
+            const sql = `INSERT INTO OWNERS 
+                        (F_NAME, L_NAME, EMAIL, PHONE_NUM, PASSWORD) 
+                        VALUES (?, ?, ?, ?, ?)`;
+
+            const values = [firstName, lastName, email, phone, password, confirmPassword];
+
+            sqldb.query(sql, values, (err, result) => {
+                if (err) {
+                    console.log("Error inserting data:", err);
+                    return res.status(500).json({ message: "Error inserting data into the server" });
+                }
+
+                console.log("Owner registered successfully");
+                return res.status(201).json({ Status: "Success", userId: result.insertId });
+            });
         });
     });
 };
 
-const loginUser = (req, res) => {
+export const loginUser = (req, res) => {
     const { email, password } = req.body;
 
     // Validate input
@@ -104,4 +124,4 @@ const loginUser = (req, res) => {
 };
 
   
-export { registerUser, loginUser };
+// export { registerOwner, loginUser };

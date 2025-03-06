@@ -1,3 +1,16 @@
+CREATE TABLE owners (
+    ID INT AUTO_INCREMENT PRIMARY KEY,       -- Unique ID for each user
+    EMAIL VARCHAR(255) NOT NULL UNIQUE,       -- User's email (unique)
+    F_NAME VARCHAR(255),                     -- Adjust VARCHAR length as needed
+    L_NAME VARCHAR(255);                      -- Adjust VARCHAR length as needed
+    PHONE_NUM VARCHAR(15) NOT NULL,           -- User's phone number (adjust length based on expected phone format)
+    PASSWORD VARCHAR(255) NOT NULL,           -- User's password (hashed)
+    resetToken VARCHAR(255),                  -- Password reset token (optional, used for password recovery)
+    resetTokenExpiry DATETIME,                -- Expiry date and time for the reset token
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp for when the user account was created
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Timestamp for last update
+);
+
 CREATE TABLE customers (
     ID INT AUTO_INCREMENT PRIMARY KEY,       -- Unique ID for each user
     NAME VARCHAR(255) NOT NULL,               -- User's name

@@ -22,7 +22,7 @@ const ForgotPassword = () => {
     setResendSuccess(false); // Reset resend success message
 
     try {
-      const response = await fetch('http://localhost:8081/forgot-password/request-password-reset', {
+      const response = await fetch('http://localhost:8081/owner-forgot-password/request-password-reset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -48,7 +48,7 @@ const ForgotPassword = () => {
   };
 
   const handleBackToLogin = () => {
-    window.location.href = '/login';
+    window.location.href = '/owner-login';
   };
 
   const handleCloseSnackbar = (event, reason) => {
@@ -109,7 +109,7 @@ const ForgotPassword = () => {
                   </button>
 
                   <div className="signup-link">
-                    Remember your password? <a href="/login">Back to Login</a>
+                    Remember your password? <a href="/owner-login">Back to Login</a>
                   </div>
                 </form>
               </>
