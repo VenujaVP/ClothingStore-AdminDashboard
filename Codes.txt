@@ -1,0 +1,13 @@
+erDiagram
+    EMPLOYEE {
+        ID int PK
+        NAME string
+        EMAIL string
+        PHONE_NUM string
+        PASSWORD string
+        resetToken string
+        resetTokenExpiry datetime
+        createdAt datetime
+        updatedAt datetime
+    }
+

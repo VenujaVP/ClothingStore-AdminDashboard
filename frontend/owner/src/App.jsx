@@ -12,7 +12,10 @@ import Sidebar from './component/Sidebar/Sidebar';
 import Navbar from './component/Navbar/Navbar';
 
 import Login from './Pages/Enter/Login/Login';
-
+import Register from './pages/Enter/Register/Register';
+import SetNewPassword from './pages/Enter/SetNewPassword/SetNewPassword';
+import ForgotPassword from './pages/Enter/ForgotPassword/ForgotPassword';
+import PasswordResetFinish from './pages/Enter/PasswordReset/PasswordResetFinish';
 
 // Import pages
 import AddEmployee from './Pages/Employee/AddEmployee';
@@ -65,6 +68,11 @@ const App = () => {
       <div className={`main-content ${shouldDisplaySidebar() ? '' : 'full-screen'}`}>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/reset-password/:resetToken" element={<SetNewPassword />} />
+          <Route path="/passwordresetfinish" element={<PasswordResetFinish />} />
+          
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/employees/add" element={<AddEmployee />} />
           <Route path="/products/add" element={<AddProducts />} />
