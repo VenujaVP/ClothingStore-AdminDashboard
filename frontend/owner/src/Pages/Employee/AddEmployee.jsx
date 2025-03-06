@@ -6,6 +6,10 @@
 import React, { useState } from 'react';
 import './AddEmployee.css';
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaCalendar, FaUserTag, FaIdCard } from 'react-icons/fa';
+import axios from 'axios';
+import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import addEmployeeValidationSchema from '../inputValidations'
 
 const AddEmployee = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +25,12 @@ const AddEmployee = () => {
     entry_date: ''
   });
 
+  const [errors, setErrors] = useState({});
+  const [alertSeverity, setAlertSeverity] = useState('');
+  const [message, setMessage] = useState('');
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -31,8 +41,39 @@ const AddEmployee = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Add your submit logic here
+
+    // Validate the form data
+    addEmployeeValidationSchema
+      .validate(formData, { abortEarly: false })
+      .then(() => {
+        // Send data to the backend
+        axios.post('http://localhost:8082/api/employees', formData)
+          .then(res => {
+            if (res.data && res.data.Status === "Success") {
+              console.log('Employee added successfully:', res.data);
+              navigate('/employees');  // Redirect to employee list or another page
+            } else {
+              console.error('Error adding employee:', res);
+              setAlertSeverity("error");
+              setMessage(res.data.Error || 'An error occurred while adding employee');
+              setOpen(true);
+            }
+          })
+          .catch(err => {
+            console.error('Error:', err);
+            setAlertSeverity('error');
+            setMessage(err.response?.data?.message || 'Server error. Please try again.');
+            setOpen(true);
+          });
+      })
+      .catch(err => {
+        const validationErrors = {};
+        err.inner.forEach(error => {
+          validationErrors[error.path] = error.message; // Collect validation errors
+        });
+        setErrors(validationErrors); // Set errors to state for display
+        console.error('Validation Error:', validationErrors);
+      });
   };
 
   return (
@@ -53,6 +94,7 @@ const AddEmployee = () => {
                   onChange={handleChange}
                   required
                 />
+                {errors.employee_id && <span className="error-text">{errors.employee_id}</span>}
               </div>
             </div>
             <div className="form-group">
@@ -67,6 +109,7 @@ const AddEmployee = () => {
                   onChange={handleChange}
                   required
                 />
+                {errors.email && <span className="error-text">{errors.email}</span>}
               </div>
             </div>
           </div>
@@ -84,6 +127,7 @@ const AddEmployee = () => {
                   onChange={handleChange}
                   required
                 />
+                {errors.f_name && <span className="error-text">{errors.f_name}</span>}
               </div>
             </div>
             <div className="form-group">
@@ -98,6 +142,7 @@ const AddEmployee = () => {
                   onChange={handleChange}
                   required
                 />
+                {errors.l_name && <span className="error-text">{errors.l_name}</span>}
               </div>
             </div>
           </div>
@@ -115,20 +160,22 @@ const AddEmployee = () => {
                   onChange={handleChange}
                   required
                 />
+                {errors.password && <span className="error-text">{errors.password}</span>}
               </div>
             </div>
             <div className="form-group">
-              <label>Password</label>
+              <label>Confirm Password</label>
               <div className="input-group">
                 <FaLock className="input-icon" />
                 <input
                   type="password"
                   name="com_password"
-                  placeholder="Re-Enter password"
+                  placeholder="Re-enter password"
                   value={formData.com_password}
                   onChange={handleChange}
                   required
                 />
+                {errors.com_password && <span className="error-text">{errors.com_password}</span>}
               </div>
             </div>
           </div>
@@ -145,6 +192,7 @@ const AddEmployee = () => {
                   onChange={handleChange}
                   required
                 />
+                {errors.entry_date && <span className="error-text">{errors.entry_date}</span>}
               </div>
             </div>
             <div className="form-group">
@@ -158,10 +206,11 @@ const AddEmployee = () => {
                   required
                 >
                   <option value="">Select role</option>
-                  <option value="admin">Cahsier</option>
+                  <option value="admin">Cashier</option>
                   <option value="manager">Manager</option>
                   <option value="employee">Employee</option>
                 </select>
+                {errors.role && <span className="error-text">{errors.role}</span>}
               </div>
             </div>
           </div>
@@ -179,6 +228,7 @@ const AddEmployee = () => {
                   onChange={handleChange}
                   required
                 />
+                {errors.phone_1 && <span className="error-text">{errors.phone_1}</span>}
               </div>
             </div>
             <div className="form-group">
@@ -195,8 +245,6 @@ const AddEmployee = () => {
               </div>
             </div>
           </div>
-
-
 
           <div className="form-actions">
             <button type="button" className="cancel-btn">Cancel</button>

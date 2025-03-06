@@ -1,13 +1,32 @@
 erDiagram
     EMPLOYEE {
         ID int PK
-        NAME string
-        EMAIL string
-        PHONE_NUM string
-        PASSWORD string
-        resetToken string
+        USERNAME varchar 
+        EMAIL varchar
+        F_NAME varchar 
+        L_NAME varchar 
+        PASSWORD varchar
+        PHONE_NUM varchar
+        ENTRY_DATE datetime
+        ROLE varchar
+        PHONE_NUM1 varchar
+        PHONE_NUM2 varchar
+        resetToken varchar
         resetTokenExpiry datetime
-        createdAt datetime
-        updatedAt datetime
+        createdAt timestamp
+        updatedAt timestamp
     }
 
+
+erDiagram
+    CUSTOMERS {
+        ID int PK
+        NAME varchar
+        EMAIL varchar
+        PHONE_NUM varchar
+        PASSWORD varchar
+        resetToken varchar
+        resetTokenExpiry datetime
+        createdAt timestamp
+        updatedAt timestamp
+    }

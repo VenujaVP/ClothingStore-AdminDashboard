@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-key */
 
-// npm install react react-dom @react-oauth/google react-icons react-router-dom  axios yup @mui/material @emotion/react @emotion/styled
+// npm install react react-dom @react-oauth/google react-icons react-router-dom axios yup @mui/material @emotion/react @emotion/styled
 
 import React, { useState, useEffect } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
