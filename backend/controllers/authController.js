@@ -1,8 +1,6 @@
 //controllers/authController.js
 
 import { createUser, findUserByEmail } from '../models/userModel.js';
-import { validationResult } from 'express-validator';
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import sqldb from '../config/sqldb.js';
