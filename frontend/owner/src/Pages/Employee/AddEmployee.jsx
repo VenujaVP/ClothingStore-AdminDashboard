@@ -8,7 +8,7 @@ import './AddEmployee.css';
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaCalendar, FaUserTag, FaIdCard } from 'react-icons/fa';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import addEmployeeValidationSchema from '../inputValidations'
+import {addEmployeeValidationSchema} from '../inputValidations'
 
 const AddEmployee = () => {
   const [formData, setFormData] = useState({
@@ -87,8 +87,8 @@ const AddEmployee = () => {
                 <FaIdCard className="input-icon" />
                 <input
                   type="text"
-                  name="employee_id"
-                  placeholder="Enter employee ID"
+                  name="employee_uname"
+                  placeholder="Enter Employee User Name"
                   value={formData.employee_uname}
                   onChange={handleChange}
                   required

@@ -37,7 +37,9 @@ CREATE TABLE EmployeeDetails (
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-__________________________________________________________________________________________________________________________________________
+__________________
+
+________________________________________________________________________________________________________________________
 
 
 CREATE TABLE product_table (
