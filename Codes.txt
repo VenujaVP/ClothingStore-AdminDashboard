@@ -1,6 +1,6 @@
 erDiagram
     EMPLOYEE {
-        ID int PK
+        EMPLOYEE_ID int PK
         USERNAME varchar 
         EMAIL varchar
         F_NAME varchar 
@@ -30,3 +30,23 @@ erDiagram
         createdAt timestamp
         updatedAt timestamp
     }
+
+
+erDiagram
+    ADMINS {
+        ID int PK
+        NAME varchar
+        EMAIL varchar
+        PHONE_NUM varchar
+        PASSWORD varchar
+        resetToken varchar
+        resetTokenExpiry datetime
+        createdAt timestamp
+        updatedAt timestamp
+    }
+
+
+
+gront part is okey.
+now i need backend function 
+router.post('/owner-add-employee', adminAddEmployee);

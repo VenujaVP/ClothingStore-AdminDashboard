@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 
 export const addEmployeeValidationSchema = Yup.object({
-  employee_id: Yup.string()
+  employee_uname: Yup.string()
     .required('Employee ID is required')
     .matches(/^[A-Za-z0-9]+$/, 'Employee ID must be alphanumeric'),
 

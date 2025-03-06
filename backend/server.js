@@ -19,6 +19,8 @@ import verifyUser from './middleware/authMiddleware.js';
 import forgotPasswordRoutes from './routes/forgotPasswordRoutes.js';
 import cleanupExpiredTokens from './services/tokenCleanup.js';
 
+import ownerRoutes from './routes/ownerRoutes.js'
+
 import dotenv from 'dotenv';
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -43,11 +45,15 @@ app.use(cookieParser());
 app.use('/auth', authRoutes);
 app.use('/forgot-password', forgotPasswordRoutes); 
 
+//Owner
+app.use('/api/owner', ownerRoutes)
+
+
+
 app.get('/tokenverification', verifyUser, (req, res) => {
     // If the token is verified, send back the user information
     return res.status(200).json({ Status: "Success", name: req.name });
 });
-
 
 // Token cleanup every 5 minutes
 setInterval(async () => {

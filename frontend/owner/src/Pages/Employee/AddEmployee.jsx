@@ -7,13 +7,12 @@ import React, { useState } from 'react';
 import './AddEmployee.css';
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaCalendar, FaUserTag, FaIdCard } from 'react-icons/fa';
 import axios from 'axios';
-import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import addEmployeeValidationSchema from '../inputValidations'
 
 const AddEmployee = () => {
   const [formData, setFormData] = useState({
-    employee_id: '',
+    employee_uname: '',
     email: '',
     f_name: '',
     l_name: '',
@@ -47,7 +46,7 @@ const AddEmployee = () => {
       .validate(formData, { abortEarly: false })
       .then(() => {
         // Send data to the backend
-        axios.post('http://localhost:8082/api/employees', formData)
+        axios.post('http://localhost:8082/api/owner/owner-add-employee', formData)
           .then(res => {
             if (res.data && res.data.Status === "Success") {
               console.log('Employee added successfully:', res.data);
@@ -90,7 +89,7 @@ const AddEmployee = () => {
                   type="text"
                   name="employee_id"
                   placeholder="Enter employee ID"
-                  value={formData.employee_id}
+                  value={formData.employee_uname}
                   onChange={handleChange}
                   required
                 />
