@@ -26,8 +26,8 @@ export const ownerCreateEmployee = (req, res) => {
 
         // SQL query to insert a new employee into the database
         const sql = `INSERT INTO EmployeeDetails 
-                    (USERNAME, EMAIL, F_NAME, L_NAME, PASSWORD, PHONE_NUM, PHONE_NUM1, PHONE_NUM2, ENTRY_DATE, ROLE) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                    (USERNAME, EMAIL, F_NAME, L_NAME, PASSWORD, PHONE_NUM1, PHONE_NUM2, ENTRY_DATE, ROLE) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
         const values = [
             employee_uname, // employee_uname
@@ -52,7 +52,8 @@ export const ownerCreateEmployee = (req, res) => {
 
             res.status(200).json({ 
                 message: "Employee created successfully", 
-                employeeId: result.insertId 
+                employeeId: result.insertId,
+                Status: "Success"
             });
         });
     });

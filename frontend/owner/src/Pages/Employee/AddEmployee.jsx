@@ -46,7 +46,7 @@ const AddEmployee = () => {
       .validate(formData, { abortEarly: false })
       .then(() => {
         // Send data to the backend
-        axios.post('http://localhost:8082/api/owner/owner-add-employee', formData)
+        axios.post('http://localhost:8082/api/owner/owner-create-employee', formData)
           .then(res => {
             if (res.data && res.data.Status === "Success") {
               console.log('Employee added successfully:', res.data);
