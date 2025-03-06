@@ -61,3 +61,18 @@ export const validateOwnerRegister = [
     .notEmpty()
     .withMessage('Confirm Password is required')
 ];
+
+export const validateLogin = [
+  // Validate email
+  body('email')
+    .isEmail()
+    .withMessage('Invalid email format')
+    .normalizeEmail()
+    .notEmpty()
+    .withMessage('Email is required'),
+
+  // Validate password
+  body('password')
+    .notEmpty()
+    .withMessage('Password is required')
+];

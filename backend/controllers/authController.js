@@ -1,6 +1,5 @@
 //controllers/authController.js
 
-import { createUser, findUserByEmail } from '../models/userModel.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import sqldb from '../config/sqldb.js';
@@ -40,7 +39,7 @@ export const registerOwner = (req, res) => {
                         (F_NAME, L_NAME, EMAIL, PHONE_NUM, PASSWORD) 
                         VALUES (?, ?, ?, ?, ?)`;
 
-            const values = [firstName, lastName, email, phone, password, confirmPassword];
+            const values = [firstName, lastName, email, phone, passwordHash];
 
             sqldb.query(sql, values, (err, result) => {
                 if (err) {
@@ -49,7 +48,7 @@ export const registerOwner = (req, res) => {
                 }
 
                 console.log("Owner registered successfully");
-                return res.status(201).json({ Status: "Success", userId: result.insertId });
+                return res.status(201).json({ Status: "Success" });
             });
         });
     });
@@ -57,14 +56,15 @@ export const registerOwner = (req, res) => {
 
 export const loginUser = (req, res) => {
     const { email, password } = req.body;
-
+    console.log(req.body)
     // Validate input
     if (!email || !password) {
         return res.status(400).json({ Error: "Email and password are required" });
     }
 
-    const sql = 'SELECT * FROM USER WHERE EMAIL = ?';
+    const sql = 'SELECT * FROM OWNERS WHERE EMAIL = ?';
     sqldb.query(sql, [email], (err, result) => {
+        console.log(result)
         if (err) {
             console.error("Database query error:", err);
             return res.status(500).json({ Error: "Database query error" });
@@ -78,6 +78,7 @@ export const loginUser = (req, res) => {
 
         // Compare passwords
         bcrypt.compare(password, hashedPassword, (err, match) => {
+            console.log(match)
             if (err) {
                 console.error("Error during password comparison:", err);
                 return res.status(500).json({ Error: "Error during password comparison" });
@@ -120,6 +121,5 @@ export const loginUser = (req, res) => {
         });
     });
 };
-
-  
+ 
 // export { registerOwner, loginUser };
