@@ -5,11 +5,13 @@ import bcrypt from 'bcrypt';
 import sqldb from '../config/sqldb.js';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
 
 const saltRounds = 10;
+dotenv.config();
 
 // Owner Auth Part
-export const registerOwner = (req, res) => {
+export const OwnerRegister = (req, res) => {
     const { firstName, lastName, email, phone, password, confirmPassword } = req.body;
 
     // Check if the owner already exists by email
@@ -56,7 +58,7 @@ export const registerOwner = (req, res) => {
     });
 };
 
-export const loginOwner = (req, res) => {
+export const OwnerLogin = (req, res) => {
     const { email, password } = req.body;
     console.log(req.body)
     // Validate input
@@ -124,7 +126,7 @@ export const loginOwner = (req, res) => {
     });
 };
  
-export const requestOwnerPasswordReset = (req, res) => {
+export const ownerRequestPasswordReset = (req, res) => {
     const { email } = req.body;
 
     // Step 1: Find Owner by email
@@ -159,7 +161,7 @@ export const requestOwnerPasswordReset = (req, res) => {
             }
 
             // Step 4: Send password reset email
-            const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+            const resetLink = `http://localhost:5173/owner-reset-password/${resetToken}`;
             console.log("Reset Link:", resetLink);
 
             const transporter = nodemailer.createTransport({
@@ -189,3 +191,50 @@ export const requestOwnerPasswordReset = (req, res) => {
     });
 };
 
+export const ownerResetPassword = (req, res) => {
+    const { resetToken, newPassword, confirmNewPassword } = req.body;
+
+    if (!resetToken || !newPassword || !confirmNewPassword) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Check if passwords match
+    if (newPassword !== confirmNewPassword) {
+        return res.status(400).json({ message: "Passwords must match" });
+    }
+
+    const currentTime = new Date();
+
+    console.log("resetToken:", resetToken);
+    console.log("newPassword:", newPassword);
+    console.log("confirmPassword:", confirmNewPassword);
+    console.log("currentTime:", currentTime);
+
+    // Find the user by reset token and check expiry
+    const sql = 'SELECT * FROM OWNERS WHERE resetToken = ? AND resetTokenExpiry < ?';
+    // const sql = 'SELECT * FROM user WHERE resetToken = ?';
+
+    // console.log("SQL Query:", sql);
+    // console.log("Query Parameters:", [resetToken, currentTime]);
+
+    sqldb.query(sql, [resetToken, currentTime], (err, result) => {
+        if (err) return res.status(500).json({ message: "Database error" });
+        console.log("Query Result:", result);
+        if (result.length === 0) return res.status(400).json({ message: "Invalid or expired reset token" });
+
+        const owner = result[0];
+
+        // Hash the new password
+        bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
+            if (err) return res.status(500).json({ message: "Error hashing password" });
+
+            // Clear the token and expiry before updating the password
+            const updateSql = 'UPDATE OWNERS SET password = ?, resetToken = NULL, resetTokenExpiry = NULL WHERE ID = ?';
+            sqldb.query(updateSql, [hashedPassword, owner.ID], (err) => {
+                if (err) return res.status(500).json({ message: "Error updating password" });
+
+                res.status(200).json({ message: "Password reset successful" });
+            });
+        });
+    });
+};

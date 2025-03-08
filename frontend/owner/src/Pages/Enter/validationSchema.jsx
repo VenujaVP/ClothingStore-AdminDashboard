@@ -43,7 +43,7 @@ export const loginValidationSchema = Yup.object({
 });
 
 
-export const passwordValidationSchema = Yup.object({
+export const ResetPasswordValidationSchema = Yup.object({
   newPassword: Yup.string()
     .min(8, 'Password must be at least 8 characters')
     .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')

@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaLock, FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { useParams, useNavigate } from 'react-router-dom';
-import { passwordValidationSchema } from '../validationSchema';  // Import schema from the appropriate path
+import { ResetPasswordValidationSchema } from '../validationSchema';  // Import schema from the appropriate path
 import axios from 'axios';
 import './SetNewPassword.css';
 
@@ -16,13 +16,13 @@ const SetNewPassword = () => {
   // Initial form data state
   const [formData, setFormData] = useState({
     newPassword: '',
-    confirmPassword: '',
+    confirmNewPassword: '',
   });
 
   // Password visibility state
   const [showPassword, setShowPassword] = useState({
     password: false,
-    confirm: false,
+    confirmPassword: false,
   });
 
   // Validation errors state
@@ -40,15 +40,15 @@ const SetNewPassword = () => {
     e.preventDefault();
 
     // Validate form using Yup schema
-    passwordValidationSchema
+    ResetPasswordValidationSchema
       .validate(formData, { abortEarly: false })
       .then(() => {
         setIsSubmitting(true);
         // Make API call to reset password
-        axios.post('http://localhost:8081/forgot-password/reset-password', {
+        axios.post('http://localhost:8082/api/auth/owner-reset-password', {
           resetToken,
           newPassword: formData.newPassword,
-          confirmPassword: formData.confirmPassword,
+          confirmNewPassword: formData.confirmNewPassword,
         })
         .then((res) => {
           if (res.status === 200) {
