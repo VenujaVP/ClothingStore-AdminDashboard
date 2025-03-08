@@ -52,7 +52,7 @@ export const ResetPasswordValidationSchema = Yup.object({
     .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character')
     .required('Password is required'),
 
-  confirmPassword: Yup.string()
+  confirmNewPassword: Yup.string()
     .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
     .required('Confirm Password is required'),
 });

@@ -10,7 +10,7 @@ import './PasswordResetFinish.css';
 
 const PasswordResetFinish = () => {
   const handleLoginClick = () => {
-    window.location.href = '/login';
+    window.location.href = '/owner-login';
   };
 
   return (

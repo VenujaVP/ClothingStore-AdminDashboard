@@ -2,10 +2,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FaLock, FaEye, FaEyeSlash, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ResetPasswordValidationSchema } from '../validationSchema';  // Import schema from the appropriate path
+import { ResetPasswordValidationSchema } from '../validationSchema'; // Import schema from the appropriate path
 import axios from 'axios';
 import './SetNewPassword.css';
 
@@ -22,7 +22,7 @@ const SetNewPassword = () => {
   // Password visibility state
   const [showPassword, setShowPassword] = useState({
     password: false,
-    confirmPassword: false,
+    confirm: false,
   });
 
   // Validation errors state
@@ -35,44 +35,55 @@ const SetNewPassword = () => {
   const [resetSuccess, setResetSuccess] = useState(false);
   const [resetError, setResetError] = useState(null);
 
+  // Function to check if all password validations are met
+  const areAllValidationsPassed = () => {
+    const { newPassword, confirmNewPassword } = formData;
+
+    return (
+      newPassword.length >= 8 &&
+      /[A-Z]/.test(newPassword) &&
+      /[a-z]/.test(newPassword) &&
+      /[0-9]/.test(newPassword) &&
+      /[!@#$%^&*(),.?":{}|<>]/.test(newPassword) &&
+      newPassword === confirmNewPassword
+    );
+  };
+
   // Form submission handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form using Yup schema
-    ResetPasswordValidationSchema
-      .validate(formData, { abortEarly: false })
-      .then(() => {
-        setIsSubmitting(true);
-        // Make API call to reset password
-        axios.post('http://localhost:8082/api/auth/owner-reset-password', {
-          resetToken,
-          newPassword: formData.newPassword,
-          confirmNewPassword: formData.confirmNewPassword,
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            setResetSuccess(true);
-          } else {
-            setResetError(res.data.message || 'An error occurred');
-          }
-        })
-        .catch((err) => {
-          console.error('Error:', err);
-          setResetError('Failed to reset password');
-        })
-        .finally(() => {
-          setIsSubmitting(false);
-        });
-      })
-      .catch((err) => {
+    try {
+      // Validate form using Yup schema
+      await ResetPasswordValidationSchema.validate(formData, { abortEarly: false });
+      setIsSubmitting(true);
+
+      // Make API call to reset password
+      const res = await axios.post('http://localhost:8082/api/auth/owner-reset-password', {
+        resetToken,
+        newPassword: formData.newPassword,
+        confirmNewPassword: formData.confirmNewPassword,
+      });
+
+      if (res.status === 200) {
+        setResetSuccess(true);
+      } else {
+        setResetError(res.data.message || 'An error occurred');
+      }
+    } catch (err) {
+      if (err.name === 'ValidationError') {
         const validationErrors = {};
         err.inner.forEach((error) => {
           validationErrors[error.path] = error.message; // Collect validation errors
         });
         setErrors(validationErrors); // Set errors to state for display
-        console.error('Validation Error:', validationErrors);
-      });
+      } else {
+        console.error('Error:', err);
+        setResetError('Failed to reset password');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Handle input changes
@@ -82,6 +93,14 @@ const SetNewPassword = () => {
       ...prev,
       [name]: value,
     }));
+
+    // Clear the error for the field being updated
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: '',
+      }));
+    }
   };
 
   // Toggle password visibility
@@ -174,9 +193,9 @@ const SetNewPassword = () => {
                 </span>
                 <input
                   type={showPassword.confirm ? 'text' : 'password'}
-                  name="confirmPassword"
+                  name="confirmNewPassword"
                   placeholder="Confirm new password"
-                  value={formData.confirmPassword}
+                  value={formData.confirmNewPassword}
                   onChange={handleChange}
                   required
                 />
@@ -188,7 +207,7 @@ const SetNewPassword = () => {
                   {showPassword.confirm ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
-              {errors.confirmPassword && <div className="error-message">{errors.confirmPassword}</div>}
+              {errors.confirmNewPassword && <div className="error-message">{errors.confirmNewPassword}</div>}
 
               <div className="password-validations">
                 <div className={`validation-item ${formData.newPassword.length >= 8 ? 'valid' : ''}`}>
@@ -211,11 +230,10 @@ const SetNewPassword = () => {
                   <ValidationIcon isValid={/[!@#$%^&*(),.?":{}|<>]/.test(formData.newPassword)} />
                   <span>One special character</span>
                 </div>
-                <div className={`validation-item ${formData.newPassword && formData.confirmPassword && formData.newPassword === formData.confirmPassword ? 'valid' : ''}`}>
-                  <ValidationIcon isValid={formData.newPassword === formData.confirmPassword && formData.newPassword && formData.confirmPassword} />
+                <div className={`validation-item ${formData.newPassword && formData.confirmNewPassword && formData.newPassword === formData.confirmNewPassword ? 'valid' : ''}`}>
+                  <ValidationIcon isValid={formData.newPassword === formData.confirmNewPassword && formData.newPassword && formData.confirmNewPassword} />
                   <span>Passwords match</span>
                 </div>
-
               </div>
 
               {resetError && (
@@ -227,13 +245,13 @@ const SetNewPassword = () => {
               <button
                 type="submit"
                 className={`login-btn ${isSubmitting ? 'loading' : ''}`}
-                disabled={isSubmitting || Object.values(errors).some((error) => error)}
+                disabled={isSubmitting || !areAllValidationsPassed()}
               >
                 {isSubmitting ? 'Resetting...' : 'Reset Password'}
               </button>
 
               <div className="signup-link">
-                Remember your password? <a href="/login">Back to Login</a>
+                Remember your password? <a href="/owner-login">Back to Login</a>
               </div>
             </form>
           </div>

@@ -16,7 +16,6 @@
 import sqldb from './config/sqldb.js'
 import authRoutes from './routes/authRoutes.js'
 import verifyUser from './middleware/authMiddleware.js';
-import forgotPasswordRoutes from './routes/forgotPasswordRoutes.js';
 import cleanupExpiredTokens from './services/tokenCleanup.js';
 
 import ownerRoutes from './routes/ownerRoutes.js'
