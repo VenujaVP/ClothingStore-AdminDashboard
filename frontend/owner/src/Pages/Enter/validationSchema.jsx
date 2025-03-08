@@ -57,3 +57,8 @@ export const passwordValidationSchema = Yup.object({
     .required('Confirm Password is required'),
 });
 
+export const mailValidationSchema = Yup.object({
+  email: Yup.string()
+    .email('Invalid email format')
+    .required('Email is required'),
+});

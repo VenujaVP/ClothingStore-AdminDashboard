@@ -7,44 +7,62 @@
 import React, { useState } from 'react';
 import { FaEnvelope, FaRedo, FaArrowLeft } from 'react-icons/fa';
 import { Snackbar, Alert, Slide } from '@mui/material'; // Import Material-UI components
+import { mailValidationSchema } from '../validationSchema';
 import './ForgotPassword.css';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
+  const [errors, setErrors] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false); // State for resend success message
   const [snackbarOpen, setSnackbarOpen] = useState(false); // State to control Snackbar visibility
 
   const handleSubmit = async (e) => {
-    if (e) e.preventDefault();
-    setIsLoading(true);
-    setResendSuccess(false); // Reset resend success message
-
-    try {
-      const response = await fetch('http://localhost:8081/owner-forgot-password/request-password-reset', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+    e.preventDefault(); // Prevent default form submission
+  
+    // Validate form using Yup schema
+    mailValidationSchema
+      .validate({ email }, { abortEarly: false }) // Validate only the email field
+      .then(async () => {
+        setIsLoading(true);
+        setResendSuccess(false); // Reset resend success message
+  
+        try {
+          const response = await fetch('http://localhost:8082/api/auth/owner-forgot-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+          });
+          console.log(response)
+          if (response.ok) {
+            setIsSubmitted(true);
+            setResendSuccess(true); // Show success message after resend
+            setSnackbarOpen(true); // Open Snackbar
+          } else {
+            alert('Email not found or failed to send reset link');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again.');
+        } finally {
+          setIsLoading(false);
+        }
+      })
+      .catch((err) => {
+        const validationErrors = {};
+        err.inner.forEach((error) => {
+          validationErrors[error.path] = error.message; // Collect validation errors
+        });
+        setErrors(validationErrors); // Set errors to state for display
+        console.error('Validation Error:', validationErrors);
       });
-
-      if (response.ok) {
-        setIsSubmitted(true);
-        setResendSuccess(true); // Show success message after resend
-        setSnackbarOpen(true); // Open Snackbar
-      } else {
-        alert('Email not found or failed to send reset link');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
   };
+  
 
-  const handleResendEmail = () => {
-    handleSubmit(); // Reuse the handleSubmit function to resend the email
+  const handleResendEmail = (e) => {
+    e.preventDefault(); // Prevent default button behavior
+    handleSubmit(e); // Reuse the handleSubmit function to resend the email
   };
 
   const handleBackToLogin = () => {
@@ -98,6 +116,7 @@ const ForgotPassword = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
+                    {errors.email && <p className="error-text">{errors.email}</p>}
                   </div>
 
                   <button

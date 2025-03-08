@@ -43,7 +43,7 @@ app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/forgot-password', forgotPasswordRoutes); 
+// app.use('/forgot-password', forgotPasswordRoutes); 
 
 //Owner
 app.use('/api/owner', ownerRoutes)

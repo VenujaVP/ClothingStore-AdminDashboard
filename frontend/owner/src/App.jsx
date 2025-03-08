@@ -14,7 +14,7 @@ import Navbar from './component/Navbar/Navbar';
 import Login from './Pages/Enter/Login/Login';
 import Register from './pages/Enter/Register/Register';
 import SetNewPassword from './pages/Enter/SetNewPassword/SetNewPassword';
-import ForgotPassword from './pages/Enter/ForgotPassword/ForgotPassword';
+import ForgotPassword from './Pages/Enter/ForgotPassword/ForgotPassword';
 import PasswordResetFinish from './pages/Enter/PasswordReset/PasswordResetFinish';
 
 // Import pages

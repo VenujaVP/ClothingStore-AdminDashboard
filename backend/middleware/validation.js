@@ -76,3 +76,14 @@ export const validateLogin = [
     .notEmpty()
     .withMessage('Password is required')
 ];
+
+export const validateForgotPassword = [
+  // Validate email
+  body('email')
+    .isEmail()
+    .withMessage('Invalid email format')
+    .normalizeEmail()
+    .notEmpty()
+    .withMessage('Email is required'),
+];
+

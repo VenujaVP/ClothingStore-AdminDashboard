@@ -3,10 +3,12 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import sqldb from '../config/sqldb.js';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 
 const saltRounds = 10;
 
-// Register a new owner
+// Owner Auth Part
 export const registerOwner = (req, res) => {
     const { firstName, lastName, email, phone, password, confirmPassword } = req.body;
 
@@ -54,7 +56,7 @@ export const registerOwner = (req, res) => {
     });
 };
 
-export const loginUser = (req, res) => {
+export const loginOwner = (req, res) => {
     const { email, password } = req.body;
     console.log(req.body)
     // Validate input
@@ -122,4 +124,68 @@ export const loginUser = (req, res) => {
     });
 };
  
-// export { registerOwner, loginUser };
+export const requestOwnerPasswordReset = (req, res) => {
+    const { email } = req.body;
+
+    // Step 1: Find Owner by email
+    const findOwnerQuery = 'SELECT * FROM OWNERS WHERE email = ?';
+    sqldb.query(findOwnerQuery, [email], (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ message: "Database error" });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ message: "Owner not found" });
+        }
+
+        const owner = results[0];
+
+        // Step 2: Generate password reset token
+        const resetToken = crypto.randomBytes(20).toString('hex');
+        const resetTokenExpiry = new Date(Date.now() + 900000) // 15 minutes expiry
+            .toISOString()
+            .slice(0, 19)
+            .replace('T', ' ');
+
+        // Step 3: Update token in database
+        const updateTokenQuery = `UPDATE OWNERS SET resetToken = ?, resetTokenExpiry = ? WHERE ID = ?`;
+        sqldb.query(updateTokenQuery, [resetToken, resetTokenExpiry, owner.ID], (err, updateResult) => {
+            if (err) {
+                console.error("Error updating reset token:", err);
+                return res.status(500).json({ message: "Error saving reset token" });
+            }
+            if (updateResult.affectedRows === 0) {
+                return res.status(404).json({ message: "Failed to update reset token" });
+            }
+
+            // Step 4: Send password reset email
+            const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+            console.log("Reset Link:", resetLink);
+
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                }
+            });
+
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: 'Password Reset Request',
+                text: `Click on the link to reset your password: ${resetLink}`
+            };
+
+            transporter.sendMail(mailOptions, (err, info) => {
+                if (err) {
+                    console.error("Error sending email:", err);
+                    return res.status(500).json({ message: "Error sending email", error: err });
+                }
+                console.log("Email sent:", info.response);
+                res.status(200).json({ message: "Password reset email sent successfully" });
+            });
+        });
+    });
+};
+

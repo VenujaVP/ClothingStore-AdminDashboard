@@ -9,7 +9,7 @@ const cleanupExpiredTokens = async () => {
 
         // Compare formatted current time with resetTokenExpiry in the DB
         await sqldb.execute(`
-            UPDATE User
+            UPDATE OWNERS
             SET resetToken = NULL, resetTokenExpiry = NULL
             WHERE resetTokenExpiry <= ?
         `, [currentTime]);
