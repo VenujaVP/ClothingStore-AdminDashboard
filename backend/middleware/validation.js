@@ -89,6 +89,34 @@ export const validateForgotPassword = [
 
 export const validateResetPassword = [
   // Validate password
+  body('newPassword')
+    .isString()
+    .withMessage('Password must be a string')
+    .isLength({ min: 8 })
+    .withMessage('Password must be at least 8 characters')
+    .matches(/[A-Z]/)
+    .withMessage('Password must contain at least one uppercase letter')
+    .matches(/[a-z]/)
+    .withMessage('Password must contain at least one lowercase letter')
+    .matches(/[0-9]/)
+    .withMessage('Password must contain at least one number')
+    .matches(/[!@#$%^&*]/)
+    .withMessage('Password must contain at least one special character')
+    .notEmpty()
+    .withMessage('Password is required'),
+
+  // Validate confirmPassword
+  body('confirmNewPassword')
+    .custom((value, { req }) => value === req.body.newPassword)
+    .withMessage('Passwords must match')
+    .notEmpty()
+    .withMessage('Confirm Password is required')
+];
+
+
+//Owner Inpage Validations
+export const ownerEmployeeAddValidate = [
+  // Validate password
   body('password')
     .isString()
     .withMessage('Password must be a string')
@@ -106,9 +134,11 @@ export const validateResetPassword = [
     .withMessage('Password is required'),
 
   // Validate confirmPassword
-  body('confirmPassword')
+  body('com_password')
     .custom((value, { req }) => value === req.body.password)
     .withMessage('Passwords must match')
     .notEmpty()
     .withMessage('Confirm Password is required')
 ];
+
+

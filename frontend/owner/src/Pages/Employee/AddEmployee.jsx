@@ -8,6 +8,7 @@ import './AddEmployee.css';
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaCalendar, FaUserTag, FaIdCard } from 'react-icons/fa';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import withAuth from '../withAuth';
 import {addEmployeeValidationSchema} from '../inputValidations'
 
 const AddEmployee = () => {
@@ -50,8 +51,19 @@ const AddEmployee = () => {
           .then(res => {
             if (res.data && res.data.Status === "Success") {
               console.log('Employee added successfully:', res.data);
-              navigate('/employees');  // Redirect to employee list or another page
-            } else {
+              setFormData({
+                employee_uname: '',
+                email: '',
+                f_name: '',
+                l_name: '',
+                password: '',
+                com_password: '',
+                phone_1: '',
+                phone_2: '',
+                entry_date: '',
+                role: ''
+              });            
+          } else {
               console.error('Error adding employee:', res);
               setAlertSeverity("error");
               setMessage(res.data.Error || 'An error occurred while adding employee');
@@ -82,7 +94,7 @@ const AddEmployee = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-row">
             <div className="form-group">
-              <label>Employee ID</label>
+              <label>Employee User Name</label>
               <div className="input-group">
                 <FaIdCard className="input-icon" />
                 <input
@@ -255,4 +267,6 @@ const AddEmployee = () => {
   );
 };
 
-export default AddEmployee;
+// export default AddEmployee;
+const AuthenticatedAddEmployee = withAuth(AddEmployee);
+export default AuthenticatedAddEmployee;

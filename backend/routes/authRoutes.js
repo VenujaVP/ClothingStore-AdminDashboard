@@ -7,7 +7,7 @@ import { body } from 'express-validator';
 
 const router = express.Router();
 
-// Route for registering a new user
+// Owner Auth Routes
 router.post('/owner-register', validateOwnerRegister, OwnerRegister);
 router.post('/owner-login', validateLogin, OwnerLogin);
 router.post('/owner-forgot-password', validateForgotPassword, ownerRequestPasswordReset);

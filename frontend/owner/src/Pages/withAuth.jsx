@@ -16,7 +16,7 @@ const withAuth = (WrappedComponent) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-      axios.get('http://localhost:8081/tokenverification', { withCredentials: true })
+      axios.get('http://localhost:8082/tokenverification', { withCredentials: true })
         .then(res => {
           if (res.data.Status === "Success") {
             setIsAuthenticated(true);
@@ -49,7 +49,7 @@ const withAuth = (WrappedComponent) => {
           <div className="login-now-section">
             <h3 className="login-title">Login Expired</h3>
             <p className="login-subtitle">{message}</p>
-            <button className="login-button" onClick={() => navigate('/login')} aria-label="Log in now">
+            <button className="login-button" onClick={() => navigate('/owner-login')} aria-label="Log in now">
               Log In Now
             </button>
           </div>

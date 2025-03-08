@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import './AddProducts.css';
+import withAuth from '../withAuth';
 import { FaBox, FaTag, FaList , FaInfoCircle, FaWeightHanging, FaPlus, FaCalendar, FaTshirt, FaPalette, FaBalanceScale, FaVenusMars, FaStar, FaHeart, FaMinus } from 'react-icons/fa';
 
 
@@ -541,4 +542,7 @@ const AddProducts = () => {
   );
 };
 
-export default AddProducts;
+// export default AddProducts;
+
+const AuthenticatedAddProducts = withAuth(AddProducts);
+export default AuthenticatedAddProducts;

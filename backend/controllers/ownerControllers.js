@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
 import sqldb from '../config/sqldb.js';
+import nodemailer from 'nodemailer';
+
 // import { validateEmail, validatePhoneNumber, validateRole } from './validations';  // Import validation functions
 
 const saltRounds = 10;
@@ -50,10 +52,51 @@ export const ownerCreateEmployee = (req, res) => {
 
             console.log("Employee added successfully");
 
-            res.status(200).json({ 
-                message: "Employee created successfully", 
-                employeeId: result.insertId,
-                Status: "Success"
+            // Step 1: Create a Nodemailer transporter
+            const transporter = nodemailer.createTransport({
+                service: 'gmail', // Use your email service (e.g., Gmail, Outlook)
+                auth: {
+                    user: process.env.EMAIL_USER, // Your email address
+                    pass: process.env.EMAIL_PASS, // Your email password or app password
+                }
+            });
+
+            // Step 2: Define email content
+            const mailOptions = {
+                from: process.env.EMAIL_USER, // Sender email address
+                to: email, // Recipient email address (employee's email)
+                subject: 'Your Employee Account Details', // Email subject
+                // You can also use `html` for a more visually appealing email
+                html: `
+                    <h1>Hello ${f_name} ${l_name},</h1>
+                    <p>Your employee account has been successfully created. Below are your login details:</p>
+                    <ul>
+                        <li><strong>Username:</strong> ${employee_uname}</li>
+                        <li><strong>Email:</strong> ${email}</li>
+                        <li><strong>Password:</strong> ${password}</li>
+                    </ul>
+                    <p>Please use these credentials to log in to your account.</p>
+                    <p>Best regards,<br>Your Company Name</p>
+                `
+            };
+
+            // Step 3: Send the email
+            transporter.sendMail(mailOptions, (err, info) => {
+                if (err) {
+                    console.error("Error sending email:", err);
+                    return res.status(500).json({ 
+                        message: "Employee created successfully, but failed to send email", 
+                        Status: "Success" 
+                    });
+                }
+
+                console.log("Email sent:", info.response);
+
+                // Step 4: Send success response
+                res.status(200).json({ 
+                    message: "Employee created successfully and email sent", 
+                    Status: "Success"
+                });
             });
         });
     });

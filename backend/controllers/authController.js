@@ -238,3 +238,7 @@ export const ownerResetPassword = (req, res) => {
         });
     });
 };
+
+
+// Customer Auth Part
+
