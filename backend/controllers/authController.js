@@ -229,12 +229,12 @@ export const requestPasswordReset = (tableName, userType) => {
                         <p>This link will expire in 15 minutes.</p>
                         <p>Best regards,<br>POLOCITY Team</p>
                     `;
-                } else if (userType === "Customer") {
-                    emailSubject = "Customer Password Reset Assistance - POLOCITY";
+                } else if (userType === "User") {
+                    emailSubject = "User Password Reset Assistance - POLOCITY";
                     emailMessage = `
                         <h2>Password Reset Assistance</h2>
                         <p>Hello ${user.NAME},</p>
-                        <p>We received a request to reset your password for your customer account at <strong>POLOCITY</strong>.</p>
+                        <p>We received a request to reset your password for your User account at <strong>POLOCITY</strong>.</p>
                         <p>Click the link below to securely reset your password:</p>
                         <a href="${resetLink}" style="background: #28a745; padding: 10px 15px; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
                         <p>If this request was not made by you, please disregard this email.</p>

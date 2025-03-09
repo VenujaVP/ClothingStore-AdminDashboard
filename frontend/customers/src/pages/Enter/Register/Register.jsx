@@ -57,7 +57,7 @@ const Register = () => {
               setMessage('Registration successful!');
               setAlertSeverity('success'); // Show success
               setOpen(true);
-              navigate('/login');
+              navigate('/user-login');
             } else {
               console.error('Unexpected response:', res);
               setMessage('Registration failed. Please try again.');
@@ -224,7 +224,7 @@ const Register = () => {
             </form>
 
             <p className="login-link">
-              Already have an account? <Link to="/login">Sign In</Link>
+              Already have an account? <Link to="/user-login">Sign In</Link>
             </p>
           </div>
         </div>

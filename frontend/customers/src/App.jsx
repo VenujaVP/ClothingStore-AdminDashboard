@@ -30,8 +30,8 @@ function App() {
   const location = useLocation();
 
   const shouldDisplaySidebar = () => {
-    const excludedPaths = ['/login', '/register', '/forgotpassword', '/passwordresetfinish', '/checkyouremail'];
-    return !excludedPaths.includes(location.pathname) && !location.pathname.startsWith('/customer-reset-password');
+    const excludedPaths = ['/user-login', '/user-register', '/user-forgotpassword', '/user-passwordresetfinish', '/checkyouremail'];
+    return !excludedPaths.includes(location.pathname) && !location.pathname.startsWith('/user-reset-password');
   };
 
   return (
@@ -41,11 +41,11 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/customer-reset-password/:resetToken" element={<SetNewPassword />} />
-            <Route path="/passwordresetfinish" element={<PasswordResetFinish />} />
+            <Route path="/user-login" element={<Login />} />
+            <Route path="/user-register" element={<Register />} />
+            <Route path="/user-forgotpassword" element={<ForgotPassword />} />
+            <Route path="/user-reset-password/:resetToken" element={<SetNewPassword />} />
+            <Route path="/user-passwordresetfinish" element={<PasswordResetFinish />} />
 
             <Route path="/dashboard" element={<AuthenticatedDashboard />} />
             <Route path="/shoppingcart" element={<AuthenticatedShoppingCart />} />

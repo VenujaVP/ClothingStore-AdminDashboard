@@ -152,7 +152,7 @@ const Login = () => {
                   <input type="checkbox" />
                   <span>Remember me</span>
                 </label>
-                <Link to="/forgotpassword" className="forgot-link">Forgot Password?</Link>
+                <Link to="/user-forgotpassword" className="forgot-link">Forgot Password?</Link>
               </div>
 
               <button type="submit" className="login-btn">
@@ -161,7 +161,7 @@ const Login = () => {
             </form>
 
             <p className="signup-link">
-              Don&apos;t have an account? <Link to="/register">Sign Up</Link>
+              Don&apos;t have an account? <Link to="/user-register">Sign Up</Link>
             </p>
           </div>
         </div>

@@ -15,7 +15,7 @@ router.post('/owner-reset-password', validateResetPassword, resetPassword('OWNER
 
 router.post('/customer-register', validateCustomerRegister, customerRegister);
 router.post('/customer-login', validateLogin, handleLogin('CUSTOMERS'));
-router.post('/customer-forgot-password', validateForgotPassword, requestPasswordReset('CUSTOMERS', 'Customer'));
+router.post('/customer-forgot-password', validateForgotPassword, requestPasswordReset('CUSTOMERS', 'User'));
 router.post('/customer-reset-password', validateResetPassword, resetPassword('CUSTOMERS', 'Customer'));
 
 export default router;
