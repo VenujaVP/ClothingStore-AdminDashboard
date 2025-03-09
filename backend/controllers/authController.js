@@ -175,71 +175,88 @@ export const handleLogin = (tableName) => {
     };
 };
 
+// Reusable function for password reset requests
+export const requestPasswordReset = (tableName, userType) => {
+    return (req, res) => {
+        const { email } = req.body;
 
-export const ownerRequestPasswordReset = (req, res) => {
-    const { email } = req.body;
-
-    // Step 1: Find Owner by email
-    const findOwnerQuery = 'SELECT * FROM OWNERS WHERE email = ?';
-    sqldb.query(findOwnerQuery, [email], (err, results) => {
-        if (err) {
-            console.error("Database error:", err);
-            return res.status(500).json({ message: "Database error" });
-        }
-        if (results.length === 0) {
-            return res.status(404).json({ message: "Owner not found" });
-        }
-
-        const owner = results[0];
-
-        // Step 2: Generate password reset token
-        const resetToken = crypto.randomBytes(20).toString('hex');
-        const resetTokenExpiry = new Date(Date.now() + 900000) // 15 minutes expiry
-            .toISOString()
-            .slice(0, 19)
-            .replace('T', ' ');
-
-        // Step 3: Update token in database
-        const updateTokenQuery = `UPDATE OWNERS SET resetToken = ?, resetTokenExpiry = ? WHERE ID = ?`;
-        sqldb.query(updateTokenQuery, [resetToken, resetTokenExpiry, owner.ID], (err, updateResult) => {
+        // Step 1: Find user by email
+        const findUserQuery = `SELECT * FROM ${tableName} WHERE EMAIL = ?`;
+        sqldb.query(findUserQuery, [email], (err, results) => {
             if (err) {
-                console.error("Error updating reset token:", err);
-                return res.status(500).json({ message: "Error saving reset token" });
+                console.error("Database error:", err);
+                return res.status(500).json({ message: "Database error" });
             }
-            if (updateResult.affectedRows === 0) {
-                return res.status(404).json({ message: "Failed to update reset token" });
+            if (results.length === 0) {
+                return res.status(404).json({ message: `${userType} not found` });
             }
 
-            // Step 4: Send password reset email
-            const resetLink = `http://localhost:5173/owner-reset-password/${resetToken}`;
-            console.log("Reset Link:", resetLink);
+            const user = results[0];
 
-            const transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS,
-                }
-            });
+            // Step 2: Generate password reset token
+            const resetToken = crypto.randomBytes(20).toString('hex');
+            const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000) // 15 minutes expiry
+                .toISOString()
+                .slice(0, 19)
+                .replace('T', ' ');
 
-            const mailOptions = {
-                from: process.env.EMAIL_USER,
-                to: email,
-                subject: 'Password Reset Request',
-                text: `Click on the link to reset your password: ${resetLink}`
-            };
-
-            transporter.sendMail(mailOptions, (err, info) => {
+            // Step 3: Update token in database
+            const updateTokenQuery = `UPDATE ${tableName} SET resetToken = ?, resetTokenExpiry = ? WHERE ID = ?`;
+            sqldb.query(updateTokenQuery, [resetToken, resetTokenExpiry, user.ID], (err, updateResult) => {
                 if (err) {
-                    console.error("Error sending email:", err);
-                    return res.status(500).json({ message: "Error sending email", error: err });
+                    console.error("Error updating reset token:", err);
+                    return res.status(500).json({ message: "Error saving reset token" });
                 }
-                console.log("Email sent:", info.response);
-                res.status(200).json({ message: "Password reset email sent successfully" });
+                if (updateResult.affectedRows === 0) {
+                    return res.status(404).json({ message: "Failed to update reset token" });
+                }
+
+                // Step 4: Generate correct reset link
+                const resetLink = `http://localhost:5173/${userType.toLowerCase()}-reset-password/${resetToken}`;
+
+                // Step 5: Send password reset email
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS,
+                    }
+                });
+
+                const mailOptions = {
+                    from: process.env.EMAIL_USER,
+                    to: email,
+                    subject: 'Password Reset Request',
+                    html: `
+                        <h2>Password Reset Request</h2>
+                        <p>Hello ${user.NAME},</p>
+                        <p>You have requested to reset your password. Click the link below to reset it:</p>
+                        <a href="${resetLink}" style="background: #007bff; padding: 10px 15px; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                        <p>If you did not request this, please ignore this email.</p>
+                        <p>This link will expire in 15 minutes.</p>
+                        <p>Best regards,<br>Your Support Team</p>
+                    `
+                };
+
+                transporter.sendMail(mailOptions, (err, info) => {
+                    if (err) {
+                        console.error("Error sending email:", err);
+                        return res.status(500).json({ message: "Error sending email", error: err });
+                    }
+                    console.log("Email sent:", info.response);
+                    res.status(200).json({ message: "Password reset email sent successfully" });
+                });
             });
         });
-    });
+    };
 };
+
+
+
+
+
+
+
 
 export const ownerResetPassword = (req, res) => {
     const { resetToken, newPassword, confirmNewPassword } = req.body;
@@ -364,4 +381,70 @@ export const ownerResetPassword = (req, res) => {
 //         });
 //     });
 // };
- 
+
+
+
+// export const ownerRequestPasswordReset = (req, res) => {
+//     const { email } = req.body;
+
+//     // Step 1: Find Owner by email
+//     const findOwnerQuery = 'SELECT * FROM OWNERS WHERE email = ?';
+//     sqldb.query(findOwnerQuery, [email], (err, results) => {
+//         if (err) {
+//             console.error("Database error:", err);
+//             return res.status(500).json({ message: "Database error" });
+//         }
+//         if (results.length === 0) {
+//             return res.status(404).json({ message: "Owner not found" });
+//         }
+
+//         const owner = results[0];
+
+//         // Step 2: Generate password reset token
+//         const resetToken = crypto.randomBytes(20).toString('hex');
+//         const resetTokenExpiry = new Date(Date.now() + 900000) // 15 minutes expiry
+//             .toISOString()
+//             .slice(0, 19)
+//             .replace('T', ' ');
+
+//         // Step 3: Update token in database
+//         const updateTokenQuery = `UPDATE OWNERS SET resetToken = ?, resetTokenExpiry = ? WHERE ID = ?`;
+//         sqldb.query(updateTokenQuery, [resetToken, resetTokenExpiry, owner.ID], (err, updateResult) => {
+//             if (err) {
+//                 console.error("Error updating reset token:", err);
+//                 return res.status(500).json({ message: "Error saving reset token" });
+//             }
+//             if (updateResult.affectedRows === 0) {
+//                 return res.status(404).json({ message: "Failed to update reset token" });
+//             }
+
+//             // Step 4: Send password reset email
+//             const resetLink = `http://localhost:5173/owner-reset-password/${resetToken}`;
+//             console.log("Reset Link:", resetLink);
+
+//             const transporter = nodemailer.createTransport({
+//                 service: 'gmail',
+//                 auth: {
+//                     user: process.env.EMAIL_USER,
+//                     pass: process.env.EMAIL_PASS,
+//                 }
+//             });
+
+//             const mailOptions = {
+//                 from: process.env.EMAIL_USER,
+//                 to: email,
+//                 subject: 'Password Reset Request',
+//                 text: `Click on the link to reset your password: ${resetLink}`
+//             };
+
+//             transporter.sendMail(mailOptions, (err, info) => {
+//                 if (err) {
+//                     console.error("Error sending email:", err);
+//                     return res.status(500).json({ message: "Error sending email", error: err });
+//                 }
+//                 console.log("Email sent:", info.response);
+//                 res.status(200).json({ message: "Password reset email sent successfully" });
+//             });
+//         });
+//     });
+// };

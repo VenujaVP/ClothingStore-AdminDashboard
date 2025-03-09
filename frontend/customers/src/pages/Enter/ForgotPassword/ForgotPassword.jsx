@@ -22,7 +22,7 @@ const ForgotPassword = () => {
     setResendSuccess(false); // Reset resend success message
 
     try {
-      const response = await fetch('http://localhost:8081/forgot-password/request-password-reset', {
+      const response = await fetch('http://localhost:8082/forgot-password/request-password-reset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
