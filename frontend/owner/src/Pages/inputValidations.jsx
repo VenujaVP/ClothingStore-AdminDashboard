@@ -91,18 +91,7 @@ export const addExpensesValidationSchema = Yup.object().shape({
     .typeError('Cost must be a number'),
 
   description: Yup.string()
-    .notRequired()
+    .required('Description is required')
     .min(10, 'Description must be at least 10 characters')
     .max(500, 'Description cannot exceed 500 characters'),
-
-  image: Yup.mixed()
-    .nullable()
-    .test('fileSize', 'Image size must be less than 5MB', (value) => {
-      if (!value) return true; // Allow no file
-      return value.size <= 85 * 1024 * 1024; // 5MB limit
-    })
-    .test('fileType', 'Unsupported file format', (value) => {
-      if (!value) return true; // Allow no file
-      return ['image/jpeg', 'image/png', 'image/gif'].includes(value.type);
-    }),
 });
