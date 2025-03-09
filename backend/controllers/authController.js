@@ -6,6 +6,7 @@ import sqldb from '../config/sqldb.js';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import { console } from 'inspector/promises';
 
 const saltRounds = 10;
 dotenv.config();
@@ -284,6 +285,7 @@ export const requestPasswordReset = (tableName, userType) => {
 // Reusable function for resetting password
 export const resetPassword = (tableName, userType) => {
     return (req, res) => {
+        console.log(req)
         const { resetToken, newPassword, confirmNewPassword } = req.body;
 
         if (!resetToken || !newPassword || !confirmNewPassword) {
