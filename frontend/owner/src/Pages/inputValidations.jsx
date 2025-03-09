@@ -47,3 +47,24 @@ export const addEmployeeValidationSchema = Yup.object({
     .matches(/^[0-9]{10}$/, 'Secondary Phone must be 10 digits')
     .notRequired(), // optional field
 });
+
+
+export const productValidationSchema = Yup.object().shape({
+  product_id: Yup.string().required('Product ID is required'),
+  product_name: Yup.string().required('Product Name is required'),
+  product_description: Yup.string().required('Product Description is required'),
+  unit_price: Yup.number().required('Unit Price is required').positive('Unit Price must be positive'),
+  date_added: Yup.date().required('Date Added is required'),
+  shipping_weight: Yup.number().positive('Shipping Weight must be positive'),
+  total_units: Yup.number().required('Total Units is required').min(1, 'Total Units must be at least 1'),
+  category1: Yup.string().required('Category 1 is required'),
+  product_variations: Yup.array()
+    .of(
+      Yup.object().shape({
+        size: Yup.string().required('Size is required'),
+        color: Yup.string().required('Color is required'),
+        units: Yup.number().required('Units is required').min(1, 'Units must be at least 1'),
+      })
+    )
+    .min(1, 'At least one variation is required'),
+});

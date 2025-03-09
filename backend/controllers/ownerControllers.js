@@ -101,3 +101,132 @@ export const ownerCreateEmployee = (req, res) => {
         });
     });
 };
+
+import bcrypt from 'bcrypt';
+import nodemailer from 'nodemailer';
+import sqldb from '../config/db.js'; // Adjust the path to your database configuration
+
+export const ownerCreateProduct = (req, res) => {
+  const {
+    product_id,
+    product_name,
+    product_description,
+    unit_price,
+    date_added,
+    shipping_weight,
+    category1,
+    category2,
+    category3,
+    material,
+    fabric_type,
+    return_policy,
+    product_variations,
+  } = req.body;
+
+  // Validation for empty fields
+  if (
+    !product_id ||
+    !product_name ||
+    !product_description ||
+    !unit_price ||
+    !date_added ||
+    !shipping_weight ||
+    !category1 ||
+    !material ||
+    !fabric_type ||
+    !return_policy ||
+    !product_variations
+  ) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  // Validate product_variations
+  if (!Array.isArray(product_variations) || product_variations.length === 0) {
+    return res.status(400).json({ message: 'At least one product variation is required' });
+  }
+
+  // Insert product into product_table
+  const insertProductQuery = `
+    INSERT INTO product_table 
+      (ProductID, ProductName, ProductDescription, UnitPrice, DateAdded, ShippingWeight, Category1, Category2, Category3, Material, FabricType, ReturnPolicy)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  const productValues = [
+    product_id,
+    product_name,
+    product_description,
+    unit_price,
+    date_added,
+    shipping_weight,
+    category1,
+    category2 || null, // Handle optional fields
+    category3 || null, // Handle optional fields
+    material,
+    fabric_type,
+    return_policy,
+  ];
+
+  // Execute the product insertion query
+  sqldb.query(insertProductQuery, productValues, (err, productResult) => {
+    if (err) {
+      console.error('Error inserting product:', err);
+      return res.status(500).json({ message: 'Error inserting product into the database' });
+    }
+
+    console.log('Product added successfully');
+
+    // Insert product variations into product_variations table
+    const insertVariationQuery = `
+      INSERT INTO product_variations 
+        (ProductID, SizeID, ColorID, units)
+      VALUES (?, ?, ?, ?)
+    `;
+
+    // Loop through each variation and insert it
+    product_variations.forEach((variation) => {
+      const { size, color, units } = variation;
+
+      // Get SizeID and ColorID from sizes and colors tables
+      const getSizeIDQuery = 'SELECT SizeID FROM sizes WHERE SizeValue = ?';
+      const getColorIDQuery = 'SELECT ColorID FROM colors WHERE ColorValue = ?';
+
+      // Execute queries to get SizeID and ColorID
+      sqldb.query(getSizeIDQuery, [size], (err, sizeResult) => {
+        if (err) {
+          console.error('Error fetching SizeID:', err);
+          return res.status(500).json({ message: 'Error fetching SizeID' });
+        }
+
+        const SizeID = sizeResult[0]?.SizeID;
+
+        sqldb.query(getColorIDQuery, [color], (err, colorResult) => {
+          if (err) {
+            console.error('Error fetching ColorID:', err);
+            return res.status(500).json({ message: 'Error fetching ColorID' });
+          }
+
+          const ColorID = colorResult[0]?.ColorID;
+
+          // Insert the variation
+          const variationValues = [product_id, SizeID, ColorID, units];
+
+          sqldb.query(insertVariationQuery, variationValues, (err, variationResult) => {
+            if (err) {
+              console.error('Error inserting variation:', err);
+              return res.status(500).json({ message: 'Error inserting variation into the database' });
+            }
+
+            console.log('Variation added successfully');
+          });
+        });
+      });
+    });
+
+    // Send success response
+    res.status(200).json({ 
+      message: 'Product and variations added successfully', 
+      Status: 'Success' 
+    });
+  });
+};

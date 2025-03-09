@@ -3,10 +3,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/react-in-jsx-scope */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './AddProducts.css';
 import withAuth from '../withAuth';
 import { FaBox, FaTag, FaList , FaInfoCircle, FaWeightHanging, FaPlus, FaCalendar, FaTshirt, FaPalette, FaBalanceScale, FaVenusMars, FaStar, FaHeart, FaMinus } from 'react-icons/fa';
+import {productValidationSchema} from '../inputValidations'
 
 
 const categories = {
@@ -63,9 +65,13 @@ const categories = {
 
 const AddProducts = () => {
     const [uploadedImages, setUploadedImages] = useState([]);
-
     const [optionsCategory2, setOptionsCategory2] = useState([]);
     const [optionsCategory3, setOptionsCategory3] = useState([]);
+
+    const [errors, setErrors] = useState({});
+    const [alertSeverity, setAlertSeverity] = useState('');
+    const [message, setMessage] = useState('');
+    const [open, setOpen] = useState(false);
 
     const [formData, setFormData] = useState({
     product_id: '',
@@ -74,13 +80,10 @@ const AddProducts = () => {
     unit_price: '',
     date_added: '',
     shipping_weight: '',
-    size: '',
-    color: '',
-    units: '',
     total_units: '',
-    Category1: '',
-    Category2: '',
-    Category3: '',
+    category1: '',
+    category2: '',
+    category3: '',
     material: '',
     fabric_type: '',
     return_policy: '',
@@ -131,38 +134,115 @@ const AddProducts = () => {
   };
 
 //---------------------------------------------------------------------------------------------------------------------------  
+  // Function to calculate total_units
+  const calculateTotalUnits = (variations) => {
+    return variations.reduce((total, variation) => total + (Number(variation.units) || 0), 0);
+  };
+
+  // Update total_units whenever product_variations changes
+  useEffect(() => {
+    const totalUnits = calculateTotalUnits(formData.product_variations);
+    setFormData(prevState => ({
+      ...prevState,
+      total_units: totalUnits,
+    }));
+  }, [formData.product_variations]);
+
   const handleVariationChange = (index, e) => {
     const { name, value } = e.target;
     const updatedVariations = [...formData.product_variations];
     updatedVariations[index][name] = value;
+
+    // Update variations and recalculate total_units
+    const totalUnits = calculateTotalUnits(updatedVariations);
     setFormData(prevState => ({
       ...prevState,
-      product_variations: updatedVariations
+      product_variations: updatedVariations,
+      total_units: totalUnits,
     }));
   };
 
   const addVariation = () => {
+    const updatedVariations = [...formData.product_variations, { size: '', color: '', units: '' }];
+
+    // Update variations and recalculate total_units
+    const totalUnits = calculateTotalUnits(updatedVariations);
     setFormData(prevState => ({
       ...prevState,
-      product_variations: [...prevState.product_variations, { size: '', color: '', units: '' }]
+      product_variations: updatedVariations,
+      total_units: totalUnits,
     }));
   };
 
   const removeVariation = (indexToRemove) => {
     if (formData.product_variations.length > 1) {
+      const updatedVariations = formData.product_variations.filter((_, index) => index !== indexToRemove);
+
+      // Update variations and recalculate total_units
+      const totalUnits = calculateTotalUnits(updatedVariations);
       setFormData(prevState => ({
         ...prevState,
-        product_variations: prevState.product_variations.filter((_, index) => index !== indexToRemove)
+        product_variations: updatedVariations,
+        total_units: totalUnits,
       }));
     }
   };
 
 //---------------------------------------------------------------------------------------------------------------------------  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-    // Add your submit logic here
-  };
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+  // Validate the form data
+  productValidationSchema
+    .validate(formData, { abortEarly: false })
+    .then(() => {
+      // Send data to the backend
+      axios.post('http://localhost:8082/api/owner/owner-add-product', formData)
+        .then(res => {
+          if (res.data && res.data.Status === "Success") {
+            console.log('Product added successfully:', res.data);
+            setFormData({
+              product_id: '',
+              product_name: '',
+              product_description: '',
+              unit_price: '',
+              date_added: '',
+              shipping_weight: '',
+              total_units: 0,
+              category1: '',
+              category2: '',
+              category3: '',
+              material: '',
+              fabric_type: '',
+              return_policy: '',
+              product_variations: [{ size: '', color: '', units: '' }],
+            });
+            setAlertSeverity("success");
+            setMessage('Product added successfully!');
+            setOpen(true);
+          } else {
+            console.error('Error adding product:', res);
+            setAlertSeverity("error");
+            setMessage(res.data.Error || 'An error occurred while adding product');
+            setOpen(true);
+          }
+        })
+        .catch(err => {
+          console.error('Error:', err);
+          setAlertSeverity('error');
+          setMessage(err.response?.data?.message || 'Server error. Please try again.');
+          setOpen(true);
+        });
+    })
+    .catch(err => {
+      const validationErrors = {};
+      err.inner.forEach(error => {
+        validationErrors[error.path] = error.message; // Collect validation errors
+      });
+      setErrors(validationErrors); // Set errors to state for display
+      console.error('Validation Error:', validationErrors);
+    });
+};
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -218,6 +298,7 @@ const AddProducts = () => {
                   required
                 />
               </div>
+              {errors.product_id && <span className="error-message">{errors.product_id}</span>}
             </div>
             <div className="form-group">
               <label>Product Name</label>
@@ -232,6 +313,7 @@ const AddProducts = () => {
                   required
                 />
               </div>
+              {errors.product_name && <span className="error-message">{errors.product_name}</span>}
             </div>
           </div>
 
@@ -277,8 +359,10 @@ const AddProducts = () => {
                   required
                 />
               </div>
+              {errors.product_description && <span className="error-message">{errors.product_description}</span>}
             </div>
           </div>
+
           {/* Unit Price, Date Added, Shipping Weight */}
           <div className="form-row">
             <div className="form-group">
@@ -294,6 +378,7 @@ const AddProducts = () => {
                   required
                 />
               </div>
+              {errors.unit_price && <span className="error-message">{errors.unit_price}</span>}
             </div>
             <div className="form-group">
               <label>Date Added</label>
@@ -307,6 +392,7 @@ const AddProducts = () => {
                   required
                 />
               </div>
+              {errors.date_added && <span className="error-message">{errors.date_added}</span>}
             </div>
             <div className="form-group">
               <label>Shipping Weight</label>
@@ -318,9 +404,9 @@ const AddProducts = () => {
                   placeholder="Enter shipping weight (KG)"
                   value={formData.shipping_weight}
                   onChange={handleChange}
-                  required
                 />
               </div>
+              {errors.shipping_weight && <span className="error-message">{errors.shipping_weight}</span>}
             </div>
           </div>
 
@@ -328,7 +414,7 @@ const AddProducts = () => {
           <div className="variations-container">
             <label>Product Variations</label>
             <div className="variations-wrapper">
-              {formData.product_variations.map((variation, index) => (
+              {formData.product_variations.map((product_variations, index) => (
                 <div className="variation-row" key={index}>
                   <div className="form-group">
                     <label>Size</label>
@@ -338,7 +424,7 @@ const AddProducts = () => {
                         type="text"
                         name="size"
                         placeholder="Enter size"
-                        value={variation.size}
+                        value={product_variations.size}
                         onChange={(e) => handleVariationChange(index, e)}
                         required
                       />
@@ -352,7 +438,7 @@ const AddProducts = () => {
                         type="text"
                         name="color"
                         placeholder="Enter color"
-                        value={variation.color}
+                        value={product_variations.color}
                         onChange={(e) => handleVariationChange(index, e)}
                         required
                       />
@@ -366,7 +452,7 @@ const AddProducts = () => {
                         type="number"
                         name="units"
                         placeholder="Enter units"
-                        value={variation.units}
+                        value={product_variations.units}
                         onChange={(e) => handleVariationChange(index, e)}
                         required
                       />
@@ -382,6 +468,9 @@ const AddProducts = () => {
                   </button>
                 </div>
               ))}
+              {errors.unit_price && <span className="error-message">{errors.unit_price}</span>}
+              {errors.color && <span className="error-message">{errors.color}</span>}
+              {errors.units && <span className="error-message">{errors.units}</span>}
               <button type="button" className="add-variation-btn" onClick={addVariation}>
                 <FaPlus />
               </button>
@@ -400,7 +489,7 @@ const AddProducts = () => {
                   placeholder="Enter total units"
                   value={formData.total_units}
                   onChange={handleChange}
-                  required
+                  readOnly 
                 />
               </div>
             </div>
@@ -425,6 +514,7 @@ const AddProducts = () => {
                   ))}
                 </select>
               </div>
+              {errors.category1 && <span className="error-message">{errors.category1}</span>}
             </div>
             <div className="form-group">
               <label>Category 2</label>
@@ -434,7 +524,6 @@ const AddProducts = () => {
                   name="category2"
                   value={formData.category2}
                   onChange={handleChangeCategory2}
-                  required
                   disabled={!formData.category1}
                 >
                   <option value="">Select Category 2</option>
@@ -452,7 +541,6 @@ const AddProducts = () => {
                   name="category3"
                   value={formData.category3}
                   onChange={handleChangeCategory3}
-                  required
                   disabled={!formData.category2}
                 >
                   <option value="">Select Category 3</option>
@@ -475,7 +563,6 @@ const AddProducts = () => {
                     name="material"
                     value={formData.material}
                     onChange={handleChange}
-                    required
                 >
                     <option value="">Select Material</option>
                     <option value="Cotton">Cotton</option>
@@ -498,7 +585,6 @@ const AddProducts = () => {
         name="fabric_type"
         value={formData.fabric_type}
         onChange={handleChange}
-        required
       >
         <option value="">Select Fabric Type</option>
         <option value="Twill">Twill</option>
@@ -525,7 +611,6 @@ const AddProducts = () => {
                   placeholder="Enter return policy"
                   value={formData.return_policy}
                   onChange={handleChange}
-                  required
                 />
               </div>
             </div>
