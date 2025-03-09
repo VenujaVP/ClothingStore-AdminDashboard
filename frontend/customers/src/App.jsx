@@ -47,12 +47,12 @@ function App() {
             <Route path="/user-reset-password/:resetToken" element={<SetNewPassword />} />
             <Route path="/user-passwordresetfinish" element={<PasswordResetFinish />} />
 
-            <Route path="/dashboard" element={<AuthenticatedDashboard />} />
-            <Route path="/shoppingcart" element={<AuthenticatedShoppingCart />} />
-            <Route path="/account" element={<AuthenticatedAccount />} />
-            <Route path="/shippingaddress" element={<AuthenticatedShippingAddress />} />
-            <Route path="/shippingaddressform" element={<AuthenticatedShippingAddressForm/>} />
-            <Route path="/paymentcardwindow" element={<AuthenticatedPaymentCardWindow/>} />
+            <Route path="/user-dashboard" element={<AuthenticatedDashboard />} />
+            <Route path="/user-shopping-cart" element={<AuthenticatedShoppingCart />} />
+            <Route path="/user-account" element={<AuthenticatedAccount />} />
+            <Route path="/user-shipping-address" element={<AuthenticatedShippingAddress />} />
+            <Route path="/user-shipping-address-form" element={<AuthenticatedShippingAddressForm/>} />
+            <Route path="/user-payment-card-window" element={<AuthenticatedPaymentCardWindow/>} />
           </Routes>
         </main>
       </div>

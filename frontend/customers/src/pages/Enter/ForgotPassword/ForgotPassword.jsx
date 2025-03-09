@@ -48,7 +48,7 @@ const ForgotPassword = () => {
   };
 
   const handleBackToLogin = () => {
-    window.location.href = '/login';
+    window.location.href = '/user-login';
   };
 
   const handleCloseSnackbar = (event, reason) => {
@@ -109,7 +109,7 @@ const ForgotPassword = () => {
                   </button>
 
                   <div className="signup-link">
-                    Remember your password? <a href="/login">Back to Login</a>
+                    Remember your password? <a href="/user-login">Back to Login</a>
                   </div>
                 </form>
               </>

@@ -35,55 +35,49 @@ const SetNewPassword = () => {
   const [resetSuccess, setResetSuccess] = useState(false);
   const [resetError, setResetError] = useState(null);
 
-  // Function to check if all password validations are met
-  const areAllValidationsPassed = () => {
-    const { newPassword, confirmNewPassword } = formData;
-
-    return (
-      newPassword.length >= 8 &&
-      /[A-Z]/.test(newPassword) &&
-      /[a-z]/.test(newPassword) &&
-      /[0-9]/.test(newPassword) &&
-      /[!@#$%^&*(),.?":{}|<>]/.test(newPassword) &&
-      newPassword === confirmNewPassword
-    );
-  };
-
   // Form submission handler
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-    try {
-      // Validate form using Yup schema
-      await ResetPasswordValidationSchema.validate(formData, { abortEarly: false });
-      setIsSubmitting(true);
+    ResetPasswordValidationSchema
+      .validate(formData, { abortEarly: false })
+      .then(() => {
+        setIsSubmitting(true);
 
-      // Make API call to reset password
-      const res = await axios.post('http://localhost:8082/api/auth/customer-reset-password', {
-        resetToken,
-        newPassword: formData.newPassword,
-        confirmNewPassword: formData.confirmNewPassword,
-      });
-      console.log(res)
-      if (res.status === 200) {
-        setResetSuccess(true);
-      } else {
-        setResetError(res.data.message || 'An error occurred');
-      }
-    } catch (err) {
-      if (err.name === 'ValidationError') {
+        // Make API call to reset password
+        axios.post('http://localhost:8082/api/auth/customer-reset-password', {
+          resetToken,
+          newPassword: formData.newPassword,
+          confirmNewPassword: formData.confirmNewPassword,
+        })
+          .then((res) => {
+            if (res.status === 200) {
+              setResetSuccess(true);
+            } else {
+              setResetError(res.data.message || 'An error occurred');
+            }
+          })
+          .catch((err) => {
+            if (err.response) {
+              console.error('Server Error:', err.response.data);
+              setResetError(err.response.data.message || 'Failed to reset password');
+            } else {
+              console.error('API Error:', err);
+              setResetError('An error occurred. Please try again.');
+            }
+          })
+          .finally(() => {
+            setIsSubmitting(false);
+          });
+      })
+      .catch((err) => {
         const validationErrors = {};
         err.inner.forEach((error) => {
           validationErrors[error.path] = error.message; // Collect validation errors
         });
         setErrors(validationErrors); // Set errors to state for display
-      } else {
-        console.error('Error:', err);
-        setResetError('Failed to reset password');
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
+        console.error('Validation Error:', validationErrors);
+      });
   };
 
   // Handle input changes
@@ -245,7 +239,7 @@ const SetNewPassword = () => {
               <button
                 type="submit"
                 className={`login-btn ${isSubmitting ? 'loading' : ''}`}
-                disabled={isSubmitting || !areAllValidationsPassed()}
+                disabled={isSubmitting}
               >
                 {isSubmitting ? 'Resetting...' : 'Reset Password'}
               </button>

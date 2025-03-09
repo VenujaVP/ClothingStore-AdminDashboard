@@ -49,7 +49,7 @@ const withAuth = (WrappedComponent) => {
           <div className="login-now-section">
             <h3 className="login-title">Login Expired</h3>
             <p className="login-subtitle">{message}</p>
-            <button className="login-button" onClick={() => navigate('/login')} aria-label="Log in now">
+            <button className="login-button" onClick={() => navigate('/user-login')} aria-label="Log in now">
               Log In Now
             </button>
           </div>

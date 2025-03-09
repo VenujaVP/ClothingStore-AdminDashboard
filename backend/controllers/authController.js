@@ -196,10 +196,7 @@ export const requestPasswordReset = (tableName, userType) => {
 
             // Step 2: Generate password reset token
             const resetToken = crypto.randomBytes(20).toString('hex');
-            const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000) // 15 minutes expiry
-                .toISOString()
-                .slice(0, 19)
-                .replace('T', ' ');
+            const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes expiry
 
             // Step 3: Update token in database
             const updateTokenQuery = `UPDATE ${tableName} SET resetToken = ?, resetTokenExpiry = ? WHERE ID = ?`;
