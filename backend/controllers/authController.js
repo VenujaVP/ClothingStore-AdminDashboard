@@ -214,7 +214,45 @@ export const requestPasswordReset = (tableName, userType) => {
                 // Step 4: Generate correct reset link
                 const resetLink = `http://localhost:5173/${userType.toLowerCase()}-reset-password/${resetToken}`;
 
-                // Step 5: Send password reset email
+                // Step 5: Create custom message for different users
+                let emailSubject, emailMessage;
+                if (userType === "Owner") {
+                    emailSubject = "Owner Password Reset Request - POLOCITY";
+                    emailMessage = `
+                        <h2>Password Reset Request</h2>
+                        <p>Hello ${user.NAME},</p>
+                        <p>We noticed that you requested a password reset for your owner account on <strong>POLOCITY</strong>.</p>
+                        <p>Click the button below to reset your password:</p>
+                        <a href="${resetLink}" style="background: #007bff; padding: 10px 15px; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                        <p>If you did not request this, please ignore this email or contact support.</p>
+                        <p>This link will expire in 15 minutes.</p>
+                        <p>Best regards,<br>POLOCITY Team</p>
+                    `;
+                } else if (userType === "Customer") {
+                    emailSubject = "Customer Password Reset Assistance - POLOCITY";
+                    emailMessage = `
+                        <h2>Password Reset Assistance</h2>
+                        <p>Hello ${user.NAME},</p>
+                        <p>We received a request to reset your password for your customer account at <strong>POLOCITY</strong>.</p>
+                        <p>Click the link below to securely reset your password:</p>
+                        <a href="${resetLink}" style="background: #28a745; padding: 10px 15px; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                        <p>If this request was not made by you, please disregard this email.</p>
+                        <p>For assistance, feel free to contact our support team.</p>
+                        <p>Best regards,<br>POLOCITY Customer Support</p>
+                    `;
+                } else {
+                    emailSubject = "Password Reset Request";
+                    emailMessage = `
+                        <h2>Password Reset</h2>
+                        <p>Hello ${user.NAME},</p>
+                        <p>You requested to reset your password. Click the button below to proceed:</p>
+                        <a href="${resetLink}" style="background: #007bff; padding: 10px 15px; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                        <p>If you did not request this, ignore this email.</p>
+                        <p>This link expires in 15 minutes.</p>
+                    `;
+                }
+
+                // Step 6: Send password reset email
                 const transporter = nodemailer.createTransport({
                     service: 'gmail',
                     auth: {
@@ -226,16 +264,8 @@ export const requestPasswordReset = (tableName, userType) => {
                 const mailOptions = {
                     from: process.env.EMAIL_USER,
                     to: email,
-                    subject: 'Password Reset Request',
-                    html: `
-                        <h2>Password Reset Request</h2>
-                        <p>Hello ${user.NAME},</p>
-                        <p>You have requested to reset your password. Click the link below to reset it:</p>
-                        <a href="${resetLink}" style="background: #007bff; padding: 10px 15px; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
-                        <p>If you did not request this, please ignore this email.</p>
-                        <p>This link will expire in 15 minutes.</p>
-                        <p>Best regards,<br>Your Support Team</p>
-                    `
+                    subject: emailSubject,
+                    html: emailMessage
                 };
 
                 transporter.sendMail(mailOptions, (err, info) => {
@@ -250,12 +280,6 @@ export const requestPasswordReset = (tableName, userType) => {
         });
     };
 };
-
-
-
-
-
-
 
 
 export const ownerResetPassword = (req, res) => {

@@ -10,12 +10,12 @@ const router = express.Router();
 // Owner Auth Routes
 router.post('/owner-register', validateOwnerRegister, OwnerRegister);
 router.post('/owner-login', validateLogin, handleLogin('OWNERS'));
-router.post('/owner-forgot-password', validateForgotPassword, requestPasswordReset('OWNERS', 'owner'));
+router.post('/owner-forgot-password', validateForgotPassword, requestPasswordReset('OWNERS', 'Owner'));
 router.post('/owner-reset-password', validateResetPassword, ownerResetPassword);
 
 router.post('/customer-register', validateCustomerRegister, customerRegister);
 router.post('/customer-login', validateLogin, handleLogin('CUSTOMERS'));
-router.post('/customer-forgot-password', validateForgotPassword, requestPasswordReset('CUSTOMERS', 'user'));
+router.post('/customer-forgot-password', validateForgotPassword, requestPasswordReset('CUSTOMERS', 'Customer'));
 router.post('/owner-reset-password', validateResetPassword, ownerResetPassword);
 
 export default router;
