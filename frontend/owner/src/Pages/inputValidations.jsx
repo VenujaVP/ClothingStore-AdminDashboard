@@ -68,3 +68,41 @@ export const productValidationSchema = Yup.object().shape({
     )
     .min(1, 'At least one variation is required'),
 });
+
+export const addExpensesValidationSchema = Yup.object().shape({
+  expenses_id: Yup.string()
+    .required('Expense ID is required')
+    .matches(/^[A-Za-z0-9]+$/, 'Expense ID must be alphanumeric')
+    .min(3, 'Expense ID must be at least 3 characters')
+    .max(20, 'Expense ID cannot exceed 20 characters'),
+
+  date: Yup.date()
+    .required('Date is required')
+    .max(new Date(), 'Date cannot be in the future'),
+
+  expenses_name: Yup.string()
+    .required('Expense Name is required')
+    .min(3, 'Expense Name must be at least 3 characters')
+    .max(50, 'Expense Name cannot exceed 50 characters'),
+
+  cost: Yup.number()
+    .required('Cost is required')
+    .positive('Cost must be a positive number')
+    .typeError('Cost must be a number'),
+
+  description: Yup.string()
+    .notRequired()
+    .min(10, 'Description must be at least 10 characters')
+    .max(500, 'Description cannot exceed 500 characters'),
+
+  image: Yup.mixed()
+    .nullable()
+    .test('fileSize', 'Image size must be less than 5MB', (value) => {
+      if (!value) return true; // Allow no file
+      return value.size <= 85 * 1024 * 1024; // 5MB limit
+    })
+    .test('fileType', 'Unsupported file format', (value) => {
+      if (!value) return true; // Allow no file
+      return ['image/jpeg', 'image/png', 'image/gif'].includes(value.type);
+    }),
+});

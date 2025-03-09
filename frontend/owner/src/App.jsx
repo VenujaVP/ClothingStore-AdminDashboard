@@ -21,6 +21,7 @@ import PasswordResetFinish from './pages/Enter/PasswordReset/PasswordResetFinish
 import AddEmployee from './Pages/Employee/AddEmployee';
 import AuthenticatedAddProducts from './Pages/Products/AddProducts';
 import ProductList from './Pages/Products/ProductList';
+import AuthenticatedAddExpenses from './Pages/Expenses/AddExpenses'
 
 
 const App = () => {
@@ -77,6 +78,8 @@ const App = () => {
           <Route path="/employees/add" element={<AddEmployee />} />
           <Route path="/products/add" element={<AuthenticatedAddProducts />} />
           <Route path="/products/list" element={<ProductList />} />
+          <Route path="/expenses/add" element={<AuthenticatedAddExpenses />} />
+          <Route path="/expenses/hist" element={<AuthenticatedAddExpenses />} />
         </Routes>
       </div>
     </div>
