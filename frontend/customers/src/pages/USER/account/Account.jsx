@@ -10,8 +10,17 @@ import withAuth from '../../withAuth';
 import { FaUser, FaShoppingCart, FaCreditCard, FaUndo, FaComment, 
          FaCog, FaTruck, FaEnvelope, FaQuestionCircle, FaBell, 
          FaHeart, FaSearch } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+
 
 const Account = () => {
+
+const navigate = useNavigate();
+
+// Function to navigate when an icon is clicked
+const handleNavigation = (path) => {
+    navigate(path);
+};
     return (
         <div className="account-page">
             {/* Left Sidebar */}
@@ -36,13 +45,13 @@ const Account = () => {
                     <a href="#settings" className="nav-item">
                         <FaCog /> Settings
                     </a>
-                    <a href="#shipping" className="nav-item">
+                    <a href="#shipping" className="nav-item" onClick={() => handleNavigation('/user-shipping-address-form')}>
                         <FaTruck /> Shipping Address
                     </a>
                     <a href="#messages" className="nav-item">
                         <FaEnvelope /> Message Center
                     </a>
-                    <a href="#help" className="nav-item">
+                    <a href="#help" className="nav-item" onClick={() => handleNavigation('/user-shopping-cart')}>
                         <FaQuestionCircle /> Help Center
                     </a>
                 </nav>
