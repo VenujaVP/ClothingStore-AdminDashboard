@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/owner-create-employee', ownerEmployeeAddValidate, ownerCreateEmployee);
 router.post('/owner-add-product', ownerProductAddValidate, ownerCreateProduct);
-router.post('/fetch-sizes', fetchSizes);
-router.post('/fetch-colors', fetchColors);
+router.get('/fetch-sizes', fetchSizes);
+router.get('/fetch-colors', fetchColors);
 
 export default router;

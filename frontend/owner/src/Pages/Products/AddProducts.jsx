@@ -136,13 +136,15 @@ const AddProducts = () => {
     setUploadedImages(updatedImages);
   };
 
+
+
 //---------------------------------------------------------------------------------------------------------------------------  
   // Function to calculate total_units
   const calculateTotalUnits = (variations) => {
     return variations.reduce((total, variation) => total + (Number(variation.units) || 0), 0);
   };
 
-  // Update total_units whenever product_variations changes
+// Update total_units whenever product_variations changes
   useEffect(() => {
     const totalUnits = calculateTotalUnits(formData.product_variations);
     setFormData(prevState => ({
@@ -193,18 +195,22 @@ const AddProducts = () => {
     const fetchSizesAndColors = async () => {
       try {
         const sizesResponse = await axios.get('http://localhost:8082/api/owner/fetch-sizes');
-        console.log(sizesResponse)
         const colorsResponse = await axios.get('http://localhost:8082/api/owner/fetch-colors');
-
+  
+        console.log('Sizes:', sizesResponse.data);
+        console.log('Colors:', colorsResponse.data);
+  
         setSizes(sizesResponse.data); // Set sizes state
         setColors(colorsResponse.data); // Set colors state
       } catch (error) {
         console.error('Error fetching sizes and colors:', error);
       }
     };
-
+  
     fetchSizesAndColors();
   }, []);
+
+
 
 //---------------------------------------------------------------------------------------------------------------------------  
 const handleSubmit = (e) => {
@@ -444,7 +450,6 @@ const handleSubmit = (e) => {
                         name="size"
                         value={variation.size}
                         onChange={(e) => handleVariationChange(index, e)}
-                        required
                       >
                         <option value="">Select Size</option>
                         {sizes.map((size) => (
@@ -463,7 +468,6 @@ const handleSubmit = (e) => {
                         name="color"
                         value={variation.color}
                         onChange={(e) => handleVariationChange(index, e)}
-                        required
                       >
                         <option value="">Select Color</option>
                         {colors.map((color) => (

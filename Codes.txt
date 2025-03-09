@@ -45,8 +45,3 @@ erDiagram
         updatedAt timestamp
     }
 
-
-
-gront part is okey.
-now i need backend function 
-router.post('/owner-add-employee', adminAddEmployee);
