@@ -222,6 +222,45 @@ export const ownerCreateProduct = (req, res) => {
   });
 };
 
+export const ownerAddExpenses = (req, res) => {
+    const { expenses_id, date, expenses_name, cost, description } = req.body;
+  
+    // SQL query to insert a new expense into the database
+    const sql = `INSERT INTO Expenses 
+                (expenses_id, date, expenses_name, cost, description) 
+                VALUES (?, ?, ?, ?, ?)`;
+  
+    const values = [
+      expenses_id,    // expenses_id
+      date,           // date
+      expenses_name,  // expenses_name
+      cost,           // cost
+      description     // description
+    ];
+  
+    // Execute the SQL query
+    sqldb.query(sql, values, (err, result) => {
+      if (err) {
+        console.error("Error inserting data:", err);
+  
+        // Handle duplicate entry error (e.g., duplicate expenses_id)
+        if (err.code === 'ER_DUP_ENTRY') {
+          return res.status(400).json({ message: "Expense ID already exists" });
+        }
+  
+        return res.status(500).json({ message: "Error inserting data into the database" });
+      }
+  
+      console.log("Expense added successfully");
+  
+      // Send success response
+      res.status(200).json({ 
+        message: "Expense added successfully", 
+        Status: "Success"
+      });
+    });
+};
+
 export const fetchSizes = (req, res) => {
     const sql = 'SELECT * FROM sizes'; // Query to fetch all sizes
     // Execute the query

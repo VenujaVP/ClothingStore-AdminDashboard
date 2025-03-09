@@ -45,3 +45,15 @@ erDiagram
         updatedAt timestamp
     }
 
+
+erDiagram
+    EXPENSES {
+        expenses_id int PK
+        date date
+        expenses_name varchar
+        cost decimal
+        description text
+        createdAt timestamp
+        updatedAt timestamp
+    }
+

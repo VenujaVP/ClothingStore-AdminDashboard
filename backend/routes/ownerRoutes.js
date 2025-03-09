@@ -1,6 +1,6 @@
 import express from 'express';
 import { ownerEmployeeAddValidate, ownerProductAddValidate, ownerExpensesAddValidate } from '../middleware/validation.js';
-import { ownerCreateEmployee, ownerCreateProduct, fetchSizes, fetchColors } from '../controllers/ownerControllers.js'
+import { ownerCreateEmployee, ownerCreateProduct, fetchSizes, fetchColors, ownerAddExpenses } from '../controllers/ownerControllers.js'
 
 const router = express.Router();
 
