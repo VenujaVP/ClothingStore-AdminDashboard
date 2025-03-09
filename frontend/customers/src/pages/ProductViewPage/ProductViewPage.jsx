@@ -2,9 +2,9 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-import React from 'react';
 import withAuth from '../withAuth';
-import './ProductViewPage.css'; // Import the CSS file
+import React from 'react';
+import './ProductViewPage.css'; // Import the updated CSS file
 
 const ProductViewPage = () => {
   return (
@@ -70,8 +70,8 @@ const ProductViewPage = () => {
           {/* Categories */}
           <div className="product-categories">
             <h2>Categories</h2>
-            <p>Clothing {" > "} Men {" > "} T-Shirts</p>
-          </div>
+            <p>Clothing &gt; Men &gt; T-Shirts</p>
+            </div>
         </div>
       </div>
 
