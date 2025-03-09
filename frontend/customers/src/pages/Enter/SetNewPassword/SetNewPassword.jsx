@@ -45,7 +45,7 @@ const SetNewPassword = () => {
       .then(() => {
         setIsSubmitting(true);
         // Make API call to reset password
-        axios.post('http://localhost:8081/forgot-password/reset-password', {
+        axios.post('http://localhost:8082/api/auth/customer-reset-password', {
           resetToken,
           newPassword: formData.newPassword,
           confirmPassword: formData.confirmPassword,

@@ -281,59 +281,46 @@ export const requestPasswordReset = (tableName, userType) => {
     };
 };
 
+// Reusable function for resetting password
+export const resetPassword = (tableName, userType) => {
+    return (req, res) => {
+        const { resetToken, newPassword, confirmNewPassword } = req.body;
 
-export const ownerResetPassword = (req, res) => {
-    const { resetToken, newPassword, confirmNewPassword } = req.body;
+        if (!resetToken || !newPassword || !confirmNewPassword) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
 
-    if (!resetToken || !newPassword || !confirmNewPassword) {
-        return res.status(400).json({ message: "All fields are required" });
-    }
+        if (newPassword !== confirmNewPassword) {
+            return res.status(400).json({ message: "Passwords must match" });
+        }
 
-    // Check if passwords match
-    if (newPassword !== confirmNewPassword) {
-        return res.status(400).json({ message: "Passwords must match" });
-    }
+        const currentTime = new Date();
 
-    const currentTime = new Date();
+        // Step 1: Find the user with the reset token and check expiry
+        const findUserQuery = `SELECT * FROM ${tableName} WHERE resetToken = ? AND resetTokenExpiry > ?`;
 
-    console.log("resetToken:", resetToken);
-    console.log("newPassword:", newPassword);
-    console.log("confirmPassword:", confirmNewPassword);
-    console.log("currentTime:", currentTime);
+        sqldb.query(findUserQuery, [resetToken, currentTime], (err, result) => {
+            if (err) return res.status(500).json({ message: "Database error" });
+            if (result.length === 0) return res.status(400).json({ message: "Invalid or expired reset token" });
 
-    // Find the user by reset token and check expiry
-    const sql = 'SELECT * FROM OWNERS WHERE resetToken = ? AND resetTokenExpiry < ?';
-    // const sql = 'SELECT * FROM user WHERE resetToken = ?';
+            const user = result[0];
 
-    // console.log("SQL Query:", sql);
-    // console.log("Query Parameters:", [resetToken, currentTime]);
+            // Step 2: Hash the new password
+            bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
+                if (err) return res.status(500).json({ message: "Error hashing password" });
 
-    sqldb.query(sql, [resetToken, currentTime], (err, result) => {
-        if (err) return res.status(500).json({ message: "Database error" });
-        console.log("Query Result:", result);
-        if (result.length === 0) return res.status(400).json({ message: "Invalid or expired reset token" });
+                // Step 3: Update password and clear reset token
+                const updatePasswordQuery = `UPDATE ${tableName} SET password = ?, resetToken = NULL, resetTokenExpiry = NULL WHERE ID = ?`;
 
-        const owner = result[0];
+                sqldb.query(updatePasswordQuery, [hashedPassword, user.ID], (err) => {
+                    if (err) return res.status(500).json({ message: "Error updating password" });
 
-        // Hash the new password
-        bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
-            if (err) return res.status(500).json({ message: "Error hashing password" });
-
-            // Clear the token and expiry before updating the password
-            const updateSql = 'UPDATE OWNERS SET password = ?, resetToken = NULL, resetTokenExpiry = NULL WHERE ID = ?';
-            sqldb.query(updateSql, [hashedPassword, owner.ID], (err) => {
-                if (err) return res.status(500).json({ message: "Error updating password" });
-
-                res.status(200).json({ message: "Password reset successful" });
+                    res.status(200).json({ message: `${userType} password reset successful` });
+                });
             });
         });
-    });
+    };
 };
-
-
-
-
-
 
 
 
@@ -468,6 +455,55 @@ export const ownerResetPassword = (req, res) => {
 //                 }
 //                 console.log("Email sent:", info.response);
 //                 res.status(200).json({ message: "Password reset email sent successfully" });
+//             });
+//         });
+//     });
+// };
+
+
+// export const ownerResetPassword = (req, res) => {
+//     const { resetToken, newPassword, confirmNewPassword } = req.body;
+
+//     if (!resetToken || !newPassword || !confirmNewPassword) {
+//         return res.status(400).json({ message: "All fields are required" });
+//     }
+
+//     // Check if passwords match
+//     if (newPassword !== confirmNewPassword) {
+//         return res.status(400).json({ message: "Passwords must match" });
+//     }
+
+//     const currentTime = new Date();
+
+//     console.log("resetToken:", resetToken);
+//     console.log("newPassword:", newPassword);
+//     console.log("confirmPassword:", confirmNewPassword);
+//     console.log("currentTime:", currentTime);
+
+//     // Find the user by reset token and check expiry
+//     const sql = 'SELECT * FROM OWNERS WHERE resetToken = ? AND resetTokenExpiry < ?';
+//     // const sql = 'SELECT * FROM user WHERE resetToken = ?';
+
+//     // console.log("SQL Query:", sql);
+//     // console.log("Query Parameters:", [resetToken, currentTime]);
+
+//     sqldb.query(sql, [resetToken, currentTime], (err, result) => {
+//         if (err) return res.status(500).json({ message: "Database error" });
+//         console.log("Query Result:", result);
+//         if (result.length === 0) return res.status(400).json({ message: "Invalid or expired reset token" });
+
+//         const owner = result[0];
+
+//         // Hash the new password
+//         bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
+//             if (err) return res.status(500).json({ message: "Error hashing password" });
+
+//             // Clear the token and expiry before updating the password
+//             const updateSql = 'UPDATE OWNERS SET password = ?, resetToken = NULL, resetTokenExpiry = NULL WHERE ID = ?';
+//             sqldb.query(updateSql, [hashedPassword, owner.ID], (err) => {
+//                 if (err) return res.status(500).json({ message: "Error updating password" });
+
+//                 res.status(200).json({ message: "Password reset successful" });
 //             });
 //         });
 //     });

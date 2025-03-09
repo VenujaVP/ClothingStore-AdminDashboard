@@ -31,7 +31,7 @@ function App() {
 
   const shouldDisplaySidebar = () => {
     const excludedPaths = ['/login', '/register', '/forgotpassword', '/passwordresetfinish', '/checkyouremail'];
-    return !excludedPaths.includes(location.pathname) && !location.pathname.startsWith('/reset-password');
+    return !excludedPaths.includes(location.pathname) && !location.pathname.startsWith('/customer-reset-password');
   };
 
   return (
@@ -44,7 +44,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
-            <Route path="/reset-password/:resetToken" element={<SetNewPassword />} />
+            <Route path="/customer-reset-password/:resetToken" element={<SetNewPassword />} />
             <Route path="/passwordresetfinish" element={<PasswordResetFinish />} />
 
             <Route path="/dashboard" element={<AuthenticatedDashboard />} />
