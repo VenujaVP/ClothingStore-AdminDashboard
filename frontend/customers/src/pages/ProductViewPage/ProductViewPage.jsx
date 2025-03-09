@@ -3,8 +3,7 @@
 /* eslint-disable no-unused-vars */
 
 import withAuth from '../withAuth';
-import React from 'react';
-import './ProductViewPage.css'; // Import the updated CSS file
+import './ProductViewPage.css'; // Import the CSS file
 
 const ProductViewPage = () => {
   return (
@@ -25,7 +24,7 @@ const ProductViewPage = () => {
           <div className="product-rating">
             ★★★★☆ <span className="rating-value">4.2</span>
           </div>
-          <div className="product-price">$99.99</div>
+          <div className="product-price">LKR 200</div>
 
           {/* Size and Color Selection */}
           <div className="product-variations">
@@ -70,28 +69,29 @@ const ProductViewPage = () => {
           {/* Categories */}
           <div className="product-categories">
             <h2>Categories</h2>
-            <p>Clothing &gt; Men &gt; T-Shirts</p>
-            </div>
+            <p>Clothing {" > "} Men {" > "} T-Shirts</p>
+          </div>
         </div>
       </div>
 
-    {/* Customer Reviews Section */}
-    <div className="customer-reviews">
-    <h2>Customer Reviews</h2>
-    <div className="review">
-        <div className="review-rating">★★★★☆</div>
-        <div className="review-text">
-        &quot;Great product! Fits perfectly.&quot; - John D.
+      {/* Customer Reviews Section */}
+      <div className="customer-reviews-section">
+        <h2>Customer Reviews</h2>
+        <div className="reviews-container">
+          <div className="review">
+            <div className="review-rating">★★★★☆</div>
+            <div className="review-text">
+              "Great product! Fits perfectly." - John D.
+            </div>
+          </div>
+          <div className="review">
+            <div className="review-rating">★★★★★</div>
+            <div className="review-text">
+              "Love the color and material." - Jane S.
+            </div>
+          </div>
         </div>
-    </div>
-    <div className="review">
-        <div className="review-rating">★★★★★</div>
-        <div className="review-text">
-        &quot;Love the color and material.&quot; - Jane S.
-        </div>
-    </div>
-    </div>
-
+      </div>
     </div>
   );
 };
