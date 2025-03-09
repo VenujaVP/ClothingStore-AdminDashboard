@@ -16,7 +16,7 @@ const withAuth = (WrappedComponent) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-      axios.get('http://localhost:8081/tokenverification', { withCredentials: true })
+      axios.get('http://localhost:8082/tokenverification', { withCredentials: true })
         .then(res => {
           if (res.data.Status === "Success") {
             setIsAuthenticated(true);
