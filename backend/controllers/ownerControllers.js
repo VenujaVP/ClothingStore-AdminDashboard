@@ -102,10 +102,6 @@ export const ownerCreateEmployee = (req, res) => {
     });
 };
 
-import bcrypt from 'bcrypt';
-import nodemailer from 'nodemailer';
-import sqldb from '../config/db.js'; // Adjust the path to your database configuration
-
 export const ownerCreateProduct = (req, res) => {
   const {
     product_id,
@@ -127,14 +123,9 @@ export const ownerCreateProduct = (req, res) => {
   if (
     !product_id ||
     !product_name ||
-    !product_description ||
     !unit_price ||
     !date_added ||
-    !shipping_weight ||
     !category1 ||
-    !material ||
-    !fabric_type ||
-    !return_policy ||
     !product_variations
   ) {
     return res.status(400).json({ message: 'All fields are required' });
@@ -155,16 +146,16 @@ export const ownerCreateProduct = (req, res) => {
   const productValues = [
     product_id,
     product_name,
-    product_description,
+    product_description || null,
     unit_price,
     date_added,
-    shipping_weight,
+    shipping_weight || null,
     category1,
-    category2 || null, // Handle optional fields
-    category3 || null, // Handle optional fields
-    material,
-    fabric_type,
-    return_policy,
+    category2 || null,
+    category3 || null,
+    material || null,
+    fabric_type || null,
+    return_policy || null,
   ];
 
   // Execute the product insertion query

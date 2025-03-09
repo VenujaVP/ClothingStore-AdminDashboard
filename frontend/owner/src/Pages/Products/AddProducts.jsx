@@ -68,6 +68,9 @@ const AddProducts = () => {
     const [optionsCategory2, setOptionsCategory2] = useState([]);
     const [optionsCategory3, setOptionsCategory3] = useState([]);
 
+    const [sizes, setSizes] = useState([]); // State to store sizes
+    const [colors, setColors] = useState([]); // State to store colors
+
     const [errors, setErrors] = useState({});
     const [alertSeverity, setAlertSeverity] = useState('');
     const [message, setMessage] = useState('');
@@ -150,15 +153,13 @@ const AddProducts = () => {
 
   const handleVariationChange = (index, e) => {
     const { name, value } = e.target;
+  
     const updatedVariations = [...formData.product_variations];
     updatedVariations[index][name] = value;
-
-    // Update variations and recalculate total_units
-    const totalUnits = calculateTotalUnits(updatedVariations);
-    setFormData(prevState => ({
+  
+    setFormData((prevState) => ({
       ...prevState,
       product_variations: updatedVariations,
-      total_units: totalUnits,
     }));
   };
 
@@ -187,6 +188,22 @@ const AddProducts = () => {
       }));
     }
   };
+
+  useEffect(() => {
+    const fetchSizesAndColors = async () => {
+      try {
+        const sizesResponse = await axios.get('http://localhost:8082/api/owner/sizes');
+        const colorsResponse = await axios.get('http://localhost:8082/api/owner/colors');
+
+        setSizes(sizesResponse.data); // Set sizes state
+        setColors(colorsResponse.data); // Set colors state
+      } catch (error) {
+        console.error('Error fetching sizes and colors:', error);
+      }
+    };
+
+    fetchSizesAndColors();
+  }, []);
 
 //---------------------------------------------------------------------------------------------------------------------------  
 const handleSubmit = (e) => {
@@ -251,6 +268,8 @@ const handleSubmit = (e) => {
       [name]: value
     }));
   };
+
+
 
   return (
     <div className="add-product-container">
@@ -414,34 +433,44 @@ const handleSubmit = (e) => {
           <div className="variations-container">
             <label>Product Variations</label>
             <div className="variations-wrapper">
-              {formData.product_variations.map((product_variations, index) => (
+              {formData.product_variations.map((variation, index) => (
                 <div className="variation-row" key={index}>
                   <div className="form-group">
                     <label>Size</label>
                     <div className="input-group">
                       <FaTshirt className="input-icon" />
-                      <input
-                        type="text"
+                      <select
                         name="size"
-                        placeholder="Enter size"
-                        value={product_variations.size}
+                        value={variation.size}
                         onChange={(e) => handleVariationChange(index, e)}
                         required
-                      />
+                      >
+                        <option value="">Select Size</option>
+                        {sizes.map((size) => (
+                          <option key={size.SizeID} value={size.SizeValue}>
+                            {size.SizeValue}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div className="form-group">
                     <label>Color</label>
                     <div className="input-group">
                       <FaPalette className="input-icon" />
-                      <input
-                        type="text"
+                      <select
                         name="color"
-                        placeholder="Enter color"
-                        value={product_variations.color}
+                        value={variation.color}
                         onChange={(e) => handleVariationChange(index, e)}
                         required
-                      />
+                      >
+                        <option value="">Select Color</option>
+                        {colors.map((color) => (
+                          <option key={color.ColorID} value={color.ColorValue}>
+                            {color.ColorValue}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                   <div className="form-group">
@@ -452,7 +481,7 @@ const handleSubmit = (e) => {
                         type="number"
                         name="units"
                         placeholder="Enter units"
-                        value={product_variations.units}
+                        value={variation.units}
                         onChange={(e) => handleVariationChange(index, e)}
                         required
                       />
@@ -468,15 +497,11 @@ const handleSubmit = (e) => {
                   </button>
                 </div>
               ))}
-              {errors.unit_price && <span className="error-message">{errors.unit_price}</span>}
-              {errors.color && <span className="error-message">{errors.color}</span>}
-              {errors.units && <span className="error-message">{errors.units}</span>}
               <button type="button" className="add-variation-btn" onClick={addVariation}>
                 <FaPlus />
               </button>
             </div>
           </div>
-
           {/* Total Units */}
           <div className="form-row">
             <div className="form-group">
