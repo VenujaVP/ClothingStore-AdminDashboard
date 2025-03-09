@@ -64,7 +64,7 @@ const SetNewPassword = () => {
         newPassword: formData.newPassword,
         confirmNewPassword: formData.confirmNewPassword,
       });
-
+      console.log(res)
       if (res.status === 200) {
         setResetSuccess(true);
       } else {
