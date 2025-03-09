@@ -50,7 +50,7 @@ const Register = () => {
     registerValidationSchema
       .validate(formData, { abortEarly: false })
       .then(() => {
-        axios.post('http://localhost:8082/auth/register', formData)
+        axios.post('http://localhost:8082/api/auth/customer-register', formData)
           .then(res => {
             if (res.status === 201) {
               console.log('Registration successful:', res.data);

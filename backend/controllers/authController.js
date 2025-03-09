@@ -241,4 +241,50 @@ export const ownerResetPassword = (req, res) => {
 
 
 // Customer Auth Part
+export const customerRegister = (req, res) => {
+    const { fullName, email, phone, password, confirmPassword } = req.body;
+
+    // Check if the owner already exists by email
+    const checkOwnerExistence = 'SELECT * FROM customers WHERE EMAIL = ?';
+    
+    sqldb.query(checkOwnerExistence, [email], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: "Error checking for existing user" });
+        }
+
+        if (results.length > 0) {
+            return res.status(400).json({ message: "Email already exists" });
+        }
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            return res.status(400).json({ message: "Passwords must match" });
+        }
+
+        // Hash the password
+        bcrypt.hash(password, saltRounds, (err, passwordHash) => {
+            if (err) {
+                console.log("Error hashing password:", err);
+                return res.status(500).json({ message: "Error hashing password" });
+            }
+
+            // SQL query to insert a new owner into the database
+            const sql = `INSERT INTO customers 
+                        (NAME, EMAIL, PHONE_NUM, PASSWORD) 
+                        VALUES (?, ?, ?, ?)`;
+
+            const values = [fullName, email, phone, passwordHash];
+
+            sqldb.query(sql, values, (err, result) => {
+                if (err) {
+                    console.log("Error inserting data:", err);
+                    return res.status(500).json({ message: "Error inserting data into the server" });
+                }
+
+                console.log("Registered successfully");
+                return res.status(201).json({ Status: "Success" });
+            });
+        });
+    });
+};
 
