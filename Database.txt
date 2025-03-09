@@ -84,6 +84,8 @@ CREATE TABLE product_variations (
     FOREIGN KEY (ColorID) REFERENCES colors(ColorID)
 );
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 CREATE TABLE expenses (
     expenses_id INT AUTO_INCREMENT PRIMARY KEY,
     date DATE NOT NULL,
