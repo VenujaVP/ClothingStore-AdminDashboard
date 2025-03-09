@@ -3,6 +3,7 @@
 /* eslint-disable no-unused-vars */
 
 import React from 'react';
+import withAuth from '../withAuth';
 import './ProductViewPage.css'; // Import the CSS file
 
 const ProductViewPage = () => {
@@ -95,4 +96,6 @@ const ProductViewPage = () => {
   );
 };
 
-export default ProductViewPage;
+// export default ProductViewPage;
+const AuthenticatedProductViewPage = withAuth(ProductViewPage);  
+export default AuthenticatedProductViewPage;
