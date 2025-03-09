@@ -23,6 +23,8 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState([]); // Track expanded categories in mobile view
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const notices = [
       'Welcome to our website!',
@@ -56,6 +58,11 @@ const Navbar = () => {
     }
   };
 
+  // Function to navigate when an icon is clicked
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
   return (
     <>
       {/* Notice Bar */}
@@ -77,19 +84,19 @@ const Navbar = () => {
             </button>
           </div>
           <div className="icons">
-            <div className="icon-item">
+            <div className="icon-item" onClick={() => handleNavigation('/cart')}>
               <RiHeartLine />
               <span>Wishlist</span>
             </div>
-            <div className="icon-item">
+            <div className="icon-item" onClick={() => handleNavigation('/cart')}>
               <RiNotificationLine />
               <span>Notification</span>
             </div>
-            <div className="icon-item">
+            <div className="icon-item" onClick={() => handleNavigation('/user-shopping-cart')}>
               <RiShoppingCartLine />
               <span>Cart</span>
             </div>
-            <div className="icon-item">
+            <div className="icon-item" onClick={() => handleNavigation('/user-account')}>
               <RiUserLine />
               <span>Account</span>
             </div>

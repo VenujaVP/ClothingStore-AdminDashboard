@@ -2,7 +2,7 @@
     display: flex;
     min-height: 100vh;
     background-color: #f5f7fb;
-    padding: 20px;
+    padding: 10px 20px 20px 20px;
     gap: 20px;
 }
 
