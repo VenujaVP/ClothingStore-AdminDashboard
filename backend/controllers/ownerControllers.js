@@ -221,3 +221,33 @@ export const ownerCreateProduct = (req, res) => {
     });
   });
 };
+
+export const sizes = (req, res) => {
+    const sql = 'SELECT * FROM sizes'; // Query to fetch all sizes
+  
+    // Execute the query
+    sqldb.query(sql, (err, result) => {
+      if (err) {
+        console.error('Error fetching sizes:', err);
+        return res.status(500).json({ message: 'Error fetching sizes' });
+      }
+  
+      // Send the sizes as a response
+      res.status(200).json(result);
+    });
+};
+
+  export const colors = (req, res) => {
+    const sql = 'SELECT * FROM colors'; // Query to fetch all colors
+  
+    // Execute the query
+    sqldb.query(sql, (err, result) => {
+      if (err) {
+        console.error('Error fetching colors:', err);
+        return res.status(500).json({ message: 'Error fetching colors' });
+      }
+  
+      // Send the colors as a response
+      res.status(200).json(result);
+    });
+};
