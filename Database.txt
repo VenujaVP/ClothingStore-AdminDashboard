@@ -53,6 +53,7 @@ CREATE TABLE colors (
     ColorValue VARCHAR(50) NOT NULL UNIQUE
 );
 
+
 CREATE TABLE product_table (
     ProductID VARCHAR(10) PRIMARY KEY,
     ProductName VARCHAR(255) NOT NULL,
@@ -84,4 +85,3 @@ CREATE TABLE product_variations (
 );
 
 
-________________________________________________________________________________________________________________________

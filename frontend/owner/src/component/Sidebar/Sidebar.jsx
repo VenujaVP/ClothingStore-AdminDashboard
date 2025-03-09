@@ -55,7 +55,14 @@ const Sidebar = ({ isMobileMenuOpen, onMobileMenuClose }) => {
         { icon: <FaList />, title: 'Employee List', path: '/employees/list' },
       ],
     },
-    { icon: <FaFolder />, title: 'Projects', path: '/projects' },
+    {
+      icon: <FaUsers />,
+      title: 'Expenses',
+      subItems: [
+        { icon: <FaPlus />, title: 'Add Expenses', path: '/expenses/add' },
+        { icon: <FaList />, title: 'Expenses Hist', path: '/expenses/hist' },
+      ],
+    },
     { icon: <FaCog />, title: 'Settings', path: '/settings' },
     { icon: <FaEnvelope />, title: 'Messages', path: '/messages' },
   ];
