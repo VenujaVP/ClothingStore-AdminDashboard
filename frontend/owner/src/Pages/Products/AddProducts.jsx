@@ -190,18 +190,32 @@ const AddProducts = () => {
   };
 
   useEffect(() => {
-    const fetchSizesAndColors = async () => {
-      try {
-        const sizesResponse = await axios.get('http://localhost:8082/api/owner/sizes');
-        const colorsResponse = await axios.get('http://localhost:8082/api/owner/colors');
-
-        setSizes(sizesResponse.data); // Set sizes state
-        setColors(colorsResponse.data); // Set colors state
-      } catch (error) {
-        console.error('Error fetching sizes and colors:', error);
-      }
+    const fetchSizesAndColors = () => {
+      // Fetch sizes
+      axios.get('http://localhost:8082/api/owner/sizes')
+        .then((sizesResponse) => {
+          setSizes(sizesResponse.data); // Set sizes state
+        })
+        .catch((sizesError) => {
+          console.error('Error fetching sizes:', sizesError);
+          setAlertSeverity('error');
+          setMessage('Failed to fetch sizes. Please try again.');
+          setOpen(true);
+        });
+  
+      // Fetch colors
+      axios.get('http://localhost:8082/api/owner/colors')
+        .then((colorsResponse) => {
+          setColors(colorsResponse.data); // Set colors state
+        })
+        .catch((colorsError) => {
+          console.error('Error fetching colors:', colorsError);
+          setAlertSeverity('error');
+          setMessage('Failed to fetch colors. Please try again.');
+          setOpen(true);
+        });
     };
-
+  
     fetchSizesAndColors();
   }, []);
 

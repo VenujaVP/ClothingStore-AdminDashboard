@@ -222,7 +222,7 @@ export const ownerCreateProduct = (req, res) => {
   });
 };
 
-export const sizes = (req, res) => {
+export const fetchSizes = (req, res) => {
     const sql = 'SELECT * FROM sizes'; // Query to fetch all sizes
   
     // Execute the query
@@ -237,7 +237,7 @@ export const sizes = (req, res) => {
     });
 };
 
-  export const colors = (req, res) => {
+  export const fetchColors = (req, res) => {
     const sql = 'SELECT * FROM colors'; // Query to fetch all colors
   
     // Execute the query
