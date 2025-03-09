@@ -41,7 +41,7 @@ CREATE TABLE EmployeeDetails (
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 CREATE TABLE sizes (
     SizeID INT AUTO_INCREMENT PRIMARY KEY,
@@ -82,6 +82,16 @@ CREATE TABLE product_variations (
     FOREIGN KEY (ProductID) REFERENCES product_table(ProductID) ON DELETE CASCADE,
     FOREIGN KEY (SizeID) REFERENCES sizes(SizeID),
     FOREIGN KEY (ColorID) REFERENCES colors(ColorID)
+);
+
+CREATE TABLE expenses (
+    expenses_id INT AUTO_INCREMENT PRIMARY KEY,
+    date DATE NOT NULL,
+    expenses_name VARCHAR(255) NOT NULL,
+    cost DECIMAL(10,2) NOT NULL,
+    description TEXT,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 

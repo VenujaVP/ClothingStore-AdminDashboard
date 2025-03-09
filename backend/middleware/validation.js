@@ -266,4 +266,49 @@ export const ownerProductAddValidate = [
     .withMessage('Invalid product variations'),
 ];
 
+export const ownerExpensesAddValidate = [
+  // Validate expenses_id
+  body('expenses_id')
+    .notEmpty()
+    .withMessage('Expense ID is required')
+    .isAlphanumeric()
+    .withMessage('Expense ID must be alphanumeric')
+    .isLength({ min: 3, max: 20 })
+    .withMessage('Expense ID must be between 3 and 20 characters'),
+
+  // Validate date
+  body('date')
+    .notEmpty()
+    .withMessage('Date is required')
+    .isISO8601()
+    .withMessage('Date must be in ISO8601 format (YYYY-MM-DD)')
+    .custom((value) => {
+      const inputDate = new Date(value);
+      const currentDate = new Date();
+      return inputDate <= currentDate;
+    })
+    .withMessage('Date cannot be in the future'),
+
+  // Validate expenses_name
+  body('expenses_name')
+    .notEmpty()
+    .withMessage('Expense Name is required')
+    .isLength({ min: 3, max: 50 })
+    .withMessage('Expense Name must be between 3 and 50 characters'),
+
+  // Validate cost
+  body('cost')
+    .notEmpty()
+    .withMessage('Cost is required')
+    .isFloat({ gt: 0 })
+    .withMessage('Cost must be a positive number'),
+
+  // Validate description
+  body('description')
+    .notEmpty()
+    .withMessage('Description is required')
+    .isLength({ min: 10, max: 500 })
+    .withMessage('Description must be between 10 and 500 characters'),
+]
+
 
