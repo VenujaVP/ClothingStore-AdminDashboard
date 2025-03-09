@@ -5,24 +5,20 @@
 
 import React, { useState } from 'react';
 import './AddExpenses.css';
-import { FaUser, FaEnvelope, FaLock, FaPhone, FaCalendar, FaUserTag, FaIdCard } from 'react-icons/fa';
+import { FaCalendar, FaTag, FaInfoCircle, FaImage, FaMoneyBillAlt } from 'react-icons/fa';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import withAuth from '../withAuth';
-import {addEmployeeValidationSchema} from '../inputValidations'
+import { addExpensesValidationSchema } from '../inputValidations'; // Assuming you have a validation schema for expenses
 
 const AddExpenses = () => {
   const [formData, setFormData] = useState({
-    employee_uname: '',
-    email: '',
-    f_name: '',
-    l_name: '',
-    password: '',
-    com_password: '',
-    role: '',
-    phone_1: '',
-    phone_2: '',
-    entry_date: ''
+    expenses_id: '',
+    date: '',
+    expenses_name: '',
+    cost: '',
+    description: '',
+    image: null,
   });
 
   const [errors, setErrors] = useState({});
@@ -33,53 +29,77 @@ const AddExpenses = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prevState) => ({
+        ...prevState,
+        image: file,
+      }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // Validate the form data
-    addEmployeeValidationSchema
+    addExpensesValidationSchema
       .validate(formData, { abortEarly: false })
       .then(() => {
         // Send data to the backend
-        axios.post('http://localhost:8082/api/owner/owner-add-expenses', formData)
-          .then(res => {
-            if (res.data && res.data.Status === "Success") {
-              console.log('Employee added successfully:', res.data);
+        const formDataToSend = new FormData();
+        formDataToSend.append('expenses_id', formData.expenses_id);
+        formDataToSend.append('date', formData.date);
+        formDataToSend.append('expenses_name', formData.expenses_name);
+        formDataToSend.append('cost', formData.cost);
+        formDataToSend.append('description', formData.description);
+        if (formData.image) {
+          formDataToSend.append('image', formData.image);
+        }
+
+        axios
+          .post('http://localhost:8082/api/owner/owner-add-expenses', formDataToSend, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          })
+          .then((res) => {
+            if (res.data && res.data.Status === 'Success') {
+              console.log('Expense added successfully:', res.data);
               setFormData({
-                employee_uname: '',
-                email: '',
-                f_name: '',
-                l_name: '',
-                password: '',
-                com_password: '',
-                phone_1: '',
-                phone_2: '',
-                entry_date: '',
-                role: ''
-              });            
-          } else {
-              console.error('Error adding employee:', res);
-              setAlertSeverity("error");
-              setMessage(res.data.Error || 'An error occurred while adding employee');
+                expenses_id: '',
+                date: '',
+                expenses_name: '',
+                cost: '',
+                description: '',
+                image: null,
+              });
+              setAlertSeverity('success');
+              setMessage('Expense added successfully!');
+              setOpen(true);
+            } else {
+              console.error('Error adding expense:', res);
+              setAlertSeverity('error');
+              setMessage(res.data.Error || 'An error occurred while adding expense');
               setOpen(true);
             }
           })
-          .catch(err => {
+          .catch((err) => {
             console.error('Error:', err);
             setAlertSeverity('error');
             setMessage(err.response?.data?.message || 'Server error. Please try again.');
             setOpen(true);
           });
       })
-      .catch(err => {
+      .catch((err) => {
         const validationErrors = {};
-        err.inner.forEach(error => {
+        err.inner.forEach((error) => {
           validationErrors[error.path] = error.message; // Collect validation errors
         });
         setErrors(validationErrors); // Set errors to state for display
@@ -88,178 +108,114 @@ const AddExpenses = () => {
   };
 
   return (
-    <div className="add-employee-container">
-      <div className="add-employee-card">
-        <h2>Add New Employee</h2>
+    <div className="add-expenses-container">
+      <div className="add-expenses-card">
+        <h2>Add New Expense</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-row">
             <div className="form-group">
-              <label>Employee User Name</label>
+              <label>Expense ID</label>
               <div className="input-group">
-                <FaIdCard className="input-icon" />
+                <FaTag className="input-icon" />
                 <input
                   type="text"
-                  name="employee_uname"
-                  placeholder="Enter Employee User Name"
-                  value={formData.employee_uname}
+                  name="expenses_id"
+                  placeholder="Enter Expense ID"
+                  value={formData.expenses_id}
                   onChange={handleChange}
                   required
                 />
-                {errors.employee_id && <span className="error-text">{errors.employee_id}</span>}
+                {errors.expenses_id && <span className="error-text">{errors.expenses_id}</span>}
               </div>
             </div>
             <div className="form-group">
-              <label>Email Address</label>
-              <div className="input-group">
-                <FaEnvelope className="input-icon" />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter email address"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-                {errors.email && <span className="error-text">{errors.email}</span>}
-              </div>
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>First Name</label>
-              <div className="input-group">
-                <FaUser className="input-icon" />
-                <input
-                  type="text"
-                  name="f_name"
-                  placeholder="Enter first name"
-                  value={formData.f_name}
-                  onChange={handleChange}
-                  required
-                />
-                {errors.f_name && <span className="error-text">{errors.f_name}</span>}
-              </div>
-            </div>
-            <div className="form-group">
-              <label>Last Name</label>
-              <div className="input-group">
-                <FaUser className="input-icon" />
-                <input
-                  type="text"
-                  name="l_name"
-                  placeholder="Enter last name"
-                  value={formData.l_name}
-                  onChange={handleChange}
-                  required
-                />
-                {errors.l_name && <span className="error-text">{errors.l_name}</span>}
-              </div>
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Password</label>
-              <div className="input-group">
-                <FaLock className="input-icon" />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Enter password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-                {errors.password && <span className="error-text">{errors.password}</span>}
-              </div>
-            </div>
-            <div className="form-group">
-              <label>Confirm Password</label>
-              <div className="input-group">
-                <FaLock className="input-icon" />
-                <input
-                  type="password"
-                  name="com_password"
-                  placeholder="Re-enter password"
-                  value={formData.com_password}
-                  onChange={handleChange}
-                  required
-                />
-                {errors.com_password && <span className="error-text">{errors.com_password}</span>}
-              </div>
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Entry Date</label>
+              <label>Date</label>
               <div className="input-group">
                 <FaCalendar className="input-icon" />
                 <input
                   type="date"
-                  name="entry_date"
-                  value={formData.entry_date}
+                  name="date"
+                  value={formData.date}
                   onChange={handleChange}
                   required
                 />
-                {errors.entry_date && <span className="error-text">{errors.entry_date}</span>}
-              </div>
-            </div>
-            <div className="form-group">
-              <label>Role</label>
-              <div className="input-group">
-                <FaUserTag className="input-icon" />
-                <select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select role</option>
-                  <option value="admin">Cashier</option>
-                  <option value="manager">Manager</option>
-                  <option value="employee">Employee</option>
-                </select>
-                {errors.role && <span className="error-text">{errors.role}</span>}
+                {errors.date && <span className="error-text">{errors.date}</span>}
               </div>
             </div>
           </div>
 
           <div className="form-row">
             <div className="form-group">
-              <label>Primary Phone</label>
+              <label>Expense Name</label>
               <div className="input-group">
-                <FaPhone className="input-icon" />
+                <FaTag className="input-icon" />
                 <input
-                  type="tel"
-                  name="phone_1"
-                  placeholder="Enter primary phone"
-                  value={formData.phone_1}
+                  type="text"
+                  name="expenses_name"
+                  placeholder="Enter Expense Name"
+                  value={formData.expenses_name}
                   onChange={handleChange}
                   required
                 />
-                {errors.phone_1 && <span className="error-text">{errors.phone_1}</span>}
+                {errors.expenses_name && <span className="error-text">{errors.expenses_name}</span>}
               </div>
             </div>
             <div className="form-group">
-              <label>Secondary Phone (Optional)</label>
+              <label>Cost</label>
               <div className="input-group">
-                <FaPhone className="input-icon" />
+                <FaMoneyBillAlt className="input-icon" />
                 <input
-                  type="tel"
-                  name="phone_2"
-                  placeholder="Enter secondary phone"
-                  value={formData.phone_2}
+                  type="number"
+                  name="cost"
+                  placeholder="Enter Cost"
+                  value={formData.cost}
                   onChange={handleChange}
+                  required
+                />
+                {errors.cost && <span className="error-text">{errors.cost}</span>}
+              </div>
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Description</label>
+              <div className="input-group">
+                <FaInfoCircle className="input-icon" />
+                <textarea
+                  name="description"
+                  placeholder="Enter Description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  required
+                />
+                {errors.description && <span className="error-text">{errors.description}</span>}
+              </div>
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Upload Image</label>
+              <div className="input-group">
+                <FaImage className="input-icon" />
+                <input
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  onChange={handleImageChange}
                 />
               </div>
             </div>
           </div>
 
           <div className="form-actions">
-            <button type="button" className="cancel-btn">Cancel</button>
-            <button type="submit" className="submit-btn">Add Employee</button>
+            <button type="button" className="cancel-btn">
+              Cancel
+            </button>
+            <button type="submit" className="submit-btn">
+              Add Expense
+            </button>
           </div>
         </form>
       </div>
@@ -267,6 +223,5 @@ const AddExpenses = () => {
   );
 };
 
-// export default AddEmployee;
 const AuthenticatedAddExpenses = withAuth(AddExpenses);
 export default AuthenticatedAddExpenses;
