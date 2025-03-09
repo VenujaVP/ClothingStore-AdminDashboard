@@ -18,7 +18,6 @@ const AddExpenses = () => {
     expenses_name: '',
     cost: '',
     description: '',
-    image: null,
   });
 
   const [errors, setErrors] = useState({});
@@ -47,26 +46,16 @@ const AddExpenses = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     // Validate the form data
     addExpensesValidationSchema
       .validate(formData, { abortEarly: false })
       .then(() => {
         // Send data to the backend
-        const formDataToSend = new FormData();
-        formDataToSend.append('expenses_id', formData.expenses_id);
-        formDataToSend.append('date', formData.date);
-        formDataToSend.append('expenses_name', formData.expenses_name);
-        formDataToSend.append('cost', formData.cost);
-        formDataToSend.append('description', formData.description);
-        if (formData.image) {
-          formDataToSend.append('image', formData.image);
-        }
-
         axios
-          .post('http://localhost:8082/api/owner/owner-add-expenses', formDataToSend, {
+          .post('http://localhost:8082/api/owner/owner-add-expenses', formData, {
             headers: {
-              'Content-Type': 'multipart/form-data',
+              'Content-Type': 'application/json', // Send as JSON
             },
           })
           .then((res) => {
@@ -78,7 +67,6 @@ const AddExpenses = () => {
                 expenses_name: '',
                 cost: '',
                 description: '',
-                image: null,
               });
               setAlertSeverity('success');
               setMessage('Expense added successfully!');
