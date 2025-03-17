@@ -13,6 +13,13 @@ h1 {
   font-size: 2rem;
 }
 
+.loading, .error {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin-top: 20px;
+}
+
 /* Product Grid */
 .product-grid {
   display: grid;
@@ -67,6 +74,12 @@ h1 {
 .product-rating {
   font-size: 0.9rem;
   color: #FFC107;
+  margin-bottom: 10px;
+}
+
+.wishlist-count {
+  font-size: 0.9rem;
+  color: #666;
 }
 
 /* Pagination */
