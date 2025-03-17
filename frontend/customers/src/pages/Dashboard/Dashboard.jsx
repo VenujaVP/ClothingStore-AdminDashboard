@@ -19,7 +19,7 @@ const Dashboard = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get('http://localhost:8082/api/user/product-fetch'); // Replace with your backend API endpoint
-        setProducts(response.data); // Set the fetched data to state
+        setProducts(response.data.products); // Set the fetched data to state
         setLoading(false); // Set loading to false
       } catch (err) {
         setError(err.message); // Set error message
@@ -43,6 +43,19 @@ const Dashboard = () => {
     setCurrentPage(pageNumber);
   };
 
+  // Function to render star ratings
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= rating) {
+        stars.push(<span key={i} className="star filled">★</span>); // Filled star
+      } else {
+        stars.push(<span key={i} className="star">☆</span>); // Empty star
+      }
+    }
+    return stars;
+  };
+
   if (loading) {
     return <div className="loading">Loading...</div>; // Show loading message
   }
@@ -56,16 +69,26 @@ const Dashboard = () => {
       <h1>Product Dashboard</h1>
       <div className="product-grid">
         {currentProducts.map((product) => (
-          <div key={product.id} className="product-card">
-            <img src={product.image} alt={product.name} className="product-image" />
+          <div key={product.product_id} className="product-card">
+            <img src="https://via.placeholder.com/200" alt={product.product_name} className="product-image" />
             <div className="product-details">
-              <h2 className="product-name">{product.name}</h2>
-              <p className="product-description">{product.description}</p>
-              <div className="product-price">LKR {product.price}</div>
-              <div className="product-rating">Rating: {product.rating} ★</div>
-              <div className="wishlist-count">Wishlist: {product.wishlistCount}</div>
-              <div className="wishlist-count">statis: {product.aaa}</div>
-              <div className="wishlist-count">statis: {product.bbb}</div>
+              <h2 className="product-name">{product.product_name}</h2>
+              <p className="product-description">{product.product_description}</p>
+              <div className="product-price">LKR {product.unit_price}</div>
+              <div className="product-rating">
+                {renderStars(product.rating)} ({product.rating})
+              </div>
+              <div className="product-stock">
+                {product.total_units > 0 ? (
+                  <span className="in-stock">In Stock</span>
+                ) : (
+                  <span className="sold-out">Sold Out</span>
+                )}
+                {product.total_units > 0 && product.total_units < 10 && (
+                  <span className="low-stock"> (Low Stock)</span>
+                )}
+              </div>
+              <div className="wishlist-count">Wishlist: {product.wishlist_count}</div>
             </div>
           </div>
         ))}
