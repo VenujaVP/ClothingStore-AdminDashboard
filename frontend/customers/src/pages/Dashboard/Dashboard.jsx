@@ -63,7 +63,9 @@ const Dashboard = () => {
               <p className="product-description">{product.description}</p>
               <div className="product-price">LKR {product.price}</div>
               <div className="product-rating">Rating: {product.rating} ★</div>
-              <div className="wishlist-count">Wishlist: {product.wishlistCount}</div> {/* Wishlist count */}
+              <div className="wishlist-count">Wishlist: {product.wishlistCount}</div>
+              <div className="wishlist-count">statis: {product.aaa}</div>
+              <div className="wishlist-count">statis: {product.bbb}</div>
             </div>
           </div>
         ))}

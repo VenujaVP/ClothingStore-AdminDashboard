@@ -1,8 +1,10 @@
+//routes/userRoutes.js
+
 import express from 'express';
-import { ownerCreateEmployee, ownerCreateProduct, fetchSizes, fetchColors, ownerAddExpenses } from '../controllers/ownerControllers.js'
+import { fetchProducts } from '../controllers/userControllers.js';
 
 const router = express.Router();
 
-router.get('/fetch-sizes', fetchSizes);
+router.get('/product-fetch', fetchProducts);
 
 export default router;
