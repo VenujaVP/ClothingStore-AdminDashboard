@@ -61,7 +61,7 @@ h1 {
 .product-name {
   font-size: 1.2rem;
   color: #333;
-  margin-bottom: 10px;
+  margin-bottom: 8px; /* Reduced margin-bottom */
   height: 40px; /* Fixed height for product name */
   overflow: hidden;
   text-overflow: ellipsis;
@@ -71,7 +71,7 @@ h1 {
 .product-description {
   font-size: 0.9rem;
   color: #666;
-  margin-bottom: 10px;
+  margin-bottom: 0px !important ; /* Reduced margin-bottom to decrease space */
   height: 60px; /* Fixed height for product description */
   overflow: hidden;
   text-overflow: ellipsis;
@@ -84,13 +84,13 @@ h1 {
   font-size: 1.1rem;
   font-weight: bold;
   color: #23b893;
-  margin-bottom: 10px;
+  margin-bottom: 0px !important; /* Reduced margin-bottom */
 }
 
 .product-rating {
   font-size: 1rem;
   color: #FFC107;
-  margin-bottom: 10px;
+  margin-bottom: 8px; /* Reduced margin-bottom */
 }
 
 .star {
@@ -104,7 +104,7 @@ h1 {
 
 .product-stock {
   font-size: 0.9rem;
-  margin-bottom: 10px;
+  margin-bottom: 8px; /* Reduced margin-bottom */
 }
 
 .in-stock {
@@ -122,6 +122,7 @@ h1 {
 .wishlist-count {
   font-size: 0.9rem;
   color: #666;
+  margin-bottom: 0; /* No margin at the bottom */
 }
 
 /* Pagination */

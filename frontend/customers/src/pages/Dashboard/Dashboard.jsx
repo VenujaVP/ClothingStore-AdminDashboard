@@ -66,7 +66,6 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <h1>Product Dashboard</h1>
       <div className="product-grid">
         {currentProducts.map((product) => (
           <div key={product.product_id} className="product-card">
@@ -84,12 +83,14 @@ const Dashboard = () => {
               </div>
               <div className="product-stock">
                 {product.total_units > 0 ? (
-                  <span className="in-stock">In Stock</span>
+                  <span className="in-stock">In Stock </span>
                 ) : (
-                  <span className="sold-out">Sold Out</span>
+                  <span className="sold-out">Sold Out </span>
                 )}
                 {product.total_units > 0 && product.total_units < 10 && (
-                  <span className="low-stock"> (Low Stock)</span>
+                  <span className="low-stock">
+                    (Only {product.total_units} {product.total_units === 1 ? 'item' : 'items'} left)
+                  </span>
                 )}
               </div>
               <div className="wishlist-count">Wishlist: {product.wishlist_count}</div>
