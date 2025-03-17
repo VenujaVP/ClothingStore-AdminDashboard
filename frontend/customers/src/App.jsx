@@ -10,6 +10,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { useState } from 'react'
 import './App.css'
 import Navbar from './conponent/Navbar/Navbar';
+import Footer from './conponent/Footer/Footer';
 
 import Login from './pages/Enter/Login/Login'
 import Register from './pages/Enter/Register/Register'
@@ -31,6 +32,11 @@ function App() {
   const location = useLocation();
 
   const shouldDisplaySidebar = () => {
+    const excludedPaths = ['/user-login', '/user-register', '/user-forgotpassword', '/user-passwordresetfinish', '/checkyouremail'];
+    return !excludedPaths.includes(location.pathname) && !location.pathname.startsWith('/user-reset-password');
+  };
+
+  const shouldDisplayFooter = () => {
     const excludedPaths = ['/user-login', '/user-register', '/user-forgotpassword', '/user-passwordresetfinish', '/checkyouremail'];
     return !excludedPaths.includes(location.pathname) && !location.pathname.startsWith('/user-reset-password');
   };
@@ -58,6 +64,7 @@ function App() {
           </Routes>
         </main>
       </div>
+      {shouldDisplayFooter() && <Footer />} 
     </>
   );
 }

@@ -25,12 +25,13 @@ h1 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
+  /* background-color: #1a8b6f; */
   padding: 20px;
 }
 
 /* Product Card */
 .product-card {
-  background: white;
+  background: #ffffff39;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -70,7 +71,7 @@ h1 {
 
 .product-description {
   font-size: 0.9rem;
-  color: #666;
+  color: #4f4f4f;
   margin-bottom: 0px !important ; /* Reduced margin-bottom to decrease space */
   height: 60px; /* Fixed height for product description */
   overflow: hidden;
@@ -95,7 +96,7 @@ h1 {
 
 .star {
   font-size: 1.2rem;
-  color: #ddd;
+  color: #989898;
 }
 
 .star.filled {
