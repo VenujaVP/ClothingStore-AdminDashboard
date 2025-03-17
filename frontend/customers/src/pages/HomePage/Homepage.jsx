@@ -5,21 +5,19 @@
 
 //import assets from '../../assets/Assets';
 
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/react-in-jsx-scope */
-
 import React, { useState, useEffect } from 'react';
 import './Homepage.css';
 import withAuth from '../withAuth';
+import assets from '../../assets/Assets';
 
 const Homepage = () => {
   // Sample data for hero carousel images
   const heroImages = [
-    'https://via.placeholder.com/1920x400',
-    'https://via.placeholder.com/1920x400',
-    'https://via.placeholder.com/1920x400',
+    assets.a,
+    assets.a,
+    assets.a,
+    assets.a,
+    assets.a,
   ];
 
   // Sample data for new arrivals
@@ -175,19 +173,53 @@ const Homepage = () => {
     return () => clearInterval(interval);
   }, [heroImages.length]);
 
+  // Add these new functions for carousel control
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? heroImages.length - 1 : prev - 1));
+  };
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
+
   return (
     <div className="homepage">
-      {/* Hero Section with Carousel */}
+      {/* Updated Hero Section with Carousel */}
       <section className="hero-section">
-        <div
-          className="hero-carousel"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-        >
-          {heroImages.map((image, index) => (
-            <div key={index} className="hero-slide">
-              <img src={image} alt={`Hero Slide ${index + 1}`} />
-            </div>
-          ))}
+        <div className="hero-carousel-container">
+          <div
+            className="hero-carousel"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {heroImages.map((image, index) => (
+              <div key={index} className="hero-slide">
+                <img src={image} alt={`Hero Slide ${index + 1}`} />
+              </div>
+            ))}
+          </div>
+          
+          {/* Add Navigation Buttons */}
+          <button className="carousel-button prev" onClick={prevSlide}>
+            &#10094;
+          </button>
+          <button className="carousel-button next" onClick={nextSlide}>
+            &#10095;
+          </button>
+
+          {/* Add Slide Indicators */}
+          <div className="carousel-indicators">
+            {heroImages.map((_, index) => (
+              <button
+                key={index}
+                className={`indicator ${currentSlide === index ? 'active' : ''}`}
+                onClick={() => goToSlide(index)}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
