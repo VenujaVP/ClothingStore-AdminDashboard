@@ -15,37 +15,41 @@ const Homepage = () => {
       name: 'Product 1',
       price: 200,
       rating: 4.2,
-      image: 'https://via.placeholder.com/200',
+      image: 'https://via.placeholder.com/300',
+      description: 'This is a short description of Product 1.',
     },
     {
       id: 2,
       name: 'Product 2',
       price: 300,
       rating: 4.5,
-      image: 'https://via.placeholder.com/200',
+      image: 'https://via.placeholder.com/300',
+      description: 'This is a short description of Product 2.',
     },
     {
       id: 3,
       name: 'Product 3',
       price: 250,
       rating: 4.0,
-      image: 'https://via.placeholder.com/200',
+      image: 'https://via.placeholder.com/300',
+      description: 'This is a short description of Product 3.',
     },
     {
       id: 4,
       name: 'Product 4',
       price: 400,
       rating: 4.7,
-      image: 'https://via.placeholder.com/200',
+      image: 'https://via.placeholder.com/300',
+      description: 'This is a short description of Product 4.',
     },
   ];
 
   // Sample data for categories
   const categories = [
-    { id: 1, name: 'Men', image: 'https://via.placeholder.com/200' },
-    { id: 2, name: 'Women', image: 'https://via.placeholder.com/200' },
-    { id: 3, name: 'Kids', image: 'https://via.placeholder.com/200' },
-    { id: 4, name: 'Accessories', image: 'https://via.placeholder.com/200' },
+    { id: 1, name: 'Men', image: 'https://via.placeholder.com/300' },
+    { id: 2, name: 'Women', image: 'https://via.placeholder.com/300' },
+    { id: 3, name: 'Kids', image: 'https://via.placeholder.com/300' },
+    { id: 4, name: 'Accessories', image: 'https://via.placeholder.com/300' },
   ];
 
   // Sample data for testimonials
@@ -55,12 +59,21 @@ const Homepage = () => {
       name: 'John Doe',
       comment: 'Great products and fast delivery! Highly recommended.',
       rating: 5,
+      image: 'https://via.placeholder.com/100',
     },
     {
       id: 2,
       name: 'Jane Smith',
       comment: 'Love the quality and customer service. Will shop again!',
       rating: 4.5,
+      image: 'https://via.placeholder.com/100',
+    },
+    {
+      id: 3,
+      name: 'Alice Johnson',
+      comment: 'Excellent experience. The products are top-notch!',
+      rating: 4.8,
+      image: 'https://via.placeholder.com/100',
     },
   ];
 
@@ -97,8 +110,10 @@ const Homepage = () => {
               <img src={product.image} alt={product.name} className="product-image" />
               <div className="product-details">
                 <h3 className="product-name">{product.name}</h3>
+                <p className="product-description">{product.description}</p>
                 <div className="product-price">LKR {product.price}</div>
                 <div className="product-rating">{renderStars(product.rating)}</div>
+                <button className="add-to-cart">Add to Cart</button>
               </div>
             </div>
           ))}
@@ -124,6 +139,7 @@ const Homepage = () => {
         <div className="testimonials-grid">
           {testimonials.map((testimonial) => (
             <div key={testimonial.id} className="testimonial-card">
+              <img src={testimonial.image} alt={testimonial.name} className="testimonial-image" />
               <div className="testimonial-rating">{renderStars(testimonial.rating)}</div>
               <p className="testimonial-comment">&ldquo;{testimonial.comment}&rdquo;</p>
               <p className="testimonial-name">- {testimonial.name}</p>
