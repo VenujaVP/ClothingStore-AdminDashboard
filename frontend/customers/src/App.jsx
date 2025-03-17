@@ -65,6 +65,7 @@ function App() {
             <Route path="/user-product-view-page" element={<AuthenticatedProductViewPage/>} />
           </Routes>
         </main>
+        {shouldDisplayFooter() && <Footer />}
       </div>
     </>
   );
