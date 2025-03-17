@@ -18,7 +18,8 @@ import authRoutes from './routes/authRoutes.js'
 import verifyUser from './middleware/authMiddleware.js';
 import cleanupExpiredTokens from './services/tokenCleanup.js';
 
-import ownerRoutes from './routes/ownerRoutes.js'
+import ownerRoutes from './routes/ownerRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 import dotenv from 'dotenv';
 import express from 'express';
@@ -46,6 +47,7 @@ app.use('/api/auth', authRoutes);
 
 //Owner
 app.use('/api/owner', ownerRoutes)
+app.use('/api/user', userRoutes)
 
 
 

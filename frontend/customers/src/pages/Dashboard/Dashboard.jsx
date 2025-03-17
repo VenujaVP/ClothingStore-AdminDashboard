@@ -18,7 +18,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://api.example.com/products'); // Replace with your backend API endpoint
+        const response = await axios.get('http://localhost:8082/api/user/product-fetch'); // Replace with your backend API endpoint
         setProducts(response.data); // Set the fetched data to state
         setLoading(false); // Set loading to false
       } catch (err) {
