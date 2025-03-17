@@ -35,6 +35,8 @@ h1 {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .product-card:hover {
@@ -50,41 +52,45 @@ h1 {
 
 .product-details {
   padding: 15px;
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: calc(100% - 200px); /* Adjust height based on image height */
 }
 
 .product-name {
   font-size: 1.2rem;
   color: #333;
   margin-bottom: 10px;
+  height: 40px; /* Fixed height for product name */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .product-description {
   font-size: 0.9rem;
   color: #666;
   margin-bottom: 10px;
-  flex-grow: 1; /* Allow description to take remaining space */
-}
-
-.product-sub-details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
+  height: 60px; /* Fixed height for product description */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-box-orient: vertical;
 }
 
 .product-price {
   font-size: 1.1rem;
   font-weight: bold;
   color: #23b893;
+  margin-bottom: 10px;
 }
 
 .product-rating {
   font-size: 1rem;
   color: #FFC107;
+  margin-bottom: 10px;
 }
 
 .star {
@@ -98,6 +104,7 @@ h1 {
 
 .product-stock {
   font-size: 0.9rem;
+  margin-bottom: 10px;
 }
 
 .in-stock {
