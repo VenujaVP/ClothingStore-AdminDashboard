@@ -50,6 +50,10 @@ h1 {
 
 .product-details {
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 200px); /* Adjust height based on image height */
 }
 
 .product-name {
@@ -62,19 +66,25 @@ h1 {
   font-size: 0.9rem;
   color: #666;
   margin-bottom: 10px;
+  flex-grow: 1; /* Allow description to take remaining space */
+}
+
+.product-sub-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
 }
 
 .product-price {
   font-size: 1.1rem;
   font-weight: bold;
   color: #23b893;
-  margin-bottom: 10px;
 }
 
 .product-rating {
   font-size: 1rem;
   color: #FFC107;
-  margin-bottom: 10px;
 }
 
 .star {
@@ -88,7 +98,6 @@ h1 {
 
 .product-stock {
   font-size: 0.9rem;
-  margin-bottom: 10px;
 }
 
 .in-stock {
