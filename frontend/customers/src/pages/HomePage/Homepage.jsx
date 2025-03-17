@@ -3,6 +3,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/react-in-jsx-scope */
 
+//import assets from '../../assets/Assets';
+
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/react-in-jsx-scope */
+
 import React, { useState, useEffect } from 'react';
 import './Homepage.css';
 import withAuth from '../withAuth';
@@ -10,9 +17,9 @@ import withAuth from '../withAuth';
 const Homepage = () => {
   // Sample data for hero carousel images
   const heroImages = [
-    'https://via.placeholder.com/1200x400',
-    'https://via.placeholder.com/1200x400',
-    'https://via.placeholder.com/1200x400',
+    'https://via.placeholder.com/1920x400',
+    'https://via.placeholder.com/1920x400',
+    'https://via.placeholder.com/1920x400',
   ];
 
   // Sample data for new arrivals

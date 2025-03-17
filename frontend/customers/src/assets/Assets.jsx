@@ -1,7 +1,7 @@
 import a from './New.png';
 
 const assets = {
-  a,
+  a
 };
 
 export default assets;
