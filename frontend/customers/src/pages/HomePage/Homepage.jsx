@@ -197,12 +197,16 @@ const Homepage = () => {
           >
             {heroImages.map((image, index) => (
               <div key={index} className="hero-slide">
-                <img src={image} alt={`Hero Slide ${index + 1}`} />
+                <img 
+                  src={image} 
+                  alt={`Hero Slide ${index + 1}`}
+                  style={{ width: '100%' }}
+                />
               </div>
             ))}
           </div>
           
-          {/* Add Navigation Buttons */}
+          {/* Navigation Buttons */}
           <button className="carousel-button prev" onClick={prevSlide}>
             &#10094;
           </button>
@@ -210,7 +214,7 @@ const Homepage = () => {
             &#10095;
           </button>
 
-          {/* Add Slide Indicators */}
+          {/* Slide Indicators */}
           <div className="carousel-indicators">
             {heroImages.map((_, index) => (
               <button
