@@ -56,6 +56,14 @@ const Dashboard = () => {
     return stars;
   };
 
+  // Function to truncate text
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + '...';
+    }
+    return text;
+  };
+
   if (loading) {
     return <div className="loading">Loading...</div>; // Show loading message
   }
@@ -73,22 +81,26 @@ const Dashboard = () => {
             <img src="https://via.placeholder.com/200" alt={product.product_name} className="product-image" />
             <div className="product-details">
               <h2 className="product-name">{product.product_name}</h2>
-              <p className="product-description">{product.product_description}</p>
-              <div className="product-price">LKR {product.unit_price}</div>
-              <div className="product-rating">
-                {renderStars(product.rating)} ({product.rating})
+              <p className="product-description">
+                {truncateText(product.product_description, 100)} {/* Truncate description to 100 characters */}
+              </p>
+              <div className="product-sub-details">
+                <div className="product-price">LKR {product.unit_price}</div>
+                <div className="product-rating">
+                  {renderStars(product.rating)} ({product.rating})
+                </div>
+                <div className="product-stock">
+                  {product.total_units > 0 ? (
+                    <span className="in-stock">In Stock</span>
+                  ) : (
+                    <span className="sold-out">Sold Out</span>
+                  )}
+                  {product.total_units > 0 && product.total_units < 10 && (
+                    <span className="low-stock"> (Low Stock)</span>
+                  )}
+                </div>
+                <div className="wishlist-count">Wishlist: {product.wishlist_count}</div>
               </div>
-              <div className="product-stock">
-                {product.total_units > 0 ? (
-                  <span className="in-stock">In Stock</span>
-                ) : (
-                  <span className="sold-out">Sold Out</span>
-                )}
-                {product.total_units > 0 && product.total_units < 10 && (
-                  <span className="low-stock"> (Low Stock)</span>
-                )}
-              </div>
-              <div className="wishlist-count">Wishlist: {product.wishlist_count}</div>
             </div>
           </div>
         ))}
