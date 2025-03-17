@@ -5,9 +5,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import withAuth from '../withAuth'; // Import the HOC
-import './Dashboard.css';
+import './Viewpage.css';
 
-const Dashboard = () => {
+const Viewpage = () => {
   const [products, setProducts] = useState([]); // State to store product data
   const [loading, setLoading] = useState(true); // State to handle loading state
   const [error, setError] = useState(null); // State to handle errors
@@ -115,5 +115,5 @@ const Dashboard = () => {
   );
 };
 
-const AuthenticatedDashboard = withAuth(Dashboard);
-export default AuthenticatedDashboard;
+const AuthenticatedViewpage = withAuth(Viewpage);
+export default AuthenticatedViewpage;
