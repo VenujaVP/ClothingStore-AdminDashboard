@@ -89,7 +89,7 @@ h1 {
 
 .product-rating {
   font-size: 1rem;
-  color: #FFC107;
+  color: #FFD700;
   margin-bottom: 8px; /* Reduced margin-bottom */
 }
 
@@ -99,7 +99,7 @@ h1 {
 }
 
 .star.filled {
-  color: #FFC107;
+  color: #FFD700;
 }
 
 .product-stock {
@@ -116,7 +116,7 @@ h1 {
 }
 
 .low-stock {
-  color: #ffc107; /* Yellow for low stock */
+  color: #ff0000; /* Yellow for low stock */
 }
 
 .wishlist-count {
