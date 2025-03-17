@@ -64,7 +64,6 @@ function App() {
           </Routes>
         </main>
       </div>
-      {shouldDisplayFooter() && <Footer />} 
     </>
   );
 }
