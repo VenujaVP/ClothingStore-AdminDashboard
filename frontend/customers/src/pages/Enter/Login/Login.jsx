@@ -46,7 +46,7 @@ const Login = () => {
               console.log("JWT Token Received:", res.data.token);
               localStorage.setItem("token", res.data.token);
               console.log('Login successful:', res.data);
-              navigate('/user-dashboard');
+              navigate('/user-homepage');
             } else {
               console.error('Login error:', res);
               alert(res.data.Error || 'Invalid login credentials. Please try again.');
