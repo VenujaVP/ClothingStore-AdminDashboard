@@ -1,3 +1,5 @@
+//component/Navbar/Navbar.jsx
+
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
@@ -33,31 +35,43 @@ const Navbar = () => {
 
   // Handle search form submission
   const handleSearchSubmit = async (e) => {
-    // console.log('Search query:', searchQuery);
     e.preventDefault();
-    if (searchQuery.trim()) {
-      try {
-        // Check if the user is already on the Viewpage
-        const isViewpage = window.location.pathname === '/user-viewpage';
-
-        // If not on the Viewpage, navigate to it first
-        if (!isViewpage) {
-          navigate('/user-viewpage');
-        }
-
-        // Send search query to the backend
-        const response = await axios.post('http://localhost:8082/api/user/product-search', {
-          query: searchQuery,
-        });
-        console.log(response)
-
-        // Pass the search results to the Viewpage using state
-        navigate('/user-viewpage', {
-          state: { searchResults: response.data.products },
-        });
-      } catch (err) {
-        console.error('Error sending search query to backend:', err);
+  
+    // Trim the search query and check if it's empty
+    const trimmedQuery = searchQuery.trim();
+    if (!trimmedQuery) {
+      alert('Please enter a search term.'); // Provide user feedback
+      return;
+    }
+  
+    try {
+      // Send search query to the backend
+      const response = await axios.post('http://localhost:8082/api/user/product-search', {
+        query: trimmedQuery,
+      });
+  
+      // Log the response for debugging
+      console.log('Backend Response:', response);
+  
+      // Ensure the response contains the expected data
+      if (!response.data || !Array.isArray(response.data.products)) {
+        throw new Error('Invalid response from the server');
       }
+  
+      // Pass the search results to the Viewpage using state
+      navigate('/user-viewpage', {
+        state: { searchResults: response.data.products },
+      });
+    } catch (err) {
+      console.error('Error sending search query to backend:', err);
+  
+      // Provide user-friendly error feedback
+      alert('An error occurred while searching. Please try again.');
+  
+      // Optionally, navigate to the Viewpage with an empty state
+      navigate('/user-viewpage', {
+        state: { searchResults: [] },
+      });
     }
   };
 
