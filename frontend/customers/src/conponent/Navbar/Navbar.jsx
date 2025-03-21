@@ -78,8 +78,7 @@ const Navbar = () => {
 //-------------------------------------------------------------------------------------------
 
   // Handle category click
-  const handleCategoryClick = async (category, level) => {
-    console.log('Category clicked:', category, 'Level:', level);
+  const handleCategoryClick = async (category, level, parentCategory1, parentCategory2) => {
   
     // Trim the category and check if it's empty
     const trimmedCategory = category.trim();
@@ -92,20 +91,18 @@ const Navbar = () => {
       // Prepare the payload based on the category level
       let payload = {};
   
-      // Always include the parent categories
       if (level === 1) {
         payload = { cat1: trimmedCategory }; // Level 1: Main category (e.g., WOMEN)
       } else if (level === 2) {
         // Include the parent category (Level 1) for Level 2
-        const parentCategory = 'WOMEN'; // Replace with dynamic logic if needed
-        payload = { cat1: parentCategory, cat2: trimmedCategory };
+        payload = { cat1: parentCategory1, cat2: trimmedCategory };
       } else if (level === 3) {
         // Include the parent categories (Level 1 and Level 2) for Level 3
-        const parentCategory1 = 'WOMEN'; // Replace with dynamic logic if needed
-        const parentCategory2 = 'Tops & Tees'; // Replace with dynamic logic if needed
         payload = { cat1: parentCategory1, cat2: parentCategory2, cat3: trimmedCategory };
       }
   
+      console.log('Payload:', payload); // Log the payload for debugging
+      
       // Send the category to the backend for filtering
       const response = await axios.post('http://localhost:8082/api/user/category-filter', payload);
   
