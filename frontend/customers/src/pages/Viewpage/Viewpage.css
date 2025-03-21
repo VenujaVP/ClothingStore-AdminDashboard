@@ -16,7 +16,7 @@
 /* Product Grid */
 .vp-product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Smaller card width */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Smaller card width */
   gap: 10px; /* Reduced gap between cards */
   padding: 10px; /* Reduced padding */
 }
@@ -57,10 +57,10 @@
 /* Favorite Icon */
 .vp-favorite-icon {
   position: absolute;
-  top: 5px; /* Adjusted position */
-  right: 5px; /* Adjusted position */
+  top: 7px; /* Adjusted position */
+  right: 7px; /* Adjusted position */
   cursor: pointer;
-  font-size: 16px; /* Smaller icon */
+  font-size: 30px; /* Smaller icon */
   color: #ccc;
   transition: color 0.3s ease;
 }
@@ -76,10 +76,10 @@
 /* Shopping Cart Icon */
 .vp-cart-icon {
   position: absolute;
-  bottom: 5px; /* Adjusted position */
-  right: 5px; /* Adjusted position */
+  bottom: 7px; /* Adjusted position */
+  right: 7px; /* Adjusted position */
   cursor: pointer;
-  font-size: 16px; /* Smaller icon */
+  font-size: 30px; /* Smaller icon */
   color: #333;
   transition: color 0.3s ease;
 }
