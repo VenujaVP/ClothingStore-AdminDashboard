@@ -89,8 +89,10 @@ const Navbar = () => {
 
   const toggleMobileCategory = (category) => {
     if (expandedCategories.includes(category)) {
+      // If the category is already expanded, collapse it
       setExpandedCategories(expandedCategories.filter((cat) => cat !== category));
     } else {
+      // If the category is not expanded, expand it
       setExpandedCategories([...expandedCategories, category]);
     }
   };
