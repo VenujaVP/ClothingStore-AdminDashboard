@@ -16,9 +16,10 @@
 /* Product Grid */
 .vp-product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Fixed card width */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid */
   gap: 15px; /* Spacing between cards */
   padding: 15px; /* Padding around the grid */
+  justify-content: flex-start; /* Align cards to the start (left) */
 }
 
 /* Product Card */
@@ -30,7 +31,8 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  height: 400px; /* Fixed height for all cards */
+  width: 100%; /* Use full width of the grid cell */
+  min-height: 400px; /* Minimum height for normal size */
 }
 
 .vp-product-card:hover {
@@ -64,6 +66,7 @@
   font-size: 24px;
   color: #ccc;
   transition: color 0.3s ease;
+  z-index: 2; /* Ensure the icon is above the image */
 }
 
 .vp-favorite-icon .vp-heart-icon-filled {
@@ -83,6 +86,7 @@
   font-size: 24px;
   color: #333;
   transition: color 0.3s ease;
+  z-index: 2; /* Ensure the icon is above the image */
 }
 
 .vp-cart-icon:hover {
@@ -96,6 +100,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-height: 150px; /* Minimum height for product details */
 }
 
 .vp-product-name {
@@ -116,6 +121,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 2; /* Limit to 2 lines */
   -webkit-box-orient: vertical;
+  flex-grow: 1; /* Allow description to grow and fill available space */
 }
 
 .vp-product-price {
