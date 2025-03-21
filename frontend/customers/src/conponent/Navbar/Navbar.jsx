@@ -443,12 +443,20 @@ const Navbar = () => {
               className="category"
               onMouseEnter={() => toggleDropdown('WATCHES')}
               onMouseLeave={() => toggleDropdown(null)}
+              onClick={(e) => handleCategoryClick('WATCHES', 1, null, null, e)} // Level 1: Main category
             >
               WATCHES <RiArrowDownSLine className="dropdown-arrow" />
               {activeDropdown === 'WATCHES' && (
                 <div className="dropdown">
-                  <div className="dropdown-item">Men's Watches</div>
-                  <div className="dropdown-item">Women's Watches</div>
+                  {/* Level 2: Men's Watches */}
+                  <div className="dropdown-item" onClick={(e) => handleCategoryClick("Men's Watches", 2, 'WATCHES', null, e)}>
+                    Men's Watches
+                  </div>
+
+                  {/* Level 2: Women's Watches */}
+                  <div className="dropdown-item" onClick={(e) => handleCategoryClick("Women's Watches", 2, 'WATCHES', null, e)}>
+                    Women's Watches
+                  </div>
                 </div>
               )}
             </div>
@@ -458,12 +466,20 @@ const Navbar = () => {
               className="category"
               onMouseEnter={() => toggleDropdown('FOOTWEAR')}
               onMouseLeave={() => toggleDropdown(null)}
+              onClick={(e) => handleCategoryClick('FOOTWEAR', 1, null, null, e)} // Level 1: Main category
             >
               FOOTWEAR <RiArrowDownSLine className="dropdown-arrow" />
               {activeDropdown === 'FOOTWEAR' && (
                 <div className="dropdown">
-                  <div className="dropdown-item">Men's Watches</div>
-                  <div className="dropdown-item">Women's Watches</div>
+                  {/* Level 2: Men's Footwear */}
+                  <div className="dropdown-item" onClick={(e) => handleCategoryClick("Men's Footwear", 2, 'FOOTWEAR', null, e)}>
+                    Men's Footwear
+                  </div>
+
+                  {/* Level 2: Women's Footwear */}
+                  <div className="dropdown-item" onClick={(e) => handleCategoryClick("Women's Footwear", 2, 'FOOTWEAR', null, e)}>
+                    Women's Footwear
+                  </div>
                 </div>
               )}
             </div>
@@ -473,29 +489,55 @@ const Navbar = () => {
               className="category"
               onMouseEnter={() => toggleDropdown('ACCESSORIES')}
               onMouseLeave={() => toggleDropdown(null)}
+              onClick={(e) => handleCategoryClick('ACCESSORIES', 1, null, null, e)} // Level 1: Main category
             >
               ACCESSORIES <RiArrowDownSLine className="dropdown-arrow" />
               {activeDropdown === 'ACCESSORIES' && (
                 <div className="dropdown">
-                  <div className="dropdown-item">Belts</div>
-                  <div className="dropdown-item">Wallets</div>
+                  {/* Level 2: Belts */}
+                  <div className="dropdown-item" onClick={(e) => handleCategoryClick('Belts', 2, 'ACCESSORIES', null, e)}>
+                    Belts
+                  </div>
 
-                  <div className="dropdown-item">
+                  {/* Level 2: Wallets */}
+                  <div className="dropdown-item" onClick={(e) => handleCategoryClick('Wallets', 2, 'ACCESSORIES', null, e)}>
+                    Wallets
+                  </div>
+
+                  {/* Level 2: Bags & Backpacks */}
+                  <div className="dropdown-item" onClick={(e) => handleCategoryClick('Bags & Backpacks', 2, 'ACCESSORIES', null, e)}>
                     Bags & Backpacks <RiArrowDownSLine className="dropdown-arrow" />
+                    {/* Level 3: Subcategories of Bags & Backpacks */}
                     <div className="sub-dropdown">
-                      <div className="sub-dropdown-item">Handbags</div>
-                      <div className="sub-dropdown-item">Backpacks</div>
-                      <div className="sub-dropdown-item">Travel Bags</div>
+                      <div className="sub-dropdown-item" onClick={(e) => handleCategoryClick('Handbags', 3, 'ACCESSORIES', 'Bags & Backpacks', e)}>
+                        Handbags
+                      </div>
+                      <div className="sub-dropdown-item" onClick={(e) => handleCategoryClick('Backpacks', 3, 'ACCESSORIES', 'Bags & Backpacks', e)}>
+                        Backpacks
+                      </div>
+                      <div className="sub-dropdown-item" onClick={(e) => handleCategoryClick('Travel Bags', 3, 'ACCESSORIES', 'Bags & Backpacks', e)}>
+                        Travel Bags
+                      </div>
                     </div>
                   </div>
 
-                  <div className="dropdown-item">
-                  Headwear <RiArrowDownSLine className="dropdown-arrow" />
+                  {/* Level 2: Headwear */}
+                  <div className="dropdown-item" onClick={(e) => handleCategoryClick('Headwear', 2, 'ACCESSORIES', null, e)}>
+                    Headwear <RiArrowDownSLine className="dropdown-arrow" />
+                    {/* Level 3: Subcategories of Headwear */}
                     <div className="sub-dropdown">
-                      <div className="sub-dropdown-item">Caps</div>
-                      <div className="sub-dropdown-item">Ice Caps</div>
-                      <div className="sub-dropdown-item">Hats</div>
-                      <div className="sub-dropdown-item">Beanies</div>
+                      <div className="sub-dropdown-item" onClick={(e) => handleCategoryClick('Caps', 3, 'ACCESSORIES', 'Headwear', e)}>
+                        Caps
+                      </div>
+                      <div className="sub-dropdown-item" onClick={(e) => handleCategoryClick('Ice Caps', 3, 'ACCESSORIES', 'Headwear', e)}>
+                        Ice Caps
+                      </div>
+                      <div className="sub-dropdown-item" onClick={(e) => handleCategoryClick('Hats', 3, 'ACCESSORIES', 'Headwear', e)}>
+                        Hats
+                      </div>
+                      <div className="sub-dropdown-item" onClick={(e) => handleCategoryClick('Beanies', 3, 'ACCESSORIES', 'Headwear', e)}>
+                        Beanies
+                      </div>
                     </div>
                   </div>
                 </div>
