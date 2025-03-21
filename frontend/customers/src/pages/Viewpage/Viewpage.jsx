@@ -15,7 +15,7 @@ const Viewpage = () => {
   const [error, setError] = useState(null); // State to handle errors
   const [currentPage, setCurrentPage] = useState(1); // State for pagination
   const [favorites, setFavorites] = useState({}); // State to track favorite products
-  const productsPerPage = 4; // Number of products per page
+  const productsPerPage = 6; // Number of products per page
 
   // Fetch product details from the backend
   useEffect(() => {
@@ -77,9 +77,9 @@ const Viewpage = () => {
 
   return (
     <div className="dashboard">
-      <div className="product-grid">
+      <div className="product1-grid">
         {currentProducts.map((product) => (
-          <div key={product.product_id} className="product-card">
+          <div key={product.product_id} className="product1-card">
             <div className="square-image-container">
               <img src="https://via.placeholder.com/200" alt={product.product_name} className="product-image" />
               {/* Favorite (heart) icon */}

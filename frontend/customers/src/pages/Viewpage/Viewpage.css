@@ -21,17 +21,16 @@ h1 {
 }
 
 /* Product Grid */
-.product-grid {
+.product1-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  /* background-color: #1a8b6f; */
-  padding: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 2fr)); /* Smaller card width */
+  gap: 15px; /* Reduced gap between cards */
+  padding: 15px; /* Reduced padding */
 }
 
 /* Product Card */
-.product-card {
-  background: #ffffff39;
+.product1-card {
+  background: #ffffff;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -40,19 +39,65 @@ h1 {
   flex-direction: column;
 }
 
-.product-card:hover {
+.product1-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.product-image {
+/* Square Image Container */
+.square-image-container {
+  position: relative;
   width: 100%;
-  height: 200px;
+  padding-top: 100%; /* 1:1 Aspect Ratio */
+  overflow: hidden;
+}
+
+.product-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
+/* Favorite Icon */
+.favorite-icon {
+  position: absolute;
+  top: 8px; /* Adjusted position */
+  right: 8px; /* Adjusted position */
+  cursor: pointer;
+  font-size: 20px; /* Smaller icon */
+  color: #ccc;
+  transition: color 0.3s ease;
+}
+
+.favorite-icon .heart-icon.filled {
+  color: #ff0000; /* Red for filled heart */
+}
+
+.favorite-icon:hover .heart-icon {
+  color: #ff0000; /* Red on hover */
+}
+
+/* Shopping Cart Icon */
+.cart-icon {
+  position: absolute;
+  bottom: 8px; /* Adjusted position */
+  right: 8px; /* Adjusted position */
+  cursor: pointer;
+  font-size: 20px; /* Smaller icon */
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.cart-icon:hover {
+  color: #23b893; /* Green on hover */
+}
+
+/* Product Details */
 .product-details {
-  padding: 15px;
+  padding: 10px; /* Reduced padding */
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -60,42 +105,42 @@ h1 {
 }
 
 .product-name {
-  font-size: 1.2rem;
+  font-size: 1rem; /* Smaller font size */
   color: #333;
-  margin-bottom: 8px; /* Reduced margin-bottom */
-  height: 40px; /* Fixed height for product name */
+  margin-bottom: 6px; /* Reduced margin */
+  height: 32px; /* Reduced height */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .product-description {
-  font-size: 0.9rem;
+  font-size: 0.8rem; /* Smaller font size */
   color: #4f4f4f;
-  margin-bottom: 0px !important ; /* Reduced margin-bottom to decrease space */
-  height: 60px; /* Fixed height for product description */
+  margin-bottom: 0px;
+  height: 48px; /* Reduced height */
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
 
 .product-price {
-  font-size: 1.1rem;
+  font-size: 0.9rem; /* Smaller font size */
   font-weight: bold;
   color: #23b893;
-  margin-bottom: 0px !important; /* Reduced margin-bottom */
+  margin-bottom: 0px;
 }
 
 .product-rating {
-  font-size: 1rem;
+  font-size: 0.9rem; /* Smaller font size */
   color: #FFD700;
-  margin-bottom: 8px; /* Reduced margin-bottom */
+  margin-bottom: 6px; /* Reduced margin */
 }
 
 .star {
-  font-size: 1.2rem;
+  font-size: 1rem; /* Smaller star size */
   color: #989898;
 }
 
@@ -104,26 +149,26 @@ h1 {
 }
 
 .product-stock {
-  font-size: 0.9rem;
-  margin-bottom: 8px; /* Reduced margin-bottom */
+  font-size: 0.8rem; /* Smaller font size */
+  margin-bottom: 6px; /* Reduced margin */
 }
 
 .in-stock {
-  color: #28a745; /* Green for in stock */
+  color: #28a745;
 }
 
 .sold-out {
-  color: #dc3545; /* Red for sold out */
+  color: #dc3545;
 }
 
 .low-stock {
-  color: #ff0000; /* Yellow for low stock */
+  color: #ff0000;
 }
 
 .wishlist-count {
-  font-size: 0.9rem;
+  font-size: 0.8rem; /* Smaller font size */
   color: #666;
-  margin-bottom: 0; /* No margin at the bottom */
+  margin-bottom: 0;
 }
 
 /* Pagination */
@@ -135,7 +180,7 @@ h1 {
 }
 
 .page-button {
-  padding: 10px 15px;
+  padding: 8px 12px; /* Smaller padding */
   background: #23b893;
   color: white;
   border: none;
