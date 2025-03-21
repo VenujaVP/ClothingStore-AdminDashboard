@@ -62,29 +62,34 @@ const Navbar = () => {
   };
 
   // Handle category click
-  const handleCategoryClick = async (category) => {
+  const handleCategoryClick = async (category, level) => {
     if (category.trim()) {
       try {
-        // Check if the user is already on the Viewpage
+        // Navigate to the Viewpage if not already there
         const isViewpage = window.location.pathname === '/user-viewpage';
-
-        // If not on the Viewpage, navigate to it first
         if (!isViewpage) {
           navigate('/user-viewpage');
         }
-
-        // Send the selected category to the backend for filtering
-        const response = await axios.post('http://localhost:8082/api/user/category-filter', {
-          category: category,
-        });
-        console.log(response);
-
-        // Pass the filtered results to the Viewpage using state
+  
+        // Prepare the payload based on the category level
+        let payload = {};
+        if (level === 1) {
+          payload = { cat1: category }; // Level 1: Main category (e.g., WOMEN)
+        } else if (level === 2) {
+          payload = { cat2: category }; // Level 2: Subcategory (e.g., Tops & Tees)
+        } else if (level === 3) {
+          payload = { cat3: category }; // Level 3: Sub-subcategory (e.g., Blouses)
+        }
+  
+        // Send the category to the backend for filtering
+        const response = await axios.post('http://localhost:8082/api/user/category-filter', payload);
+  
+        // Pass the filtered results to the Viewpage
         navigate('/user-viewpage', {
           state: { searchResults: response.data.products },
         });
       } catch (err) {
-        console.error('Error sending category filter to backend:', err);
+        console.error('Error filtering products by category:', err);
       }
     }
   };
@@ -188,6 +193,7 @@ const Navbar = () => {
               className="category"
               onMouseEnter={() => toggleDropdown('WOMEN')}
               onMouseLeave={() => toggleDropdown(null)}
+              onClick={() => handleCategoryClick('WOMEN')}
             >
               WOMEN <RiArrowDownSLine className="dropdown-arrow" />
               {activeDropdown === 'WOMEN' && (
@@ -216,7 +222,7 @@ const Navbar = () => {
                       <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Pants')}>Pants</div>
                     </div>
                   </div>
-                  
+
                   <div className="dropdown-item">
                     Special Categories <RiArrowDownSLine className="dropdown-arrow" />
                     <div className="sub-dropdown">
