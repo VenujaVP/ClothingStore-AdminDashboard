@@ -356,47 +356,176 @@ const Navbar = () => {
         {/* Mobile Menu - Categories */}
         {isMobileMenuOpen && (
           <div className="mobile-menu">
+            {/* HOME */}
             <div className="mobile-category" onClick={() => toggleMobileCategory('HOME')}>
               HOME
             </div>
+
+            {/* WOMEN */}
             <div className="mobile-category" onClick={() => toggleMobileCategory('WOMEN')}>
               WOMEN {expandedCategories.includes('WOMEN') ? '▼' : '▶'}
               {expandedCategories.includes('WOMEN') && (
                 <div className="mobile-subcategories">
                   <div className="mobile-subcategory">New Arrivals</div>
-                  <div className="mobile-subcategory">
+                  <div className="mobile-subcategory" onClick={() => toggleMobileCategory('TOPS')}>
                     Tops & Tees {expandedCategories.includes('TOPS') ? '▼' : '▶'}
                     {expandedCategories.includes('TOPS') && (
                       <div className="mobile-subcategory-items">
                         <div className="mobile-subcategory-item">Blouses</div>
                         <div className="mobile-subcategory-item">Crop Tops</div>
+                        <div className="mobile-subcategory-item">T-Shirts</div>
+                        <div className="mobile-subcategory-item">Hoodies & Sweaters</div>
                       </div>
                     )}
                   </div>
-                  <div className="mobile-subcategory">
+                  <div className="mobile-subcategory" onClick={() => toggleMobileCategory('DRESSES')}>
                     Dresses & Bottoms {expandedCategories.includes('DRESSES') ? '▼' : '▶'}
                     {expandedCategories.includes('DRESSES') && (
                       <div className="mobile-subcategory-items">
                         <div className="mobile-subcategory-item">Dresses & Frocks</div>
                         <div className="mobile-subcategory-item">Skirts</div>
                         <div className="mobile-subcategory-item">Trousers</div>
+                        <div className="mobile-subcategory-item">Denims</div>
+                        <div className="mobile-subcategory-item">Shorts</div>
+                        <div className="mobile-subcategory-item">Pants</div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mobile-subcategory" onClick={() => toggleMobileCategory('SPECIAL_WOMEN')}>
+                    Special Categories {expandedCategories.includes('SPECIAL_WOMEN') ? '▼' : '▶'}
+                    {expandedCategories.includes('SPECIAL_WOMEN') && (
+                      <div className="mobile-subcategory-items">
+                        <div className="mobile-subcategory-item">Jumpsuits</div>
+                        <div className="mobile-subcategory-item">Bodysuits</div>
+                        <div className="mobile-subcategory-item">Office Wear</div>
+                        <div className="mobile-subcategory-item">Gym Wear</div>
+                        <div className="mobile-subcategory-item">Night & Loungewear</div>
                       </div>
                     )}
                   </div>
                 </div>
               )}
             </div>
+
+            {/* MEN */}
+            <div className="mobile-category" onClick={() => toggleMobileCategory('MEN')}>
+              MEN {expandedCategories.includes('MEN') ? '▼' : '▶'}
+              {expandedCategories.includes('MEN') && (
+                <div className="mobile-subcategories">
+                  <div className="mobile-subcategory">New Arrivals</div>
+                  <div className="mobile-subcategory" onClick={() => toggleMobileCategory('TOPS_MEN')}>
+                    Tops {expandedCategories.includes('TOPS_MEN') ? '▼' : '▶'}
+                    {expandedCategories.includes('TOPS_MEN') && (
+                      <div className="mobile-subcategory-items">
+                        <div className="mobile-subcategory-item">Shirts</div>
+                        <div className="mobile-subcategory-item">T-Shirts</div>
+                        <div className="mobile-subcategory-item">Hoodies & Sweaters</div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mobile-subcategory" onClick={() => toggleMobileCategory('BOTTOMS_MEN')}>
+                    Bottoms {expandedCategories.includes('BOTTOMS_MEN') ? '▼' : '▶'}
+                    {expandedCategories.includes('BOTTOMS_MEN') && (
+                      <div className="mobile-subcategory-items">
+                        <div className="mobile-subcategory-item">Trousers</div>
+                        <div className="mobile-subcategory-item">Denims</div>
+                        <div className="mobile-subcategory-item">Shorts</div>
+                        <div className="mobile-subcategory-item">Pants</div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mobile-subcategory" onClick={() => toggleMobileCategory('SPECIAL_MEN')}>
+                    Special Categories {expandedCategories.includes('SPECIAL_MEN') ? '▼' : '▶'}
+                    {expandedCategories.includes('SPECIAL_MEN') && (
+                      <div className="mobile-subcategory-items">
+                        <div className="mobile-subcategory-item">Office Wear</div>
+                        <div className="mobile-subcategory-item">Gym Wear</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* KIDS & BABY */}
+            <div className="mobile-category" onClick={() => toggleMobileCategory('KIDS & BABY')}>
+              KIDS & BABY {expandedCategories.includes('KIDS & BABY') ? '▼' : '▶'}
+              {expandedCategories.includes('KIDS & BABY') && (
+                <div className="mobile-subcategories">
+                  <div className="mobile-subcategory">New Arrivals</div>
+                  <div className="mobile-subcategory">Boys' Clothing (3-16)</div>
+                  <div className="mobile-subcategory">Girls' Clothing (3-16)</div>
+                  <div className="mobile-subcategory">Kids' Footwear</div>
+                  <div className="mobile-subcategory" onClick={() => toggleMobileCategory('BAGS_KIDS')}>
+                    Bags & Accessories {expandedCategories.includes('BAGS_KIDS') ? '▼' : '▶'}
+                    {expandedCategories.includes('BAGS_KIDS') && (
+                      <div className="mobile-subcategory-items">
+                        <div className="mobile-subcategory-item">Kids' Bags</div>
+                        <div className="mobile-subcategory-item">Kids' Watches</div>
+                        <div className="mobile-subcategory-item">Hats & Caps</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* WATCHES */}
             <div className="mobile-category" onClick={() => toggleMobileCategory('WATCHES')}>
               WATCHES {expandedCategories.includes('WATCHES') ? '▼' : '▶'}
               {expandedCategories.includes('WATCHES') && (
                 <div className="mobile-subcategories">
-                  <div className="mobile-subcategory">Men&apos;s Watches</div>
-                  <div className="mobile-subcategory">Women&apos;s Watches</div>
+                  <div className="mobile-subcategory">Men's Watches</div>
+                  <div className="mobile-subcategory">Women's Watches</div>
+                </div>
+              )}
+            </div>
+
+            {/* FOOTWEAR */}
+            <div className="mobile-category" onClick={() => toggleMobileCategory('FOOTWEAR')}>
+              FOOTWEAR {expandedCategories.includes('FOOTWEAR') ? '▼' : '▶'}
+              {expandedCategories.includes('FOOTWEAR') && (
+                <div className="mobile-subcategories">
+                  <div className="mobile-subcategory">Men's Footwear</div>
+                  <div className="mobile-subcategory">Women's Footwear</div>
+                </div>
+              )}
+            </div>
+
+            {/* ACCESSORIES */}
+            <div className="mobile-category" onClick={() => toggleMobileCategory('ACCESSORIES')}>
+              ACCESSORIES {expandedCategories.includes('ACCESSORIES') ? '▼' : '▶'}
+              {expandedCategories.includes('ACCESSORIES') && (
+                <div className="mobile-subcategories">
+                  <div className="mobile-subcategory">Belts</div>
+                  <div className="mobile-subcategory">Wallets</div>
+                  <div className="mobile-subcategory" onClick={() => toggleMobileCategory('BAGS_ACCESSORIES')}>
+                    Bags & Backpacks {expandedCategories.includes('BAGS_ACCESSORIES') ? '▼' : '▶'}
+                    {expandedCategories.includes('BAGS_ACCESSORIES') && (
+                      <div className="mobile-subcategory-items">
+                        <div className="mobile-subcategory-item">Handbags</div>
+                        <div className="mobile-subcategory-item">Backpacks</div>
+                        <div className="mobile-subcategory-item">Travel Bags</div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="mobile-subcategory" onClick={() => toggleMobileCategory('HEADWEAR')}>
+                    Headwear {expandedCategories.includes('HEADWEAR') ? '▼' : '▶'}
+                    {expandedCategories.includes('HEADWEAR') && (
+                      <div className="mobile-subcategory-items">
+                        <div className="mobile-subcategory-item">Caps</div>
+                        <div className="mobile-subcategory-item">Ice Caps</div>
+                        <div className="mobile-subcategory-item">Hats</div>
+                        <div className="mobile-subcategory-item">Beanies</div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
           </div>
         )}
+
       </div>
     </>
   );
