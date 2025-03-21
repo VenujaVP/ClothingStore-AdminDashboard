@@ -5,6 +5,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import withAuth from '../withAuth'; // Import the HOC
+import { RiHeartLine, RiHeartFill } from 'react-icons/ri'; // Heart icons from react-icons/ri
+import { FaShoppingCart } from 'react-icons/fa'; // Shopping cart icon from react-icons/fa
 import './Viewpage.css';
 
 const Viewpage = () => {
@@ -12,6 +14,7 @@ const Viewpage = () => {
   const [loading, setLoading] = useState(true); // State to handle loading state
   const [error, setError] = useState(null); // State to handle errors
   const [currentPage, setCurrentPage] = useState(1); // State for pagination
+  const [favorites, setFavorites] = useState({}); // State to track favorite products
   const productsPerPage = 4; // Number of products per page
 
   // Fetch product details from the backend
@@ -43,6 +46,14 @@ const Viewpage = () => {
     setCurrentPage(pageNumber);
   };
 
+  // Toggle favorite status for a product
+  const toggleFavorite = (productId) => {
+    setFavorites((prevFavorites) => ({
+      ...prevFavorites,
+      [productId]: !prevFavorites[productId],
+    }));
+  };
+
   // Function to render star ratings
   const renderStars = (rating) => {
     const stars = [];
@@ -69,7 +80,21 @@ const Viewpage = () => {
       <div className="product-grid">
         {currentProducts.map((product) => (
           <div key={product.product_id} className="product-card">
-            <img src="https://via.placeholder.com/200" alt={product.product_name} className="product-image" />
+            <div className="square-image-container">
+              <img src="https://via.placeholder.com/200" alt={product.product_name} className="product-image" />
+              {/* Favorite (heart) icon */}
+              <div className="favorite-icon" onClick={() => toggleFavorite(product.product_id)}>
+                {favorites[product.product_id] ? (
+                  <RiHeartFill className="heart-icon filled" />
+                ) : (
+                  <RiHeartLine className="heart-icon" />
+                )}
+              </div>
+              {/* Shopping cart icon */}
+              <div className="cart-icon">
+                <FaShoppingCart className="cart-icon" />
+              </div>
+            </div>
             <div className="product-details">
               <h2 className="product-name">{product.product_name}</h2>
               <p className="product-description">
