@@ -33,6 +33,7 @@ const Navbar = () => {
 
   // Handle search form submission
   const handleSearchSubmit = async (e) => {
+    // console.log('Search query:', searchQuery);
     e.preventDefault();
     if (searchQuery.trim()) {
       try {
@@ -48,6 +49,7 @@ const Navbar = () => {
         const response = await axios.post('http://localhost:8082/api/user/product-search', {
           query: searchQuery,
         });
+        console.log(response)
 
         // Pass the search results to the Viewpage using state
         navigate('/user-viewpage', {
