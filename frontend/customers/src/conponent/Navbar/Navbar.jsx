@@ -67,6 +67,7 @@ const Navbar = () => {
       'Check out our latest updates!',
       "Don't miss our special offers!",
       'Follow us on social media!',
+      'Kavishaaaaa'
     ];
 
     let index = 0;
@@ -149,7 +150,9 @@ const Navbar = () => {
         {/* Second Row - Categories */}
         <div className="navbar-web-row2">
           <div className="categories">
+
             <div className="category">HOME</div>
+            {/* WOMEN */}
             <div
               className="category"
               onMouseEnter={() => toggleDropdown('WOMEN')}
@@ -164,11 +167,100 @@ const Navbar = () => {
                     <div className="sub-dropdown">
                       <div className="sub-dropdown-item">Blouses</div>
                       <div className="sub-dropdown-item">Crop Tops</div>
+                      <div className="sub-dropdown-item">T-Shirts</div>
+                      <div className="sub-dropdown-item">Hoodies & Sweaters</div>
+                    </div>
+                  </div>
+                  <div className="dropdown-item">
+                    Dresses & Bottoms <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Dresses & Frocks</div>
+                      <div className="sub-dropdown-item">Skirts</div>
+                      <div className="sub-dropdown-item">Trousers</div>
+                      <div className="sub-dropdown-item">Denims</div>
+                      <div className="sub-dropdown-item">Shorts</div>
+                      <div className="sub-dropdown-item">Pants</div>
+                    </div>
+                  </div>
+                  <div className="dropdown-item">
+                    Special Categories <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Jumpsuits</div>
+                      <div className="sub-dropdown-item">Bodysuits</div>
+                      <div className="sub-dropdown-item">Office Wear</div>
+                      <div className="sub-dropdown-item">Gym Wear</div>
+                      <div className="sub-dropdown-item">Night & Loungewear</div>
                     </div>
                   </div>
                 </div>
               )}
             </div>
+            
+            {/* MEN */}
+            <div
+              className="category"
+              onMouseEnter={() => toggleDropdown('MEN')}
+              onMouseLeave={() => toggleDropdown(null)}
+            >
+              MEN <RiArrowDownSLine className="dropdown-arrow" />
+              {activeDropdown === 'MEN' && (
+                <div className="dropdown">
+                  <div className="dropdown-item">New Arrivals</div>
+                  <div className="dropdown-item">
+                    Tops <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Shirts</div>
+                      <div className="sub-dropdown-item">T-Shirts</div>
+                      <div className="sub-dropdown-item">Hoodies & Sweaters</div>
+                    </div>
+                  </div>
+                  <div className="dropdown-item">
+                    Bottoms <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Trousers</div>
+                      <div className="sub-dropdown-item">Denims</div>
+                      <div className="sub-dropdown-item">Shorts</div>
+                      <div className="sub-dropdown-item">Pants</div>
+                    </div>
+                  </div>
+                  <div className="dropdown-item">
+                    Special Categories <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Office Wear</div>
+                      <div className="sub-dropdown-item">Gym Wear</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* KIDS & BABY */}
+            <div
+              className="category"
+              onMouseEnter={() => toggleDropdown('KIDS & BABY')}
+              onMouseLeave={() => toggleDropdown(null)}
+            >
+              KIDS & BABY <RiArrowDownSLine className="dropdown-arrow" />
+              {activeDropdown === 'KIDS & BABY' && (
+                <div className="dropdown">
+                  <div className="dropdown-item">New Arrivals</div>
+                  <div className="dropdown-item">Boys' Clothing (3-16)</div>
+                  <div className="dropdown-item">Girls' Clothing (3-16)</div>
+                  <div className="dropdown-item">Kids' Footwear</div>
+                  <div className="dropdown-item">
+                    Bags & Accessories <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Kids' Bags</div>
+                      <div className="sub-dropdown-item">Kids' Watches</div>
+                      <div className="sub-dropdown-item">Hats & Caps</div>
+                    </div>
+                  </div>
+
+                </div>
+              )}
+            </div>
+
+            {/* WATCHES */}
             <div
               className="category"
               onMouseEnter={() => toggleDropdown('WATCHES')}
@@ -177,11 +269,61 @@ const Navbar = () => {
               WATCHES <RiArrowDownSLine className="dropdown-arrow" />
               {activeDropdown === 'WATCHES' && (
                 <div className="dropdown">
-                  <div className="dropdown-item">Men&apos;s Watches</div>
-                  <div className="dropdown-item">Women&apos;s Watches</div>
+                  <div className="dropdown-item">Men's Watches</div>
+                  <div className="dropdown-item">Women's Watches</div>
                 </div>
               )}
             </div>
+
+            {/* FOOTWEAR */}
+            <div
+              className="category"
+              onMouseEnter={() => toggleDropdown('FOOTWEAR')}
+              onMouseLeave={() => toggleDropdown(null)}
+            >
+              FOOTWEAR <RiArrowDownSLine className="dropdown-arrow" />
+              {activeDropdown === 'FOOTWEAR' && (
+                <div className="dropdown">
+                  <div className="dropdown-item">Men's Watches</div>
+                  <div className="dropdown-item">Women's Watches</div>
+                </div>
+              )}
+            </div>
+
+            {/* ACCESSORIES */}
+            <div
+              className="category"
+              onMouseEnter={() => toggleDropdown('ACCESSORIES')}
+              onMouseLeave={() => toggleDropdown(null)}
+            >
+              ACCESSORIES <RiArrowDownSLine className="dropdown-arrow" />
+              {activeDropdown === 'ACCESSORIES' && (
+                <div className="dropdown">
+                  <div className="dropdown-item">Belts</div>
+                  <div className="dropdown-item">Wallets</div>
+
+                  <div className="dropdown-item">
+                    Bags & Backpacks <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Handbags</div>
+                      <div className="sub-dropdown-item">Backpacks</div>
+                      <div className="sub-dropdown-item">Travel Bags</div>
+                    </div>
+                  </div>
+
+                  <div className="dropdown-item">
+                  Headwear <RiArrowDownSLine className="dropdown-arrow" />
+                    <div className="sub-dropdown">
+                      <div className="sub-dropdown-item">Caps</div>
+                      <div className="sub-dropdown-item">Ice Caps</div>
+                      <div className="sub-dropdown-item">Hats</div>
+                      <div className="sub-dropdown-item">Beanies</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       </div>

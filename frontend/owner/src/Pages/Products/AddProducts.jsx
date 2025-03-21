@@ -26,29 +26,21 @@ const categories = {
       "Boys' Clothing (3-16)": [],
       "Girls' Clothing (3-16)": [],
       "Baby Clothing": [],
-      "Footwear": [],
+      "Kids' Footwear": [],
       "Bags & Accessories": ["Kids' Bags", "Kids' Watches", "Hats & Caps"],
-      "Mother & Baby Care": []
     },
     "WATCHES": {
       "Men's Watches": [],
       "Women's Watches": [],
-      "Kids' Watches": []
     },
     "FOOTWEAR": {
       "Women's Footwear": [],
       "Men's Footwear": [],
-      "Kids' Footwear": []
-    },
-    "BAGS & WALLETS": {
-      "Handbags": [],
-      "Backpacks": [],
-      "Wallets": [],
-      "Travel Bags": []
     },
     "ACCESSORIES": {
       "Bags & Backpacks": ["Handbags", "Backpacks", "Travel Bags"],
       "Belts": [],
+      "Wallets": [],
       "Headwear": ["Caps", "Ice Caps", "Hats", "Beanies"],
       "Jewelry": ["Necklaces", "Bracelets", "Earrings"],
       "Perfumes & Fragrances": [],
