@@ -193,21 +193,21 @@ const Navbar = () => {
               className="category"
               onMouseEnter={() => toggleDropdown('WOMEN')}
               onMouseLeave={() => toggleDropdown(null)}
-              onClick={() => handleCategoryClick('WOMEN')}
+              onClick={() => handleCategoryClick('WOMEN',1)}
             >
               WOMEN <RiArrowDownSLine className="dropdown-arrow" />
               {activeDropdown === 'WOMEN' && (
                 <div className="dropdown">
 
-                  <div className="dropdown-item" onClick={() => handleCategoryClick('HOME')}>New Arrivals</div>
+                  <div className="dropdown-item" onClick={() => handleCategoryClick('HOME',2)}>New Arrivals</div>
 
-                  <div className="dropdown-item" onClick={() => handleCategoryClick('Tops & Tees')}>
+                  <div className="dropdown-item" onClick={() => handleCategoryClick('Tops & Tees',2)}>
                     Tops & Tees <RiArrowDownSLine className="dropdown-arrow" />
                     <div className="sub-dropdown">
-                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Blouses')}>Blouses</div>
-                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Crop Tops')}>Crop Tops</div>
-                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('T-Shirts')}>T-Shirts</div>
-                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Hoodies & Sweaters')}>Hoodies & Sweaters</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Blouses',3)}>Blouses</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Crop Tops',3)}>Crop Tops</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('T-Shirts',3)}>T-Shirts</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Hoodies & Sweaters',3)}>Hoodies & Sweaters</div>
                     </div>
                   </div>
 
