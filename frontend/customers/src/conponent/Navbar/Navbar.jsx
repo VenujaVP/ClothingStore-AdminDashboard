@@ -12,7 +12,6 @@ import {
   RiShoppingCartLine,
   RiUserLine,
   RiMenuLine,
-  RiHomeLine,
   RiArrowDownSLine,
   RiCloseLine,
 } from 'react-icons/ri';
@@ -22,9 +21,43 @@ const Navbar = () => {
   const [notice, setNotice] = useState('Welcome to our website!');
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [expandedCategories, setExpandedCategories] = useState([]); // Track expanded categories in mobile view
+  const [expandedCategories, setExpandedCategories] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const navigate = useNavigate();
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Handle search form submission
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      try {
+        // Check if the user is already on the Viewpage
+        const isViewpage = window.location.pathname === '/user-viewpage';
+
+        // If not on the Viewpage, navigate to it first
+        if (!isViewpage) {
+          navigate('/user-viewpage');
+        }
+
+        // Send search query to the backend
+        const response = await axios.post('http://localhost:8082/api/user/product-search', {
+          query: searchQuery,
+        });
+
+        // Pass the search results to the Viewpage using state
+        navigate('/user-viewpage', {
+          state: { searchResults: response.data.products },
+        });
+      } catch (err) {
+        console.error('Error sending search query to backend:', err);
+      }
+    }
+  };
 
   useEffect(() => {
     const notices = [
@@ -78,12 +111,19 @@ const Navbar = () => {
           <div className="logo">
             <img src="LOGO.jpeg" alt="Logo" className="logo-image" />
           </div>
-          <div className="search-bar">
-            <input type="text" placeholder="Search for products..." />
-            <button>
+
+          <form className="search-bar" onSubmit={handleSearchSubmit}>
+            <input
+              type="text"
+              placeholder="Search for products..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+            <button type="submit">
               <RiSearchLine />
             </button>
-          </div>
+          </form>
+
           <div className="icons">
             <div className="icon-item" onClick={() => handleNavigation('/cart')}>
               <RiHeartLine />
