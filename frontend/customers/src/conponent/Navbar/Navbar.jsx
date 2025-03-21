@@ -75,56 +75,58 @@ const Navbar = () => {
     }
   };
 
+//-------------------------------------------------------------------------------------------
+
   // Handle category click
   const handleCategoryClick = async (category, level) => {
-    if (category.trim()) {
-      try {
-        // Navigate to the Viewpage if not already there
-        const isViewpage = window.location.pathname === '/user-viewpage';
-        if (!isViewpage) {
-          navigate('/user-viewpage');
-        }
+    console.log('Category clicked:', category, 'Level:', level);
+    // Trim the category and check if it's empty
+    const trimmedCategory = category.trim();
+    if (!trimmedCategory) {
+      alert('Please select a valid category.'); // Provide user feedback
+      return;
+    }
   
-        // Prepare the payload based on the category level
-        let payload = {};
-        if (level === 1) {
-          payload = { cat1: category }; // Level 1: Main category (e.g., WOMEN)
-        } else if (level === 2) {
-          payload = { cat2: category }; // Level 2: Subcategory (e.g., Tops & Tees)
-        } else if (level === 3) {
-          payload = { cat3: category }; // Level 3: Sub-subcategory (e.g., Blouses)
-        }
-  
-        // Send the category to the backend for filtering
-        const response = await axios.post('http://localhost:8082/api/user/category-filter', payload);
-  
-        // Pass the filtered results to the Viewpage
-        navigate('/user-viewpage', {
-          state: { searchResults: response.data.products },
-        });
-      } catch (err) {
-        console.error('Error filtering products by category:', err);
+    try {
+      // Prepare the payload based on the category level
+      let payload = {};
+      if (level === 1) {
+        payload = { cat1: trimmedCategory }; // Level 1: Main category (e.g., WOMEN)
+      } else if (level === 2) {
+        payload = { cat2: trimmedCategory }; // Level 2: Subcategory (e.g., Tops & Tees)
+      } else if (level === 3) {
+        payload = { cat3: trimmedCategory }; // Level 3: Sub-subcategory (e.g., Blouses)
       }
+  
+      // Send the category to the backend for filtering
+      const response = await axios.post('http://localhost:8082/api/user/category-filter', payload);
+  
+      // Log the response for debugging
+      console.log('Backend Response:', response);
+  
+      // Ensure the response contains the expected data
+      if (!response.data || !Array.isArray(response.data.products)) {
+        throw new Error('Invalid response from the server');
+      }
+  
+      // Pass the filtered results to the Viewpage using state
+      navigate('/user-viewpage', {
+        state: { searchResults: response.data.products },
+      });
+    } catch (err) {
+      console.error('Error filtering products by category:', err);
+  
+      // Provide user-friendly error feedback
+      alert('An error occurred while filtering. Please try again.');
+  
+      // Optionally, navigate to the Viewpage with an empty state
+      navigate('/user-viewpage', {
+        state: { searchResults: [] },
+      });
     }
   };
 
-  useEffect(() => {
-    const notices = [
-      'Welcome to our website!',
-      'Check out our latest updates!',
-      "Don't miss our special offers!",
-      'Follow us on social media!',
-      'Kavishaaaaa'
-    ];
-
-    let index = 0;
-    const intervalId = setInterval(() => {
-      index = (index + 1) % notices.length;
-      setNotice(notices[index]);
-    }, 3000);
-
-    return () => clearInterval(intervalId);
-  }, []);
+//-------------------------------------------------------------------------------------------
 
   const toggleDropdown = (category) => {
     setActiveDropdown(activeDropdown === category ? null : category);
@@ -144,10 +146,29 @@ const Navbar = () => {
     }
   };
 
+//-------------------------------------------------------------------------------------------
+
   // Function to navigate when an icon is clicked
   const handleNavigation = (path) => {
     navigate(path);
   };
+
+  useEffect(() => {
+    const notices = [
+      'Welcome to our website!',
+      'Check out our latest updates!',
+      "Don't miss our special offers!",
+      'Follow us on social media!',
+    ];
+
+    let index = 0;
+    const intervalId = setInterval(() => {
+      index = (index + 1) % notices.length;
+      setNotice(notices[index]);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <>
@@ -200,7 +221,7 @@ const Navbar = () => {
         <div className="navbar-web-row2">
           <div className="categories">
 
-            <div className="category" onClick={() => handleCategoryClick('HOME')}>HOME</div>
+            <div className="category">HOME</div>
 
             {/* WOMEN */}
             <div
@@ -213,7 +234,7 @@ const Navbar = () => {
               {activeDropdown === 'WOMEN' && (
                 <div className="dropdown">
 
-                  <div className="dropdown-item" onClick={() => handleCategoryClick('HOME',2)}>New Arrivals</div>
+                  <div className="dropdown-item">New Arrivals</div>
 
                   <div className="dropdown-item" onClick={() => handleCategoryClick('Tops & Tees',2)}>
                     Tops & Tees <RiArrowDownSLine className="dropdown-arrow" />
@@ -225,26 +246,26 @@ const Navbar = () => {
                     </div>
                   </div>
 
-                  <div className="dropdown-item" onClick={() => handleCategoryClick('Dresses & Bottoms')}>
+                  <div className="dropdown-item" onClick={() => handleCategoryClick('Dresses & Bottoms',2)}>
                     Dresses & Bottoms <RiArrowDownSLine className="dropdown-arrow" />
                     <div className="sub-dropdown">
-                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Dresses & Frocks')}>Dresses & Frocks</div>
-                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Skirts')}>Skirts</div>
-                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Trousers')}>Trousers</div>
-                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Denims')}>Denims</div>
-                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Shorts')}>Shorts</div>
-                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Pants')}>Pants</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Dresses & Frocks',3)}>Dresses & Frocks</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Skirts',3)}>Skirts</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Trousers',3)}>Trousers</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Denims',3)}>Denims</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Shorts',3)}>Shorts</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Pants',3)}>Pants</div>
                     </div>
                   </div>
 
-                  <div className="dropdown-item">
+                  <div className="dropdown-item" onClick={() => handleCategoryClick('Special Categories',3)}>
                     Special Categories <RiArrowDownSLine className="dropdown-arrow" />
                     <div className="sub-dropdown">
-                      <div className="sub-dropdown-item">Jumpsuits</div>
-                      <div className="sub-dropdown-item">Bodysuits</div>
-                      <div className="sub-dropdown-item">Office Wear</div>
-                      <div className="sub-dropdown-item">Gym Wear</div>
-                      <div className="sub-dropdown-item">Night & Loungewear</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Jumpsuits',3)}>Jumpsuits</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Bodysuits',3)}>Bodysuits</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Office Wear',3)}>Office Wear</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Gym Wear',3)}>Gym Wear</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Night & Loungewear',3)}>Night & Loungewear</div>
                     </div>
                   </div>
                 </div>
@@ -256,33 +277,34 @@ const Navbar = () => {
               className="category"
               onMouseEnter={() => toggleDropdown('MEN')}
               onMouseLeave={() => toggleDropdown(null)}
+              onClick={() => handleCategoryClick('MEN',1)}
             >
               MEN <RiArrowDownSLine className="dropdown-arrow" />
               {activeDropdown === 'MEN' && (
                 <div className="dropdown">
                   <div className="dropdown-item">New Arrivals</div>
-                  <div className="dropdown-item">
+                  <div className="dropdown-item" onClick={() => handleCategoryClick('Tops',2)}>
                     Tops <RiArrowDownSLine className="dropdown-arrow" />
                     <div className="sub-dropdown">
-                      <div className="sub-dropdown-item">Shirts</div>
-                      <div className="sub-dropdown-item">T-Shirts</div>
-                      <div className="sub-dropdown-item">Hoodies & Sweaters</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Shirts',3)}>Shirts</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('T-Shirts',3)}>T-Shirts</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Hoodies & Sweaters',3)}>Hoodies & Sweaters</div>
                     </div>
                   </div>
-                  <div className="dropdown-item">
+                  <div className="dropdown-item" onClick={() => handleCategoryClick('Bottoms',2)}>
                     Bottoms <RiArrowDownSLine className="dropdown-arrow" />
                     <div className="sub-dropdown">
-                      <div className="sub-dropdown-item">Trousers</div>
-                      <div className="sub-dropdown-item">Denims</div>
-                      <div className="sub-dropdown-item">Shorts</div>
-                      <div className="sub-dropdown-item">Pants</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Trousers',3)}>Trousers</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Denims',3)}>Denims</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Shorts',3)}>Shorts</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Pants',3)}>Pants</div>
                     </div>
                   </div>
-                  <div className="dropdown-item">
+                  <div className="dropdown-item" onClick={() => handleCategoryClick('Special Categorie',2)}>
                     Special Categories <RiArrowDownSLine className="dropdown-arrow" />
                     <div className="sub-dropdown">
-                      <div className="sub-dropdown-item">Office Wear</div>
-                      <div className="sub-dropdown-item">Gym Wear</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Office Wear',3)}>Office Wear</div>
+                      <div className="sub-dropdown-item" onClick={() => handleCategoryClick('Gym Wear',3)}>Gym Wear</div>
                     </div>
                   </div>
                 </div>
