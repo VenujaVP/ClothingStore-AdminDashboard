@@ -22,7 +22,7 @@
 
 
   import React, { useState, useEffect } from 'react';
-  import { useLocation } from 'react-router-dom';
+  import { useLocation, useNavigate  } from 'react-router-dom';
   import axios from 'axios';
   import withAuth from '../withAuth'; // Import the HOC
   import { RiHeartLine, RiHeartFill } from 'react-icons/ri'; // Heart icons from react-icons/ri
@@ -39,8 +39,12 @@
   
     // Get the search results from React Router's state
     const location = useLocation();
+    const navigate = useNavigate();
     const searchResults = location.state?.searchResults;
   
+    const handleProductClick = (productId) => {
+      navigate(`/user-product-view-page/${productId}`);
+    };
     // Fetch product details from the backend only if search results are passed
     useEffect(() => {
       if (searchResults) {
@@ -103,11 +107,21 @@
       <div className="vp-dashboard">
         <div className="vp-product-grid">
           {currentProducts.map((product) => (
-            <div key={product.product_id} className="vp-product-card">
+            <div key={product.product_id} 
+                 className="vp-product-card"
+                 onClick={() => handleProductClick(product.product_id)} // Handle product click
+            >
               <div className="vp-square-image-container">
-                <img src="https://via.placeholder.com/200" alt={product.product_name} className="vp-product-image" />
+                <img 
+                  src="https://via.placeholder.com/200" 
+                  alt={product.product_name} 
+                  className="vp-product-image" 
+                />
                 {/* Favorite (heart) icon */}
-                <div className="vp-favorite-icon" onClick={() => toggleFavorite(product.product_id)}>
+                <div 
+                  className="vp-favorite-icon" 
+                  onClick={() => toggleFavorite(product.product_id)}
+                >
                   {favorites[product.product_id] ? (
                     <RiHeartFill className="vp-heart-icon vp-heart-icon-filled" />
                   ) : (
