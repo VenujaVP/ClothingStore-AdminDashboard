@@ -10,4 +10,5 @@ router.post('/owner-add-expenses', ownerExpensesAddValidate, ownerAddExpenses);
 router.get('/product-fetch', fetchSizes);
 router.get('/fetch-colors', fetchColors);
 
+
 export default router;

@@ -1,5 +1,5 @@
+//conrrollers/userControllers.js
 import sqldb from '../config/sqldb.js';
-
 
   export const searchProducts = async (req, res) => {
     const { query } = req.body; // Get the search query from the request body

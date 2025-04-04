@@ -9,4 +9,8 @@ const router = express.Router();
 router.post('/product-search', searchProducts);
 router.post('/category-filter', filterProducts);
 
+// router.get('/fetch-product-variations/:productId', fetchProductVariations);
+//http://localhost:8082/api/user/fetch-procuct
+
+
 export default router;
