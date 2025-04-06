@@ -78,7 +78,7 @@ const ProductViewPage = ({ userId }) => {
     }
 
     const variation = product.variations.find(
-      v => v.size === selectedSize && v.color === selectedColor && v.in_stock
+      v => v.size === selectedSize && v.color === selectedColor && v.in_stock === 1
     );
 
     if (variation) {
