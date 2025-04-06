@@ -119,7 +119,7 @@ const ProductViewPage = ({ userId }) => {
       }
   
       const orderData = {
-        productId: product._id,
+        productId: product.product_id,
         productName: product.product_name,
         variationId: selectedVariation._id,
         size: selectedSize,

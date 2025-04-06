@@ -122,9 +122,10 @@ const PrePaymentPage = ({ userId }) => {
     if (!order || !selectedDelivery) return 0;
     
     const deliveryOption = deliveryOptions.find(opt => opt._id === selectedDelivery);
-    const deliveryCost = deliveryOption ? deliveryOption.cost : 0;
+    const deliveryCost = deliveryOption ? Number(deliveryOption.cost) : 0;
+    const unitPrice = Number(order.unitPrice || 0);
     
-    return (order.totalPrice + deliveryCost).toFixed(2);
+    return (unitPrice * order.quantity + deliveryCost).toFixed(2);
   };
 
   const placeOrder = async () => {
@@ -215,14 +216,16 @@ const PrePaymentPage = ({ userId }) => {
           <div className="order-summary">
             <h2>Order Summary</h2>
             <div className="product-info">
-              <img src={order.image} alt={order.productName} className="product-image" />
-              <div className="product-details">
-                <h3>{order.productName}</h3>
-                <p>Size: {order.size}</p>
-                <p>Color: {order.color}</p>
-                <p>Quantity: {order.quantity}</p>
-                <p className="price">LKR {order.unitPrice.toFixed(2)} × {order.quantity}</p>
-              </div>
+            <img src={order.image} alt={order.productName} className="product-image" />
+                <div className="product-details">
+                    <h3>{order.productName}</h3>
+                    <p>Size: {order.size}</p>
+                    <p>Color: {order.color}</p>
+                    <p>Quantity: {order.quantity}</p>
+                    <p className="price">
+                    LKR {Number(order.unitPrice || 0).toFixed(2)} × {order.quantity}
+                    </p>
+                </div>
             </div>
 
             <div className="summary-totals">
