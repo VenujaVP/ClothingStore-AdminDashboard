@@ -211,7 +211,18 @@ const ProductViewPage = () => {
         <div className="product-details">
           <h1 className="product-name">{product.product_name}</h1>
           <div className="product-description" dangerouslySetInnerHTML={{ __html: product.product_description }} />
-
+          <div className="stock-status">
+                {product.total_units > 0 ? (
+                  <span className="in-stock">{product.total_units} available</span>
+                ) : (
+                  <span className="out-of-stock">Out of stock</span>
+                )}
+                {product.total_units > 0 && product.total_units < 10 && (
+                    <span className="vp-low-stock">
+                      (Only {product.total_units} {product.total_units === 1 ? 'item' : 'items'} left)
+                    </span>
+                )}
+          </div>
           
           <div className="product-meta">
             <div className="product-rating">
@@ -285,13 +296,6 @@ const ProductViewPage = () => {
                 />
                 <button onClick={incrementQuantity}>+</button>
               </div>
-              <div className="stock-status">
-                {product.total_units > 0 ? (
-                  <span className="in-stock">{product.total_units} available</span>
-                ) : (
-                  <span className="out-of-stock">Out of stock</span>
-                )}
-              </div>
             </div>
 
             <div className="action-buttons">
@@ -319,6 +323,7 @@ const ProductViewPage = () => {
               >
                 {isFavorite ? <RiHeartFill /> : <RiHeartLine />}
               </button>
+              {product.wishlist_count}
             </div>
           </div>
 

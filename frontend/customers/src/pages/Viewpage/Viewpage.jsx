@@ -144,6 +144,7 @@
                 <div className="vp-product-rating">
                   {renderStars(product.rating)} ({product.rating})
                 </div>
+
                 <div className="vp-product-stock">
                   {product.total_units > 0 ? (
                     <span className="vp-in-stock">In Stock </span>
@@ -156,6 +157,7 @@
                     </span>
                   )}
                 </div>
+                
                 <div className="vp-wishlist-count">Wishlist: {product.wishlist_count}</div>
               </div>
             </div>
