@@ -78,3 +78,17 @@ CurrieremployeeNum
 
 OrderStatus
 PaymentStatus
+
+payment_id
+
+
+
+payments
+
+payment_id
+user_id
+total_amount
+payment_method
+payment_status
+transaction_id
+created_at
