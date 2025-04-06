@@ -11,5 +11,4 @@ router.post('/category-filter', filterProducts);
 
 router.get('/fetch-product-details/:productId', fetchProductDetails);
 
-
 export default router;

@@ -30,8 +30,8 @@ const ProductViewPage = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:8082/api/user/fetch-procuct-details/${productId}`);
-        
+        const response = await axios.get(`http://localhost:8082/api/user/fetch-product-details/${productId}`);   
+             
         if (!response.data.success) {
           throw new Error(response.data.message || 'Failed to fetch product');
         }
