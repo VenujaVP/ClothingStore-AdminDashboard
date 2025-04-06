@@ -106,6 +106,38 @@ const ProductViewPage = ({ userId }) => {
     setQuantity(prev => Math.max(1, prev - 1));
   };
 
+  const buyNow = () => {
+    try {
+      if (!selectedVariation || availableQuantity <= 0) {
+        toast.error('Please select a valid size and color combination');
+        return;
+      }
+  
+      if (quantity > availableQuantity) {
+        toast.error('Selected quantity exceeds available stock');
+        return;
+      }
+  
+      const orderData = {
+        productId: product._id,
+        productName: product.product_name,
+        variationId: selectedVariation._id,
+        size: selectedSize,
+        color: selectedColor,
+        quantity: quantity,
+        unitPrice: product.unit_price,
+        totalPrice: product.unit_price * quantity,
+        image: product.images[0]
+      };
+  
+      console.log('Navigating with order data:', orderData);
+      navigate('/user-pre-payment-page', { state: orderData });
+    } catch (error) {
+      console.error('Error in buyNow:', error);
+      toast.error('Failed to proceed to checkout');
+    }
+  };
+
   const changeImage = (index) => {
     setCurrentImage(index);
   };
@@ -308,7 +340,7 @@ const ProductViewPage = ({ userId }) => {
               </button>
               <button 
                 className="buy-now" 
-                // onClick={buyNow}
+                onClick={buyNow}
                 disabled={!selectedVariation || availableQuantity <= 0}
               >
                 Buy Now
