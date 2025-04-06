@@ -193,6 +193,7 @@ import sqldb from '../config/sqldb.js';
 
   export const fetchProductDetails = (req, res) => {
       const { productId } = req.params;
+      console.log('Fetching details for product ID:', productId);
   
       // 1. Fetch main product details
       sqldb.query(

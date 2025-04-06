@@ -1,3 +1,5 @@
+//pages/Viewpage/ProductViewPage.jsx
+
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
@@ -14,6 +16,7 @@ import './ProductViewPage.css';
 
 const ProductViewPage = () => {
   const { productId } = useParams();
+  console.log('Received productId:', productId); // Check if it's receiving the ID
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,7 +34,7 @@ const ProductViewPage = () => {
       try {
         setLoading(true);
         const response = await axios.get(`http://localhost:8082/api/user/fetch-product-details/${productId}`);   
-             
+
         if (!response.data.success) {
           throw new Error(response.data.message || 'Failed to fetch product');
         }

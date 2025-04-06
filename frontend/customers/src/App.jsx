@@ -62,7 +62,7 @@ function App() {
             <Route path="/user-shipping-address" element={<AuthenticatedShippingAddress />} />
             <Route path="/user-shipping-address-form" element={<AuthenticatedShippingAddressForm/>} />
             <Route path="/user-payment-card-window" element={<AuthenticatedPaymentCardWindow/>} />
-            <Route path="/user-product-view-page/:id" element={<AuthenticatedProductViewPage/>} />
+            <Route path="/user-product-view-page/:productId" element={<AuthenticatedProductViewPage/>} />
           </Routes>
         </main>
         {shouldDisplayFooter() && <Footer />}
