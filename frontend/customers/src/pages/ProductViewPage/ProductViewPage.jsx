@@ -58,8 +58,8 @@ const ProductViewPage = () => {
         });
         
         // Check if product is in favorites
-        const favoriteResponse = await axios.get(`http://localhost:8082/api/user/favorites/check/${productId}`);
-        setIsFavorite(favoriteResponse.data.isFavorite);
+        // const favoriteResponse = await axios.get(`http://localhost:8082/api/user/favorites/check/${productId}`);
+        // setIsFavorite(favoriteResponse.data.isFavorite);
         
       } catch (err) {
         console.error('Error fetching product:', err);
