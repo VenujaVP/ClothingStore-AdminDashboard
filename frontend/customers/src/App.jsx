@@ -28,6 +28,7 @@ import AuthenticatedShippingAddress from './pages/USER/shippingaddress/ShippingA
 import AuthenticatedShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm '
 import AuthenticatedPaymentCardWindow from './pages/USER/paymentcardwindow/PaymentCardWindow';
 import AuthenticatedProductViewPage from './pages/ProductViewPage/ProductViewPage';
+import AuthenticatedPrePaymentPage from './pages/PrePaymentPage/PrePaymentPage'; 
 
 function App() {
   const location = useLocation();
@@ -62,6 +63,7 @@ function App() {
             <Route path="/user-shipping-address" element={<AuthenticatedShippingAddress />} />
             <Route path="/user-shipping-address-form" element={<AuthenticatedShippingAddressForm/>} />
             <Route path="/user-payment-card-window" element={<AuthenticatedPaymentCardWindow/>} />
+            <Route path="/user-pre-payment-page" element={<AuthenticatedPrePaymentPage/>} />
             <Route path="/user-product-view-page/:productId" element={<AuthenticatedProductViewPage/>} />
             <Route path="/user-product-view-page/:productId" element={<AuthenticatedProductViewPage/>} />
           </Routes>
