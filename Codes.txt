@@ -57,3 +57,23 @@ erDiagram
         updatedAt timestamp
     }
 
+
+Order
+Order_ID (Primary Key, indicated by the underline)
+userId
+ProductID
+
+Shoped_Date
+Shoped_Time
+
+Delivery Date
+
+Quantity
+DeleveryVia
+TotalAmount (Derived Attribute, indicated by the dashed oval)
+
+CurrieremployeeName
+CurrieremployeeNum
+
+OrderStatus
+PaymentStatus

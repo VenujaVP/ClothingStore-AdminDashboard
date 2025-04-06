@@ -14,7 +14,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './ProductViewPage.css';
 
-const ProductViewPage = () => {
+const ProductViewPage = ({ userId }) => {
+  console.log("Current user ID fuck:", userId);
   const { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
