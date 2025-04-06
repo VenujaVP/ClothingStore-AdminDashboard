@@ -141,9 +141,8 @@ CREATE TABLE cart_items (
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (ID) REFERENCES customers(ID),
-    FOREIGN KEY (product_id) REFERENCES product_table(ProductID),
-    FOREIGN KEY (variation_id) REFERENCES product_variations(VariationID),
+    FOREIGN KEY (ProductID) REFERENCES product_table(ProductID),
+    FOREIGN KEY (VariationID) REFERENCES product_variations(VariationID),
     UNIQUE KEY unique_user_product_variation (ID, ProductID, VariationID)
 );
-
 
