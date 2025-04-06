@@ -179,7 +179,7 @@ const ProductViewPage = ({ userId }) => {
         quantity: quantity
       };
   
-      const response = await axios.post('http://localhost:8082/api/cart/add', {
+      const response = await axios.post('http://localhost:8082/api/user/add-to-cart', {
         userId,
         item: cartItem
       });
