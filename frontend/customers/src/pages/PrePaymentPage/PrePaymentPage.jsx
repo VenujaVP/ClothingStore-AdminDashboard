@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import withAuth from '../withAuth';
+import { FaChevronLeft, FaShoppingCart } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './PrePaymentPage.css';
@@ -12,9 +13,8 @@ import './PrePaymentPage.css';
 const PrePaymentPage = ({ userId }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [order, setOrder] = useState(null);
+  const [orderItems, setOrderItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [deliveryOptions, setDeliveryOptions] = useState([]);
   const [selectedDelivery, setSelectedDelivery] = useState(null);
   const [paymentMethods, setPaymentMethods] = useState([]);
@@ -32,7 +32,7 @@ const PrePaymentPage = ({ userId }) => {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [processing, setProcessing] = useState(false);
 
-  // Load order data from navigation state
+  // Initialize order items from location state
   useEffect(() => {
     if (!location.state) {
       toast.error('No order information found');
@@ -40,45 +40,45 @@ const PrePaymentPage = ({ userId }) => {
       return;
     }
 
-    setOrder(location.state);
+    // Handle both single item and multiple items
+    const items = Array.isArray(location.state) ? location.state : [location.state];
+    setOrderItems(items);
     setLoading(false);
   }, [location, navigate]);
 
-  // Fetch user addresses, delivery and payment options
-//   useEffect(() => {
-//     if (!userId) return;
+  // Fetch user data
+  useEffect(() => {
+    if (!userId || loading) return;
 
-//     const fetchData = async () => {
-//       try {
-//         // Fetch user addresses
-//         const addressesRes = await axios.get(`http://localhost:8082/api/user/addresses/${userId}`);
-//         setAddresses(addressesRes.data.addresses || []);
-        
-//         // Set default address if available
-//         const defaultAddress = addressesRes.data.addresses.find(addr => addr.isDefault);
-//         if (defaultAddress) setSelectedAddress(defaultAddress._id);
+    const fetchData = async () => {
+      try {
+        // Fetch user addresses
+        const addressesRes = await axios.get(`http://localhost:8082/api/user/addresses/${userId}`);
+        setAddresses(addressesRes.data.addresses || []);
+        const defaultAddress = addressesRes.data.addresses.find(addr => addr.isDefault);
+        if (defaultAddress) setSelectedAddress(defaultAddress._id);
 
-//         // Fetch delivery options
-//         const deliveryRes = await axios.get('http://localhost:8082/api/delivery-options');
-//         setDeliveryOptions(deliveryRes.data.deliveryOptions || []);
-//         if (deliveryRes.data.deliveryOptions?.length > 0) {
-//           setSelectedDelivery(deliveryRes.data.deliveryOptions[0]._id);
-//         }
+        // Fetch delivery options
+        const deliveryRes = await axios.get('http://localhost:8082/api/delivery-options');
+        setDeliveryOptions(deliveryRes.data.deliveryOptions || []);
+        if (deliveryRes.data.deliveryOptions?.length > 0) {
+          setSelectedDelivery(deliveryRes.data.deliveryOptions[0]._id);
+        }
 
-//         // Fetch payment methods
-//         const paymentRes = await axios.get('http://localhost:8082/api/payment-methods');
-//         setPaymentMethods(paymentRes.data.paymentMethods || []);
-//         if (paymentRes.data.paymentMethods?.length > 0) {
-//           setSelectedPayment(paymentRes.data.paymentMethods[0]._id);
-//         }
-//       } catch (err) {
-//         console.error('Error fetching data:', err);
-//         setError(err.response?.data?.message || err.message || 'Failed to load checkout data');
-//       }
-//     };
+        // Fetch payment methods
+        const paymentRes = await axios.get('http://localhost:8082/api/payment-methods');
+        setPaymentMethods(paymentRes.data.paymentMethods || []);
+        if (paymentRes.data.paymentMethods?.length > 0) {
+          setSelectedPayment(paymentRes.data.paymentMethods[0]._id);
+        }
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        toast.error(err.response?.data?.message || 'Failed to load checkout data');
+      }
+    };
 
-//     fetchData();
-//   }, [userId]);
+    fetchData();
+  }, [userId, loading]);
 
   const handleAddressChange = (e) => {
     setSelectedAddress(e.target.value);
@@ -118,14 +118,15 @@ const PrePaymentPage = ({ userId }) => {
     }
   };
 
+  const calculateSubtotal = () => {
+    return orderItems.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+  };
+
   const calculateTotal = () => {
-    if (!order || !selectedDelivery) return 0;
-    
+    const subtotal = calculateSubtotal();
     const deliveryOption = deliveryOptions.find(opt => opt._id === selectedDelivery);
     const deliveryCost = deliveryOption ? Number(deliveryOption.cost) : 0;
-    const unitPrice = Number(order.unitPrice || 0);
-    
-    return (unitPrice * order.quantity + deliveryCost).toFixed(2);
+    return (subtotal + deliveryCost).toFixed(2);
   };
 
   const placeOrder = async () => {
@@ -139,16 +140,16 @@ const PrePaymentPage = ({ userId }) => {
       
       const orderData = {
         userId,
-        productId: order.productId,
-        variationId: order.variationId,
-        quantity: order.quantity,
-        size: order.size,
-        color: order.color,
-        unitPrice: order.unitPrice,
-        totalPrice: calculateTotal(),
+        items: orderItems.map(item => ({
+          productId: item.productId,
+          variationId: item.variationId,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice
+        })),
         deliveryOptionId: selectedDelivery,
         paymentMethodId: selectedPayment,
         shippingAddressId: selectedAddress,
+        totalAmount: calculateTotal(),
         status: 'pending'
       };
 
@@ -177,23 +178,12 @@ const PrePaymentPage = ({ userId }) => {
     );
   }
 
-  if (error) {
+  if (!orderItems || orderItems.length === 0) {
     return (
       <div className="error-container">
-        <p>{error}</p>
-        <button onClick={() => navigate(-1)} className="back-button">
-          Go Back
-        </button>
-      </div>
-    );
-  }
-
-  if (!order) {
-    return (
-      <div className="error-container">
-        <p>No order information found</p>
+        <p>No order items found</p>
         <button onClick={() => navigate('/')} className="back-button">
-          Return to Home
+          <FaChevronLeft /> Return to Home
         </button>
       </div>
     );
@@ -203,6 +193,9 @@ const PrePaymentPage = ({ userId }) => {
     <div className="pre-payment-page">
       <div className="checkout-container">
         <div className="checkout-header">
+          <button onClick={() => navigate(-1)} className="back-button">
+            <FaChevronLeft /> Back
+          </button>
           <h1>Checkout</h1>
           <div className="checkout-steps">
             <div className="step active">1. Shipping</div>
@@ -214,24 +207,28 @@ const PrePaymentPage = ({ userId }) => {
         <div className="checkout-content">
           {/* Order Summary Section */}
           <div className="order-summary">
-            <h2>Order Summary</h2>
-            <div className="product-info">
-            <img src={order.image} alt={order.productName} className="product-image" />
-                <div className="product-details">
-                    <h3>{order.productName}</h3>
-                    <p>Size: {order.size}</p>
-                    <p>Color: {order.color}</p>
-                    <p>Quantity: {order.quantity}</p>
-                    <p className="price">
-                    LKR {Number(order.unitPrice || 0).toFixed(2)} × {order.quantity}
-                    </p>
+            <h2>Order Summary ({orderItems.length} {orderItems.length > 1 ? 'items' : 'item'})</h2>
+            
+            <div className="order-items">
+              {orderItems.map((item, index) => (
+                <div key={index} className="order-item">
+                  <div className="item-image">
+                    <img src={item.image} alt={item.productName} />
+                    <span className="item-quantity">{item.quantity}</span>
+                  </div>
+                  <div className="item-details">
+                    <h3>{item.productName}</h3>
+                    <p>{item.size} | {item.color}</p>
+                    <div className="item-price">LKR {(item.unitPrice * item.quantity).toFixed(2)}</div>
+                  </div>
                 </div>
+              ))}
             </div>
 
             <div className="summary-totals">
               <div className="summary-row">
                 <span>Subtotal:</span>
-                <span>LKR {order.totalPrice.toFixed(2)}</span>
+                <span>LKR {calculateSubtotal().toFixed(2)}</span>
               </div>
               <div className="summary-row">
                 <span>Delivery:</span>
@@ -277,7 +274,7 @@ const PrePaymentPage = ({ userId }) => {
                   ))}
                 </div>
               ) : (
-                <p>No saved addresses found.</p>
+                <p className="no-address">No saved addresses found.</p>
               )}
 
               <button 
@@ -381,7 +378,7 @@ const PrePaymentPage = ({ userId }) => {
                   ))}
                 </div>
               ) : (
-                <p>No delivery options available.</p>
+                <p className="no-options">No delivery options available.</p>
               )}
             </section>
 
@@ -412,7 +409,7 @@ const PrePaymentPage = ({ userId }) => {
                   ))}
                 </div>
               ) : (
-                <p>No payment methods available.</p>
+                <p className="no-options">No payment methods available.</p>
               )}
             </section>
 
@@ -423,7 +420,13 @@ const PrePaymentPage = ({ userId }) => {
                 onClick={placeOrder}
                 disabled={!selectedAddress || !selectedDelivery || !selectedPayment || processing}
               >
-                {processing ? 'Processing...' : 'Place Order'}
+                {processing ? (
+                  <>
+                    <span className="spinner"></span> Processing...
+                  </>
+                ) : (
+                  `Pay LKR ${calculateTotal()}`
+                )}
               </button>
             </div>
           </div>
