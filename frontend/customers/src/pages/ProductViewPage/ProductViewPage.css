@@ -127,18 +127,20 @@
 
 .product-name {
   font-size: 2rem;
-  margin: 0;
+  margin: 0 0 10px 0;
   color: #222;
   font-weight: 600;
   line-height: 1.2;
 }
 
+/* Updated Product Meta - Centered */
 .product-meta {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 15px;
   flex-wrap: wrap;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .product-rating {
@@ -167,14 +169,6 @@
   margin-left: 5px;
 }
 
-.product-sku {
-  color: #666;
-  font-size: 0.9rem;
-  background: #f5f5f5;
-  padding: 3px 8px;
-  border-radius: 4px;
-}
-
 .product-price {
   font-size: 1.8rem;
   font-weight: bold;
@@ -193,8 +187,8 @@
 .product-variations {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin: 15px 0;
+  gap: 15px;
+  margin: 10px 0;
 }
 
 .variation-group {
@@ -209,11 +203,13 @@
   font-weight: 500;
 }
 
+/* Updated Size Options - Centered */
 .size-options {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .size-option {
@@ -237,11 +233,13 @@
   border-color: #23b893;
 }
 
-/* Color Text Options (Updated) */
+/* Updated Color Text Options - Centered */
 .color-text-options {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .color-text-option {
@@ -266,11 +264,10 @@
   border-color: #23b893;
 }
 
-/* Availability Status (Updated) */
+/* Availability Status */
 .availability-status {
-  margin: 15px 0;
-  padding: 10px;
-  border-radius: 5px;
+  margin: 10px 0;
+  padding: 8px 0;
   font-size: 0.95rem;
   font-weight: 500;
 }
@@ -297,6 +294,7 @@
 .stock-status {
   font-size: 0.9rem;
   padding: 5px 0;
+  margin: 5px 0;
 }
 
 .in-stock {
@@ -311,10 +309,10 @@
 
 /* Quantity and Actions */
 .product-actions {
-  margin: 20px 0;
+  margin: 15px 0;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
 
 .quantity-group {
@@ -369,6 +367,7 @@
   gap: 10px;
   flex-wrap: wrap;
   align-items: center;
+  margin-top: 10px;
 }
 
 .add-to-cart, .buy-now {
@@ -409,7 +408,7 @@
   background: #e74c3c;
 }
 
-/* Wishlist Section (Updated) */
+/* Wishlist Section */
 .wishlist-section {
   display: flex;
   align-items: center;
@@ -451,12 +450,12 @@
 
 /* Product Description & Specs */
 .product-description-section {
-  margin: 25px 0;
+  margin: 20px 0;
 }
 
 .product-description-section h2 {
   font-size: 1.5rem;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   color: #222;
   font-weight: 600;
 }
@@ -464,10 +463,11 @@
 .product-description {
   line-height: 1.6;
   color: #555;
+  margin-bottom: 10px;
 }
 
 .product-specs {
-  margin-top: 15px;
+  margin-top: 12px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 10px;
@@ -489,7 +489,7 @@
 
 /* Categories */
 .product-categories {
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 .category-breadcrumbs {
@@ -511,16 +511,16 @@
 /* Reviews Section */
 .customer-reviews-section {
   max-width: 1400px;
-  margin: 30px auto;
+  margin: 25px auto;
   background: white;
   border-radius: 20px;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+  padding: 25px;
 }
 
 .customer-reviews-section h2 {
   font-size: 1.5rem;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #222;
   font-weight: 600;
 }
@@ -533,11 +533,11 @@
 .reviews-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
 .review {
-  padding: 20px;
+  padding: 15px;
   background: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
@@ -547,7 +547,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   flex-wrap: wrap;
 }
 
@@ -577,29 +577,33 @@
   .product-view-container {
     flex-direction: column;
     padding: 20px;
+    gap: 20px;
   }
 
   .product-images {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
 }
 
 @media (max-width: 576px) {
   .product-view-page {
     padding: 10px;
-  font-size: 14px;
+    font-size: 14px;
   }
 
   .product-name {
     font-size: 1.5rem;
+    margin-bottom: 8px;
   }
 
   .product-price {
     font-size: 1.5rem;
+    margin: 8px 0;
   }
 
   .action-buttons {
     flex-direction: column;
+    gap: 8px;
   }
 
   .add-to-cart, .buy-now {
@@ -610,11 +614,11 @@
     margin-left: 0;
     justify-content: center;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 8px;
   }
 
   .product-variations {
-    gap: 15px;
+    gap: 12px;
   }
 
   .variation-group label {
@@ -624,5 +628,10 @@
   .size-option, .color-text-option {
     padding: 6px 12px;
     font-size: 0.85rem;
+  }
+
+  .product-meta {
+    gap: 10px;
+    margin-bottom: 8px;
   }
 }
