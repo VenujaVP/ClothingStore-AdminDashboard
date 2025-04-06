@@ -8,46 +8,42 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import withAuth from '../withAuth';
+import { FaStar, FaRegStar, FaChevronLeft, FaShoppingCart } from 'react-icons/fa';
 import { RiHeartLine, RiHeartFill } from 'react-icons/ri';
-import { FaShoppingCart, FaStar, FaRegStar, FaChevronLeft } from 'react-icons/fa';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import './ProductViewPage.css';
 
 const ProductViewPage = () => {
   const { productId } = useParams();
-  console.log('Received productId:', productId); // Check if it's receiving the ID
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentImage, setCurrentImage] = useState(0);
+  
+  // Initialize interactive states (not implemented)
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [isFavorite, setIsFavorite] = useState(false);
-  const [currentImage, setCurrentImage] = useState(0);
   const [addingToCart, setAddingToCart] = useState(false);
 
-  // Fetch product details with variations
+  // Fetch product details
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:8082/api/user/fetch-product-details/${productId}`);   
-        console.log('Product response:', response.data); // Log the response data
-
+        const response = await axios.get(`http://localhost:8082/api/user/fetch-product-details/${productId}`);
+        
         if (!response.data.success) {
           throw new Error(response.data.message || 'Failed to fetch product');
         }
 
         const productData = response.data.product;
         
-        // Process variations to extract available sizes and colors
-        const sizes = [...new Set(productData.variations.map(v => v.size))];
-        const colors = [...new Set(productData.variations.map(v => v.color))];
-        
-        // Calculate total available units
-        const totalUnits = productData.variations.reduce((sum, variation) => sum + variation.units, 0);
+        // Process variations
+        const sizes = [...new Set(productData.variations?.map(v => v.size) || [])];
+        const colors = [...new Set(productData.variations?.map(v => v.color) || [])];
+        const totalUnits = productData.variations?.reduce((sum, v) => sum + (v.units || 0), 0) || 0;
         
         setProduct({
           ...productData,
@@ -58,10 +54,6 @@ const ProductViewPage = () => {
           images: productData.image_urls || ['https://via.placeholder.com/500']
         });
         
-        // Check if product is in favorites
-        // const favoriteResponse = await axios.get(`http://localhost:8082/api/user/favorites/check/${productId}`);
-        // setIsFavorite(favoriteResponse.data.isFavorite);
-        
       } catch (err) {
         console.error('Error fetching product:', err);
         setError(err.response?.data?.message || err.message || 'Failed to load product');
@@ -69,9 +61,11 @@ const ProductViewPage = () => {
         setLoading(false);
       }
     };
+
     fetchProduct();
   }, [productId]);
 
+  // Initialize interactive functions (not implemented)
   const handleQuantityChange = (e) => {
     const value = Math.max(1, Math.min(100, parseInt(e.target.value) || 1));
     setQuantity(value);
@@ -85,53 +79,16 @@ const ProductViewPage = () => {
     setQuantity(prev => Math.max(1, prev - 1));
   };
 
-  const toggleFavorite = async () => {
-    try {
-      const response = await axios.post(`http://localhost:8082/api/user/favorites/toggle`, {
-        productId
-      });
-      setIsFavorite(response.data.isFavorite);
-      toast.success(response.data.message);
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update favorites');
-    }
+  const toggleFavorite = () => {
+    console.log('Favorite toggle would be implemented here');
   };
 
-  const addToCart = async () => {
-    if (!selectedSize && product?.sizes?.length > 0) {
-      toast.error('Please select a size');
-      return;
-    }
-    
-    if (!selectedColor && product?.colors?.length > 0) {
-      toast.error('Please select a color');
-      return;
-    }
-
-    try {
-      setAddingToCart(true);
-      const response = await axios.post('http://localhost:8082/api/cart/add', {
-        productId,
-        quantity,
-        size: selectedSize,
-        color: selectedColor
-      });
-      
-      toast.success(response.data.message);
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to add to cart');
-    } finally {
-      setAddingToCart(false);
-    }
+  const addToCart = () => {
+    console.log('Add to cart would be implemented here');
   };
 
-  const buyNow = async () => {
-    try {
-      await addToCart();
-      navigate('/checkout');
-    } catch (err) {
-      console.error('Error during buy now:', err);
-    }
+  const buyNow = () => {
+    console.log('Buy now would be implemented here');
   };
 
   const changeImage = (index) => {
@@ -139,9 +96,7 @@ const ProductViewPage = () => {
   };
 
   const renderStars = (rating) => {
-    // Ensure rating is a number
     const numericRating = typeof rating === 'number' ? rating : parseFloat(rating || 0);
-    
     return Array(5).fill(0).map((_, i) => (
       i < Math.floor(numericRating) ? 
         <FaStar key={i} className="star-filled" /> : 
@@ -219,7 +174,6 @@ const ProductViewPage = () => {
                   ? product.rating.toFixed(1) 
                   : parseFloat(product.rating || 0).toFixed(1)})
               </span>
-              <span className="review-count">{product.review_count || 0} reviews</span>
             </div>
           </div>
 
@@ -293,25 +247,14 @@ const ProductViewPage = () => {
 
             <div className="action-buttons">
               <button 
-                className={`add-to-cart ${addingToCart ? 'loading' : ''}`} 
+                className="add-to-cart" 
                 onClick={addToCart}
-                disabled={product.total_units <= 0 || addingToCart}
-              >
-                {addingToCart ? 'Adding...' : (
-                  <>
-                    <FaShoppingCart /> Add to Cart
-                  </>
-                )}
-              </button>
-              <button 
-                className="buy-now" 
-                onClick={buyNow}
                 disabled={product.total_units <= 0}
               >
-                Buy Now
+                <FaShoppingCart /> Add to Cart
               </button>
               <button 
-                className={`favorite-button ${isFavorite ? 'favorited' : ''}`}
+                className="favorite-button"
                 onClick={toggleFavorite}
               >
                 {isFavorite ? <RiHeartFill /> : <RiHeartLine />}
@@ -322,7 +265,9 @@ const ProductViewPage = () => {
           {/* Product Description */}
           <div className="product-description-section">
             <h2>Product Details</h2>
-            <div className="product-description" dangerouslySetInnerHTML={{ __html: product.product_description }} />
+            <div className="product-description">
+              {product.product_description}
+            </div>
             
             <div className="product-specs">
               {product.material && (
@@ -343,61 +288,15 @@ const ProductViewPage = () => {
                   <span className="spec-value">{product.shipping_weight} kg</span>
                 </div>
               )}
-              {product.return_policy && (
-                <div className="spec-row">
-                  <span className="spec-label">Return Policy:</span>
-                  <span className="spec-value">{product.return_policy}</span>
-                </div>
-              )}
             </div>
           </div>
-
-          {/* Categories */}
-          {product.Category1 && (
-            <div className="product-categories">
-              <h2>Categories</h2>
-              <div className="category-breadcrumbs">
-                {[product.Category1, product.Category2, product.Category3]
-                  .filter(Boolean)
-                  .map((category, index) => (
-                    <React.Fragment key={category}>
-                      {index > 0 && <span className="breadcrumb-separator">/</span>}
-                      <span className="breadcrumb-item">{category}</span>
-                    </React.Fragment>
-                  ))}
-              </div>
-            </div>
-          )}
         </div>
-      </div>
-
-      {/* Customer Reviews Section */}
-      <div className="customer-reviews-section">
-        <h2>Customer Reviews {product.reviews?.length > 0 && `(${product.reviews.length})`}</h2>
-        
-        {product.reviews?.length > 0 ? (
-          <div className="reviews-container">
-            {product.reviews.map((review) => (
-              <div key={review._id} className="review">
-                <div className="review-header">
-                  <div className="review-author">{review.userName || 'Anonymous'}</div>
-                  <div className="review-rating">{renderStars(review.rating)}</div>
-                  <div className="review-date">
-                    {new Date(review.createdAt).toLocaleDateString()}
-                  </div>
-                </div>
-                <h4 className="review-title">{review.title}</h4>
-                <div className="review-text">{review.comment}</div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="no-reviews">No reviews yet. Be the first to review this product!</p>
-        )}
       </div>
     </div>
   );
 };
+
+// export default withAuth(ProductViewPage);
 
 const AuthenticatedProductViewPage = withAuth(ProductViewPage);
 export default AuthenticatedProductViewPage;
