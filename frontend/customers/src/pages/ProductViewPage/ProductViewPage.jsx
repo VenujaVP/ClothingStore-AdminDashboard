@@ -4,6 +4,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -26,21 +30,23 @@ const ProductViewPage = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [addingToCart, setAddingToCart] = useState(false);
-  const [currentStock, setCurrentStock] = useState(0);
   const [selectedVariation, setSelectedVariation] = useState(null);
+  const [availableQuantity, setAvailableQuantity] = useState(0);
 
   // Fetch product details with variations
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:8082/api/user/fetch-product-details/${productId}`);
-        
+        const response = await axios.get(`http://localhost:8082/api/user/fetch-product-details/${productId}`);   
+
         if (!response.data.success) {
           throw new Error(response.data.message || 'Failed to fetch product');
         }
 
         const productData = response.data.product;
+        
+        // Process variations to extract available sizes and colors
         const sizes = [...new Set(productData.variations.map(v => v.size))];
         const colors = [...new Set(productData.variations.map(v => v.color))];
         
@@ -51,15 +57,10 @@ const ProductViewPage = () => {
           mainImage: productData.image_urls?.[0] || 'https://via.placeholder.com/500',
           images: productData.image_urls || ['https://via.placeholder.com/500']
         });
-
-        // Initialize with first available variation if exists
-        if (productData.variations.length > 0) {
-          const availableVariation = productData.variations.find(v => v.in_stock);
-          if (availableVariation) {
-            setSelectedSize(availableVariation.size);
-            setSelectedColor(availableVariation.color);
-          }
-        }
+        
+        // Check if product is in favorites
+        // const favoriteResponse = await axios.get(`http://localhost:8082/api/user/favorites/check/${productId}`);
+        // setIsFavorite(favoriteResponse.data.isFavorite);
         
       } catch (err) {
         console.error('Error fetching product:', err);
@@ -71,38 +72,34 @@ const ProductViewPage = () => {
     fetchProduct();
   }, [productId]);
 
-  // Update current stock when size or color changes
+  // Update selected variation when size or color changes
   useEffect(() => {
-    if (!product || !product.variations) return;
+    if (!product || !selectedSize || !selectedColor) {
+      setSelectedVariation(null);
+      setAvailableQuantity(0);
+      return;
+    }
 
-    const variation = product.variations.find(v => 
-      v.size === selectedSize && v.color === selectedColor
+    const variation = product.variations.find(
+      v => v.size === selectedSize && v.color === selectedColor
     );
 
-    setSelectedVariation(variation);
-    setCurrentStock(variation?.quantity || 0);
-    
-    // Reset quantity if exceeds new stock limit
-    if (variation && quantity > variation.quantity) {
-      setQuantity(Math.max(1, variation.quantity));
-    }
-  }, [selectedSize, selectedColor, product, quantity]);
+    setSelectedVariation(variation || null);
+    setAvailableQuantity(variation?.units || 0);
+    setQuantity(1); // Reset quantity when variation changes
+  }, [selectedSize, selectedColor, product]);
 
   const handleQuantityChange = (e) => {
-    const value = Math.max(1, Math.min(currentStock, parseInt(e.target.value) || 1));
+    const value = Math.max(1, Math.min(availableQuantity, parseInt(e.target.value) || 1));
     setQuantity(value);
   };
 
   const incrementQuantity = () => {
-    setQuantity(prev => Math.min(prev + 1, currentStock));
+    setQuantity(prev => Math.min(prev + 1, availableQuantity));
   };
 
   const decrementQuantity = () => {
     setQuantity(prev => Math.max(1, prev - 1));
-  };
-
-  const changeImage = (index) => {
-    setCurrentImage(index);
   };
 
   const renderStars = (rating) => {
@@ -115,11 +112,29 @@ const ProductViewPage = () => {
     ));
   };
 
-  const getAvailableText = () => {
-    if (!selectedVariation) return 'Select options to check availability';
-    if (currentStock <= 0) return 'Out of stock';
-    if (currentStock < 5) return `Only ${currentStock} left in stock!`;
-    return 'In stock';
+  const renderAvailabilityStatus = () => {
+    if (!selectedSize || !selectedColor) {
+      return (
+        <div className="availability-status">
+          <span className="select-options">Please select size and color</span>
+        </div>
+      );
+    }
+
+    if (availableQuantity > 0) {
+      return (
+        <div className="availability-status">
+          <span className="in-stock">In Stock</span>
+          <span className="available-quantity">({availableQuantity} available)</span>
+        </div>
+      );
+    }
+
+    return (
+      <div className="availability-status">
+        <span className="out-of-stock">Out of Stock</span>
+      </div>
+    );
   };
 
   if (loading) {
@@ -174,7 +189,7 @@ const ProductViewPage = () => {
                 src={img} 
                 alt={`Thumbnail ${index + 1}`}
                 className={index === currentImage ? 'thumbnail active' : 'thumbnail'}
-                onClick={() => changeImage(index)}
+                // onClick={() => changeImage(index)}
               />
             ))}
           </div>
@@ -184,6 +199,14 @@ const ProductViewPage = () => {
         <div className="product-details">
           <h1 className="product-name">{product.product_name}</h1>
           <div className="product-description" dangerouslySetInnerHTML={{ __html: product.product_description }} />
+          
+          <div className="stock-status">
+            {product.total_units > 0 ? (
+              <span className="in-stock">{product.total_units} available in total</span>
+            ) : (
+              <span className="out-of-stock">Out of stock</span>
+            )}
+          </div>
           
           <div className="product-meta">
             <div className="product-rating">
@@ -210,25 +233,15 @@ const ProductViewPage = () => {
               <div className="variation-group">
                 <label>Size:</label>
                 <div className="size-options">
-                  {product.sizes.map((size) => {
-                    const hasStock = product.variations.some(v => 
-                      v.size === size && 
-                      (selectedColor ? v.color === selectedColor : true) && 
-                      v.in_stock
-                    );
-                    return (
-                      <button
-                        key={size}
-                        className={`size-option ${selectedSize === size ? 'selected' : ''} ${!hasStock ? 'out-of-stock' : ''}`}
-                        onClick={() => setSelectedSize(size)}
-                        disabled={!hasStock}
-                        title={!hasStock ? 'Out of stock' : ''}
-                      >
-                        {size}
-                        {!hasStock && <span className="oos-badge">X</span>}
-                      </button>
-                    );
-                  })}
+                  {product.sizes.map((size) => (
+                    <button
+                      key={size}
+                      className={`size-option ${selectedSize === size ? 'selected' : ''}`}
+                      onClick={() => setSelectedSize(size)}
+                    >
+                      {size}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}
@@ -236,70 +249,40 @@ const ProductViewPage = () => {
             {product.colors?.length > 0 && (
               <div className="variation-group">
                 <label>Color:</label>
-                <div className="color-options">
-                  {product.colors.map((color) => {
-                    const hasStock = product.variations.some(v => 
-                      v.color === color && 
-                      (selectedSize ? v.size === selectedSize : true) && 
-                      v.in_stock
-                    );
-                    return (
-                      <button
-                        key={color}
-                        className={`color-option ${selectedColor === color ? 'selected' : ''} ${!hasStock ? 'out-of-stock' : ''}`}
-                        style={{ backgroundColor: color }}
-                        onClick={() => setSelectedColor(color)}
-                        disabled={!hasStock}
-                        title={!hasStock ? 'Out of stock' : color}
-                      >
-                        {!hasStock && <span className="oos-badge">X</span>}
-                      </button>
-                    );
-                  })}
+                <div className="color-text-options">
+                  {product.colors.map((color) => (
+                    <button
+                      key={color}
+                      className={`color-text-option ${selectedColor === color ? 'selected' : ''}`}
+                      onClick={() => setSelectedColor(color)}
+                    >
+                      {color}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Stock Status */}
-          <div className="stock-status">
-            <span className={`availability ${currentStock <= 0 ? 'out-of-stock' : 'in-stock'}`}>
-              {getAvailableText()}
-            </span>
-          </div>
+          {/* Availability Status */}
+          {renderAvailabilityStatus()}
 
           {/* Quantity and CTA Buttons */}
           <div className="product-actions">
-            {selectedVariation && currentStock > 0 && (
+            {availableQuantity > 0 && (
               <div className="quantity-group">
                 <label>Quantity:</label>
                 <div className="quantity-selector">
-                  <button 
-                    onClick={decrementQuantity} 
-                    disabled={quantity <= 1}
-                  >
-                    -
-                  </button>
+                  <button onClick={decrementQuantity}>-</button>
                   <input 
                     type="number" 
                     min="1" 
-                    max={currentStock}
+                    max={availableQuantity}
                     value={quantity}
                     onChange={handleQuantityChange}
-                    disabled={currentStock <= 0}
                   />
-                  <button 
-                    onClick={incrementQuantity} 
-                    disabled={quantity >= currentStock}
-                  >
-                    +
-                  </button>
+                  <button onClick={incrementQuantity}>+</button>
                 </div>
-                {currentStock > 0 && (
-                  <div className="max-quantity-note">
-                    (Max: {currentStock})
-                  </div>
-                )}
               </div>
             )}
 
@@ -307,7 +290,7 @@ const ProductViewPage = () => {
               <button 
                 className={`add-to-cart ${addingToCart ? 'loading' : ''}`} 
                 // onClick={addToCart}
-                disabled={currentStock <= 0 || addingToCart || !selectedVariation}
+                disabled={availableQuantity <= 0 || addingToCart}
               >
                 {addingToCart ? 'Adding...' : (
                   <>
@@ -318,21 +301,23 @@ const ProductViewPage = () => {
               <button 
                 className="buy-now" 
                 // onClick={buyNow}
-                disabled={currentStock <= 0 || !selectedVariation}
+                disabled={availableQuantity <= 0}
               >
                 Buy Now
               </button>
-              
-              <button 
-                className={`favorite-button ${isFavorite ? 'favorited' : ''}`}
-                // onClick={toggleFavorite}
-              >
-                {isFavorite ? <RiHeartFill /> : <RiHeartLine />}
-              </button>
+              <div className="wishlist-section">
+                <button 
+                  className={`favorite-button ${isFavorite ? 'favorited' : ''}`}
+                  // onClick={toggleFavorite}
+                >
+                  {isFavorite ? <RiHeartFill /> : <RiHeartLine />}
+                </button>
+                <span className="wishlist-count">{product.wishlist_count || 0}</span>
+              </div>
             </div>
           </div>
 
-          {/* Product Details */}
+          {/* Product Description */}
           <div className="product-description-section">
             <h2>Product Details</h2>            
             <div className="product-specs">
