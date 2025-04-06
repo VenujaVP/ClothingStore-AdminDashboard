@@ -20,7 +20,8 @@ const withAuth = (WrappedComponent) => {
         .then(res => {
           if (res.data.Status === "Success") {
             setIsAuthenticated(true);
-            setUserId(res.data.id);
+            const newUserId = res.data.id;
+            setUserId(newUserId);
           } else {
             setIsAuthenticated(false);
             setMessage(res.data.err || "Session expired. Please log in again.");

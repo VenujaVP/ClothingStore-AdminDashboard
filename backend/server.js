@@ -53,7 +53,7 @@ app.use('/api/user', userRoutes)
 
 app.get('/tokenverification', verifyUser, (req, res) => {
     // If the token is verified, send back the user information
-    return res.status(200).json({ Status: "Success", name: req.name });
+    return res.status(200).json({ Status: "Success", id: req.id });
 });
 
 // Token cleanup every 5 minutes
