@@ -34,6 +34,7 @@ const ProductViewPage = () => {
       try {
         setLoading(true);
         const response = await axios.get(`http://localhost:8082/api/user/fetch-product-details/${productId}`);   
+        console.log('Product response:', response.data); // Log the response data
 
         if (!response.data.success) {
           throw new Error(response.data.message || 'Failed to fetch product');
@@ -68,7 +69,6 @@ const ProductViewPage = () => {
         setLoading(false);
       }
     };
-
     fetchProduct();
   }, [productId]);
 
@@ -139,8 +139,11 @@ const ProductViewPage = () => {
   };
 
   const renderStars = (rating) => {
+    // Ensure rating is a number
+    const numericRating = typeof rating === 'number' ? rating : parseFloat(rating || 0);
+    
     return Array(5).fill(0).map((_, i) => (
-      i < Math.floor(rating) ? 
+      i < Math.floor(numericRating) ? 
         <FaStar key={i} className="star-filled" /> : 
         <FaRegStar key={i} className="star-empty" />
     ));
@@ -210,11 +213,14 @@ const ProductViewPage = () => {
           
           <div className="product-meta">
             <div className="product-rating">
-              {renderStars(product.rating || 0)} 
-              <span className="rating-value">({product.rating?.toFixed(1) || '0.0'})</span>
+              {renderStars(product.rating)} 
+              <span className="rating-value">
+                ({typeof product.rating === 'number' 
+                  ? product.rating.toFixed(1) 
+                  : parseFloat(product.rating || 0).toFixed(1)})
+              </span>
               <span className="review-count">{product.review_count || 0} reviews</span>
             </div>
-            <span className="product-sku">SKU: {product.ProductID}</span>
           </div>
 
           <div className="product-price">
