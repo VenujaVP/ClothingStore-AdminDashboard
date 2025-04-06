@@ -106,6 +106,9 @@ const ProductViewPage = ({ userId }) => {
     setQuantity(prev => Math.max(1, prev - 1));
   };
 
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
   const buyNow = () => {
     try {
       if (!selectedVariation || availableQuantity <= 0) {
@@ -155,6 +158,51 @@ const ProductViewPage = ({ userId }) => {
       toast.error('Failed to proceed to checkout');
     }
   };
+
+  const addToCart = async () => {
+    try {
+      if (!selectedVariation || availableQuantity <= 0) {
+        toast.error('Please select a valid size and color combination');
+        return;
+      }
+  
+      if (quantity > availableQuantity) {
+        toast.error('Selected quantity exceeds available stock');
+        return;
+      }
+  
+      setAddingToCart(true);
+      
+      const cartItem = {
+        productId: product.product_id,
+        variationId: selectedVariation.VariationID,
+        quantity: quantity,
+        size: selectedSize,
+        color: selectedColor,
+        price: parseFloat(product.unit_price),
+        image: product.images[0],
+        productName: product.product_name
+      };
+  
+      const response = await axios.post('http://localhost:8082/api/cart/add', {
+        userId,
+        item: cartItem
+      });
+  
+      if (response.data.success) {
+        toast.success('Item added to cart!');
+      } else {
+        throw new Error(response.data.message || 'Failed to add to cart');
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error(error.response?.data?.message || 'Failed to add to cart');
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------  
 
   const changeImage = (index) => {
     setCurrentImage(index);
@@ -356,6 +404,7 @@ const ProductViewPage = ({ userId }) => {
                   </>
                 )}
               </button>
+
               <button 
                 className="buy-now" 
                 onClick={buyNow}
