@@ -160,24 +160,36 @@ const ProductViewPage = ({ userId }) => {
   };
 
   const addToCart = async () => {
-    // Validation checks
+    console.log("[1] Add to cart initiated");
+    
     if (!selectedVariation) {
+      console.log("[2] Missing variation - Size:", selectedSize, "Color:", selectedColor);
       toast.error('Please select size and color');
       return;
     }
   
     if (availableQuantity <= 0) {
+      console.log("[3] Out of stock - Available:", availableQuantity);
       toast.error('This combination is out of stock');
       return;
     }
   
     if (quantity > availableQuantity) {
+      console.log("[4] Quantity exceeds stock - Qty:", quantity, "Available:", availableQuantity);
       toast.error(`Only ${availableQuantity} units available`);
       return;
     }
   
+    console.log("[5] Attempting to add to cart", {
+      userId,
+      productId: product.product_id,
+      variationId: selectedVariation.VariationID,
+      quantity
+    });
+  
     try {
       setAddingToCart(true);
+      console.log("[6] Making API call");
       
       const response = await axios.post('http://localhost:8082/api/user/add-to-cart', {
         userId,
@@ -188,6 +200,8 @@ const ProductViewPage = ({ userId }) => {
         }
       });
   
+      console.log("[7] API Response:", response.data);
+      
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to add to cart');
       }
@@ -195,13 +209,14 @@ const ProductViewPage = ({ userId }) => {
       toast.success(`${quantity} × ${product.product_name} added to cart!`);
       
     } catch (error) {
-      console.error('Cart error:', error);
+      console.error('[8] Cart error:', error);
       const errorMessage = error.response?.data?.message || 
                           error.message || 
                           'Failed to update cart';
       toast.error(errorMessage);
     } finally {
       setAddingToCart(false);
+      console.log("[9] Finished add to cart attempt");
     }
   };
 
@@ -396,11 +411,11 @@ const ProductViewPage = ({ userId }) => {
             )}
 
             <div className="action-buttons">
-              <button 
-                className={`add-to-cart ${addingToCart ? 'loading' : ''}`} 
-                onClick={addToCart}
-                disabled={!selectedVariation || availableQuantity <= 0 || addingToCart}
-              >
+            <button 
+              className={`add-to-cart ${addingToCart ? 'loading' : ''}`} 
+              onClick={addToCart}
+              disabled={!selectedVariation || availableQuantity <= 0 || addingToCart}
+            >
                 {addingToCart ? (
                   <span className="loading-spinner"></span>
                 ) : (
