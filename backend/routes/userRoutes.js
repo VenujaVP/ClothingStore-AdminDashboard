@@ -10,5 +10,6 @@ router.post('/product-search', searchProducts);
 router.post('/category-filter', filterProducts);
 
 router.get('/fetch-product-details/:productId', fetchProductDetails);
+// router.get('/fetch-product-details/:productId', fetchProductDetails);
 
 export default router;
