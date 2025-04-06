@@ -224,11 +224,12 @@ const ProductViewPage = () => {
           </div>
 
           <div className="product-price">
-            LKR {product.unit_price?.toFixed(2)}
+            LKR {Number(product.unit_price)?.toFixed(2)}
             {product.original_price && product.original_price > product.unit_price && (
-              <span className="original-price">LKR {product.original_price.toFixed(2)}</span>
+              <span className="original-price">LKR {Number(product.original_price).toFixed(2)}</span>
             )}
           </div>
+
 
           {/* Size and Color Selection */}
           <div className="product-variations">
