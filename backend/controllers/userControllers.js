@@ -144,11 +144,6 @@ import sqldb from '../config/sqldb.js';
     }
   };
 
-
-
-
-  
-
   export const fetchProducts = async (req, res) => {
     try {
       // Query to fetch product details and total units
@@ -194,4 +189,110 @@ import sqldb from '../config/sqldb.js';
       console.error('Error in fetchProducts:', err);
       res.status(500).json({ message: 'Internal server error' });
     }
+  };
+
+  export const fetchProductDetails = async (req, res) => {
+      const { productId } = req.params;
+  
+      try {
+          // 1. Fetch the main product details
+          const productQuery = `
+              SELECT 
+                  p.*,
+                  GROUP_CONCAT(DISTINCT c.ColorValue) AS colors,
+                  GROUP_CONCAT(DISTINCT s.SizeValue) AS sizes
+              FROM 
+                  product_table p
+              LEFT JOIN 
+                  product_variations pv ON p.ProductID = pv.ProductID
+              LEFT JOIN 
+                  colors c ON pv.ColorID = c.ColorID
+              LEFT JOIN 
+                  sizes s ON pv.SizeID = s.SizeID
+              WHERE 
+                  p.ProductID = ?
+              GROUP BY 
+                  p.ProductID
+          `;
+  
+          const [productRows] = await sqldb.query(productQuery, [productId]);
+  
+          if (productRows.length === 0) {
+              return res.status(404).json({ 
+                  success: false,
+                  message: 'Product not found' 
+              });
+          }
+  
+          const product = productRows[0];
+  
+          // 2. Fetch all variations with inventory
+          const variationsQuery = `
+              SELECT 
+                  pv.VariationID,
+                  s.SizeValue AS size,
+                  c.ColorValue AS color,
+                  pv.units AS quantity,
+                  pv.units > 0 AS in_stock
+              FROM 
+                  product_variations pv
+              JOIN 
+                  sizes s ON pv.SizeID = s.SizeID
+              JOIN 
+                  colors c ON pv.ColorID = c.ColorID
+              WHERE 
+                  pv.ProductID = ?
+          `;
+  
+          const [variations] = await sqldb.query(variationsQuery, [productId]);
+  
+          // 3. Fetch product images (you would need an images table)
+          // This is a placeholder - you'll need to implement your actual image storage
+          const imageUrls = [
+              'https://via.placeholder.com/500',
+              'https://via.placeholder.com/500'
+          ];
+  
+          // 4. Calculate average rating (if you have a reviews table)
+          const rating = product.FinalRating || 0;
+  
+          // 5. Format the response
+          const responseData = {
+              success: true,
+              product: {
+                  product_id: product.ProductID,
+                  product_name: product.ProductName,
+                  product_description: product.ProductDescription,
+                  unit_price: product.UnitPrice,
+                  original_price: product.UnitPrice * 1.2, // Example markup
+                  material: product.Material,
+                  fabric_type: product.FabricType,
+                  shipping_weight: product.ShippingWeight,
+                  return_policy: product.ReturnPolicy,
+                  wishlist_count: product.WishlistCount,
+                  rating: rating,
+                  total_units: variations.reduce((sum, v) => sum + v.quantity, 0),
+                  main_image: imageUrls[0],
+                  image_urls: imageUrls,
+                  variations: variations,
+                  sizes: product.sizes ? product.sizes.split(',') : [],
+                  colors: product.colors ? product.colors.split(',') : [],
+                  categories: [
+                      product.Category1,
+                      product.Category2,
+                      product.Category3
+                  ].filter(Boolean)
+              }
+          };
+  
+          res.json(responseData);
+  
+      } catch (error) {
+          console.error('Error fetching product details:', error);
+          res.status(500).json({ 
+              success: false,
+              message: 'Failed to fetch product details',
+              error: error.message 
+          });
+      }
   };

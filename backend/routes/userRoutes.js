@@ -9,8 +9,7 @@ const router = express.Router();
 router.post('/product-search', searchProducts);
 router.post('/category-filter', filterProducts);
 
-// router.get('/fetch-product-variations/:productId', fetchProductVariations);
-//http://localhost:8082/api/user/fetch-procuct
+// router.get('/fetch-product-details/:productId', fetchProductDetails);
 
 
 export default router;
