@@ -4,10 +4,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -50,17 +46,17 @@ const ProductViewPage = () => {
         const sizes = [...new Set(productData.variations.map(v => v.size))];
         const colors = [...new Set(productData.variations.map(v => v.color))];
         
+        // Calculate total available units
+        const totalUnits = productData.variations.reduce((sum, variation) => sum + variation.quantity, 0);
+        
         setProduct({
           ...productData,
           sizes,
           colors,
+          total_units: totalUnits,
           mainImage: productData.image_urls?.[0] || 'https://via.placeholder.com/500',
           images: productData.image_urls || ['https://via.placeholder.com/500']
         });
-        
-        // Check if product is in favorites
-        // const favoriteResponse = await axios.get(`http://localhost:8082/api/user/favorites/check/${productId}`);
-        // setIsFavorite(favoriteResponse.data.isFavorite);
         
       } catch (err) {
         console.error('Error fetching product:', err);
@@ -81,12 +77,19 @@ const ProductViewPage = () => {
     }
 
     const variation = product.variations.find(
-      v => v.size === selectedSize && v.color === selectedColor
+      v => v.size === selectedSize && v.color === selectedColor && v.in_stock
     );
 
-    setSelectedVariation(variation || null);
-    setAvailableQuantity(variation?.units || 0);
-    setQuantity(1); // Reset quantity when variation changes
+    if (variation) {
+      setSelectedVariation(variation);
+      setAvailableQuantity(variation.quantity);
+      // Reset quantity if it exceeds available quantity
+      setQuantity(prev => Math.min(prev, variation.quantity));
+    } else {
+      setSelectedVariation(null);
+      setAvailableQuantity(0);
+      setQuantity(1);
+    }
   }, [selectedSize, selectedColor, product]);
 
   const handleQuantityChange = (e) => {
@@ -100,6 +103,10 @@ const ProductViewPage = () => {
 
   const decrementQuantity = () => {
     setQuantity(prev => Math.max(1, prev - 1));
+  };
+
+  const changeImage = (index) => {
+    setCurrentImage(index);
   };
 
   const renderStars = (rating) => {
@@ -121,18 +128,18 @@ const ProductViewPage = () => {
       );
     }
 
-    if (availableQuantity > 0) {
+    if (!selectedVariation) {
       return (
         <div className="availability-status">
-          <span className="in-stock">In Stock</span>
-          <span className="available-quantity">({availableQuantity} available)</span>
+          <span className="out-of-stock">This combination is not available</span>
         </div>
       );
     }
 
     return (
       <div className="availability-status">
-        <span className="out-of-stock">Out of Stock</span>
+        <span className="in-stock">In Stock</span>
+        <span className="available-quantity">({availableQuantity} available)</span>
       </div>
     );
   };
@@ -189,7 +196,7 @@ const ProductViewPage = () => {
                 src={img} 
                 alt={`Thumbnail ${index + 1}`}
                 className={index === currentImage ? 'thumbnail active' : 'thumbnail'}
-                // onClick={() => changeImage(index)}
+                onClick={() => changeImage(index)}
               />
             ))}
           </div>
@@ -269,7 +276,7 @@ const ProductViewPage = () => {
 
           {/* Quantity and CTA Buttons */}
           <div className="product-actions">
-            {availableQuantity > 0 && (
+            {selectedVariation && availableQuantity > 0 && (
               <div className="quantity-group">
                 <label>Quantity:</label>
                 <div className="quantity-selector">
@@ -290,7 +297,7 @@ const ProductViewPage = () => {
               <button 
                 className={`add-to-cart ${addingToCart ? 'loading' : ''}`} 
                 // onClick={addToCart}
-                disabled={availableQuantity <= 0 || addingToCart}
+                disabled={!selectedVariation || availableQuantity <= 0 || addingToCart}
               >
                 {addingToCart ? 'Adding...' : (
                   <>
@@ -301,7 +308,7 @@ const ProductViewPage = () => {
               <button 
                 className="buy-now" 
                 // onClick={buyNow}
-                disabled={availableQuantity <= 0}
+                disabled={!selectedVariation || availableQuantity <= 0}
               >
                 Buy Now
               </button>
@@ -317,7 +324,7 @@ const ProductViewPage = () => {
             </div>
           </div>
 
-          {/* Product Description */}
+          {/* Product Specifications */}
           <div className="product-description-section">
             <h2>Product Details</h2>            
             <div className="product-specs">
