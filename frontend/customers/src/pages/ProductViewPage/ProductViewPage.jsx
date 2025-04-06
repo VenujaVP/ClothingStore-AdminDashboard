@@ -118,16 +118,34 @@ const ProductViewPage = ({ userId }) => {
         return;
       }
   
+      // Convert prices to numbers explicitly
+      const unitPrice = parseFloat(product.unit_price);
+      const totalPrice = unitPrice * quantity;
+  
+      if (isNaN(unitPrice) || isNaN(totalPrice)) {
+        throw new Error('Invalid price values');
+      }
+  
       const orderData = {
-        productId: product.product_id,
+        productId: product.product_id, // Using product_id from API response
         productName: product.product_name,
-        variationId: selectedVariation._id,
+        variationId: selectedVariation.VariationID, // Using VariationID from API
         size: selectedSize,
         color: selectedColor,
         quantity: quantity,
-        unitPrice: product.unit_price,
-        totalPrice: product.unit_price * quantity,
-        image: product.images[0]
+        unitPrice: unitPrice,
+        totalPrice: totalPrice,
+        image: product.images[0],
+        variationDetails: {
+          inStock: selectedVariation.in_stock,
+          availableQuantity: selectedVariation.quantity
+        },
+        productDetails: {
+          material: product.material,
+          fabricType: product.fabric_type,
+          shippingWeight: product.shipping_weight,
+          returnPolicy: product.return_policy
+        }
       };
   
       console.log('Navigating with order data:', orderData);
