@@ -48,7 +48,7 @@ const ProductViewPage = () => {
         
         // Calculate total available units
         const totalUnits = productData.variations.reduce((sum, variation) => sum + variation.units, 0);
-        
+        console.log('Total units:', totalUnits); // Log the total units
         setProduct({
           ...productData,
           sizes,
