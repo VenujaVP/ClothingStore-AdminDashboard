@@ -1,3 +1,7 @@
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -161,8 +165,6 @@ const PrePaymentPage = ({ userId }) => {
     </div>
   );
 };
-
-// export default withAuth(PrePaymentPage);
 
 const AuthenticatedPrePaymentPage = withAuth(PrePaymentPage);
 export default AuthenticatedPrePaymentPage;
