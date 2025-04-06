@@ -45,40 +45,40 @@ const PrePaymentPage = ({ userId }) => {
   }, [location, navigate]);
 
   // Fetch user addresses, delivery and payment options
-  useEffect(() => {
-    if (!userId) return;
+//   useEffect(() => {
+//     if (!userId) return;
 
-    const fetchData = async () => {
-      try {
-        // Fetch user addresses
-        const addressesRes = await axios.get(`http://localhost:8082/api/user/addresses/${userId}`);
-        setAddresses(addressesRes.data.addresses || []);
+//     const fetchData = async () => {
+//       try {
+//         // Fetch user addresses
+//         const addressesRes = await axios.get(`http://localhost:8082/api/user/addresses/${userId}`);
+//         setAddresses(addressesRes.data.addresses || []);
         
-        // Set default address if available
-        const defaultAddress = addressesRes.data.addresses.find(addr => addr.isDefault);
-        if (defaultAddress) setSelectedAddress(defaultAddress._id);
+//         // Set default address if available
+//         const defaultAddress = addressesRes.data.addresses.find(addr => addr.isDefault);
+//         if (defaultAddress) setSelectedAddress(defaultAddress._id);
 
-        // Fetch delivery options
-        const deliveryRes = await axios.get('http://localhost:8082/api/delivery-options');
-        setDeliveryOptions(deliveryRes.data.deliveryOptions || []);
-        if (deliveryRes.data.deliveryOptions?.length > 0) {
-          setSelectedDelivery(deliveryRes.data.deliveryOptions[0]._id);
-        }
+//         // Fetch delivery options
+//         const deliveryRes = await axios.get('http://localhost:8082/api/delivery-options');
+//         setDeliveryOptions(deliveryRes.data.deliveryOptions || []);
+//         if (deliveryRes.data.deliveryOptions?.length > 0) {
+//           setSelectedDelivery(deliveryRes.data.deliveryOptions[0]._id);
+//         }
 
-        // Fetch payment methods
-        const paymentRes = await axios.get('http://localhost:8082/api/payment-methods');
-        setPaymentMethods(paymentRes.data.paymentMethods || []);
-        if (paymentRes.data.paymentMethods?.length > 0) {
-          setSelectedPayment(paymentRes.data.paymentMethods[0]._id);
-        }
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError(err.response?.data?.message || err.message || 'Failed to load checkout data');
-      }
-    };
+//         // Fetch payment methods
+//         const paymentRes = await axios.get('http://localhost:8082/api/payment-methods');
+//         setPaymentMethods(paymentRes.data.paymentMethods || []);
+//         if (paymentRes.data.paymentMethods?.length > 0) {
+//           setSelectedPayment(paymentRes.data.paymentMethods[0]._id);
+//         }
+//       } catch (err) {
+//         console.error('Error fetching data:', err);
+//         setError(err.response?.data?.message || err.message || 'Failed to load checkout data');
+//       }
+//     };
 
-    fetchData();
-  }, [userId]);
+//     fetchData();
+//   }, [userId]);
 
   const handleAddressChange = (e) => {
     setSelectedAddress(e.target.value);
