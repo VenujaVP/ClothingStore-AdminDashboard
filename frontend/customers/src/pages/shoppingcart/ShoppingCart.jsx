@@ -115,8 +115,8 @@ const ShoppingCart = () => {
                 </div>
 
                 <div className="cart-content-wrapper">
-                    <div className="cart-items-section">
-                        <div className="cart-items">
+                    <div className="cart-cart-items-section">
+                        <div className="cart-cart-items">
                             {items.map(item => (
                                 <div key={item.id} className={`cart-item ${item.selected ? 'selected' : ''}`}>
                                     <input 
@@ -143,8 +143,8 @@ const ShoppingCart = () => {
                                             </select>
                                         </div>
                                     </div>
-                                    <div className="item-quantity">
-                                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                                    <div className="item-quantity-cart">
+                                        <button  onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
                                         <span>{item.quantity}</span>
                                         <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
                                     </div>

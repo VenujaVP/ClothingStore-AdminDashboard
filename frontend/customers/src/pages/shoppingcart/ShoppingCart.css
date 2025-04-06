@@ -47,11 +47,11 @@
     gap: 30px;
 }
 
-.cart-items-section {
+.cart-cart-items-section {
     flex: 1;
 }
 
-.cart-items {
+.cart-cart-items {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -132,8 +132,8 @@
     gap: 10px;
 }
 
-.item-quantity button {
-    width: 32px;
+.item-quantity-cart button {
+    width: 32px !important;
     height: 32px;
     border: 1px solid #23b893;
     background: white;
@@ -146,12 +146,12 @@
     justify-content: center;
 }
 
-.item-quantity button:hover {
+.item-quantity-cart button:hover {
     background: #23b893;
     color: white;
 }
 
-.item-quantity span {
+.item-quantity-cart span {
     min-width: 30px;
     text-align: center;
     font-weight: 500;
