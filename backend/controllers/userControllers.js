@@ -300,3 +300,69 @@ import sqldb from '../config/sqldb.js';
           }
       );
   };
+
+
+export const addToCart = async (req, res) => {
+    const { userId, item } = req.body;
+    const { productId, variationId, quantity } = item;
+
+    // Validate required fields
+    if (!userId || !productId || !variationId || !quantity) {
+        return res.status(400).json({
+            success: false,
+            message: 'Missing required fields (userId, productId, variationId, quantity)'
+        });
+    }
+
+    try {
+        // 1. Verify product variation exists and has sufficient stock
+        const [variation] = await sqldb.query(
+            `SELECT units FROM product_variations 
+             WHERE VariationID = ? AND units >= ?`,
+            [variationId, quantity]
+        );
+
+        if (!variation || variation.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Product variation not found or insufficient stock'
+            });
+        }
+
+        // 2. Check if item already exists in cart
+        const [existingItem] = await sqldb.query(
+            `SELECT cart_item_id FROM cart_items 
+             WHERE ID = ? AND ProductID = ? AND VariationID = ?`,
+            [userId, productId, variationId]
+        );
+
+        if (existingItem && existingItem.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Item already exists in cart'
+            });
+        }
+
+        // 3. Add new item to cart
+        await sqldb.query(
+            `INSERT INTO cart_items 
+             (ID, ProductID, VariationID, quantity)
+             VALUES (?, ?, ?, ?)`,
+            [userId, productId, variationId, quantity]
+        );
+
+        // 4. Return success response
+        res.status(201).json({
+            success: true,
+            message: 'Item added to cart successfully'
+        });
+
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to add item to cart',
+            error: error.message
+        });
+    }
+};

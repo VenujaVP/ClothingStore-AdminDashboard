@@ -1,7 +1,7 @@
 //routes/userRoutes.js
 
 import express from 'express';
-import { searchProducts, filterProducts, fetchProductDetails } from '../controllers/userControllers.js';
+import { searchProducts, filterProducts, fetchProductDetails, addToCart } from '../controllers/userControllers.js';
 
 const router = express.Router();
 
@@ -10,6 +10,6 @@ router.post('/product-search', searchProducts);
 router.post('/category-filter', filterProducts);
 
 router.get('/fetch-product-details/:productId', fetchProductDetails);
-// router.get('/add-to-cart', addToCart);
+router.get('/add-to-cart', addToCart);
 
 export default router;
