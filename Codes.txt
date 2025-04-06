@@ -59,27 +59,25 @@ erDiagram
 
 
 ORDER
+
 Order_ID (Primary Key, indicated by the underline)
 userId
-
 ProductID
 VariationID
 Quentity
+payment_id
 TotalAmount (Derived Attribute, indicated by the dashed oval)
-
+OrderStatus
+PaymentStatus
 created_at (order timestamp)
 payment_at (payment comform timestamp)
-
-Delivery Date
 DeleveryVia
-
+Delivery Date(stimate)
+tracking_number
 CurrieremployeeName
 CurrieremployeeNum
 
-OrderStatus
-PaymentStatus
 
-payment_id
 
 
 

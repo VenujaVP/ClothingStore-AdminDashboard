@@ -85,6 +85,41 @@ CREATE TABLE product_variations (
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+CREATE TABLE orders (
+    Order_ID VARCHAR(36) PRIMARY KEY,
+    ID INT NOT NULL,
+    ProductID VARCHAR(10) NOT NULL,
+    VariationID INT NOT NULL,
+    Quantity INT NOT NULL CHECK (Quantity > 0),
+    payment_id VARCHAR(36),
+    TotalAmount DECIMAL(10,2) NOT NULL CHECK (TotalAmount >= 0),
+
+    OrderStatus ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned', "refunded") DEFAULT 'pending',
+    PaymentStatus ENUM('paid', 'failed') DEFAULT 'pending',
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    payment_at TIMESTAMP NULL DEFAULT NULL,
+
+    DeliveryVia VARCHAR(50) COMMENT 'Courier service name (e.g., FedEx, UPS)',
+    DeliveryDate DATE COMMENT 'Estimated delivery date',
+    tracking_number VARCHAR(100),
+    CourierEmployeeName VARCHAR(100) COMMENT 'Name of delivery person',
+    CourierEmployeeNum VARCHAR(20) COMMENT 'Phone number of delivery person',
+    
+    -- Corrected foreign key constraints (assuming your users table is named 'users')
+    FOREIGN KEY (ID) REFERENCES customers(ID) ON DELETE RESTRICT,
+    FOREIGN KEY (ProductID) REFERENCES product_table(ProductID) ON DELETE RESTRICT,
+    FOREIGN KEY (VariationID) REFERENCES product_variations(VariationID) ON DELETE RESTRICT,
+    
+    -- Indexes for performance
+    INDEX idx_user (ID),
+    INDEX idx_payment (payment_id),
+    INDEX idx_tracking (tracking_number),
+    INDEX idx_status (OrderStatus, PaymentStatus)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Stores customer orders with delivery information';
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 CREATE TABLE expenses (
     expenses_id INT AUTO_INCREMENT PRIMARY KEY,
     date DATE NOT NULL,
