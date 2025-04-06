@@ -58,19 +58,20 @@ erDiagram
     }
 
 
-Order
+ORDER
 Order_ID (Primary Key, indicated by the underline)
 userId
-ProductID
 
-Shoped_Date
-Shoped_Time
+ProductID
+VariationID
+Quentity
+TotalAmount (Derived Attribute, indicated by the dashed oval)
+
+created_at (order timestamp)
+payment_at (payment comform timestamp)
 
 Delivery Date
-
-Quantity
 DeleveryVia
-TotalAmount (Derived Attribute, indicated by the dashed oval)
 
 CurrieremployeeName
 CurrieremployeeNum
