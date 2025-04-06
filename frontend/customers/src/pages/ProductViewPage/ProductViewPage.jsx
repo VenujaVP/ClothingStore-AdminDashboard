@@ -322,6 +322,7 @@ const ProductViewPage = () => {
               >
                 Buy Now
               </button>
+              
               <button 
                 className={`favorite-button ${isFavorite ? 'favorited' : ''}`}
                 // onClick={toggleFavorite}
