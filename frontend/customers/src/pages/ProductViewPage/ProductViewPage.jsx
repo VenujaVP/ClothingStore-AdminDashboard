@@ -228,7 +228,7 @@ const ProductViewPage = ({ userId }) => {
 
   return (
     <div className="product-view-page">
-      <button onClick={() => navigate(-1)} className="back-button">
+      <button onClick={() => navigate(-1)} className="back-button-1">
         <FaChevronLeft /> Back to Products
       </button>
 
