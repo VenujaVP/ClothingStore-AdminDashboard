@@ -22,6 +22,7 @@ const withAuth = (WrappedComponent) => {
             setIsAuthenticated(true);
             const newUserId = res.data.id;
             setUserId(newUserId);
+            localStorage.setItem('userId', newUserId); // Store userId in local storage
           } else {
             setIsAuthenticated(false);
             setMessage(res.data.err || "Session expired. Please log in again.");
@@ -34,7 +35,7 @@ const withAuth = (WrappedComponent) => {
           setMessage("An error occurred during authentication. Please try again.");
           setLoading(false);
         });
-    }, []);
+    }, [navigate]);
 
     if (loading) {
       return (
