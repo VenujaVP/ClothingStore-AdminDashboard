@@ -287,11 +287,9 @@ import sqldb from '../config/sqldb.js';
                               variations: variations,
                               sizes: product.sizes ? product.sizes.split(',') : [],
                               colors: product.colors ? product.colors.split(',') : [],
-                              categories: [
-                                  product.Category1,
-                                  product.Category2,
-                                  product.Category3
-                              ].filter(Boolean)
+                              Category1: product.Category1,
+                              Category2: product.Category2,
+                              Category3: product.Category3
                           }
                       };
   

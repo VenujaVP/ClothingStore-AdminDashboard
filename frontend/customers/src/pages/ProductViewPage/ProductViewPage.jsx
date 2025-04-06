@@ -210,6 +210,8 @@ const ProductViewPage = () => {
         {/* Product Details Section */}
         <div className="product-details">
           <h1 className="product-name">{product.product_name}</h1>
+          <div className="product-description" dangerouslySetInnerHTML={{ __html: product.product_description }} />
+
           
           <div className="product-meta">
             <div className="product-rating">
@@ -322,9 +324,7 @@ const ProductViewPage = () => {
 
           {/* Product Description */}
           <div className="product-description-section">
-            <h2>Product Details</h2>
-            <div className="product-description" dangerouslySetInnerHTML={{ __html: product.product_description }} />
-            
+            <h2>Product Details</h2>            
             <div className="product-specs">
               {product.material && (
                 <div className="spec-row">
