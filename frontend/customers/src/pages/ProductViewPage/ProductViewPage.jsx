@@ -176,12 +176,7 @@ const ProductViewPage = ({ userId }) => {
       const cartItem = {
         productId: product.product_id,
         variationId: selectedVariation.VariationID,
-        quantity: quantity,
-        size: selectedSize,
-        color: selectedColor,
-        price: parseFloat(product.unit_price),
-        image: product.images[0],
-        productName: product.product_name
+        quantity: quantity
       };
   
       const response = await axios.post('http://localhost:8082/api/cart/add', {
