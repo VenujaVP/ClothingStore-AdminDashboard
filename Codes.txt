@@ -58,6 +58,18 @@ erDiagram
     }
 
 
+erDiagram
+    ORDER {
+        expenses_id int PK
+        date date
+        expenses_name varchar
+        cost decimal
+        description text
+        createdAt timestamp
+        updatedAt timestamp
+    }
+
+
 ORDER
 
 Order_ID (Primary Key, indicated by the underline)
