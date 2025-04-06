@@ -29,7 +29,8 @@
   import { FaShoppingCart } from 'react-icons/fa'; // Shopping cart icon from react-icons/fa
   import './Viewpage.css';
   
-  const Viewpage = () => {
+  const Viewpage = ({ userId }) => {
+    console.log("Current user ID:", userId);
     const [products, setProducts] = useState([]); // State to store product data
     const [loading, setLoading] = useState(true); // State to handle loading state
     const [error, setError] = useState(null); // State to handle errors
@@ -157,7 +158,7 @@
                     </span>
                   )}
                 </div>
-                
+
                 <div className="vp-wishlist-count">Wishlist: {product.wishlist_count}</div>
               </div>
             </div>

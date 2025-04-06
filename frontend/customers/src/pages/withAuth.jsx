@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './withAuth.css';  // Add styles for login expired message
+import './withAuth.css';
 
 const withAuth = (WrappedComponent) => {
   const AuthComponent = (props) => {
@@ -22,10 +22,11 @@ const withAuth = (WrappedComponent) => {
             setIsAuthenticated(true);
             const newUserId = res.data.id;
             setUserId(newUserId);
-            localStorage.setItem('userId', newUserId); // Store userId in local storage
+            localStorage.setItem('userId', newUserId);
           } else {
             setIsAuthenticated(false);
             setMessage(res.data.err || "Session expired. Please log in again.");
+            localStorage.removeItem('userId');
           }
           setLoading(false);
         })
@@ -33,6 +34,7 @@ const withAuth = (WrappedComponent) => {
           console.error("Authentication error:", err);
           setIsAuthenticated(false);
           setMessage("An error occurred during authentication. Please try again.");
+          localStorage.removeItem('userId');
           setLoading(false);
         });
     }, [navigate]);
@@ -51,7 +53,11 @@ const withAuth = (WrappedComponent) => {
           <div className="login-now-section">
             <h3 className="login-title">Login Expired</h3>
             <p className="login-subtitle">{message}</p>
-            <button className="login-button" onClick={() => navigate('/user-login')} aria-label="Log in now">
+            <button 
+              className="login-button" 
+              onClick={() => navigate('/user-login')} 
+              aria-label="Log in now"
+            >
               Log In Now
             </button>
           </div>
@@ -59,10 +65,11 @@ const withAuth = (WrappedComponent) => {
       );
     }
 
-    return <WrappedComponent {...props} />;
+    // Pass both original props AND userId to the wrapped component
+    return <WrappedComponent {...props} userId={userId} />;
   };
 
-  // ✅ Set display name for better debugging
+  // Set display name for better debugging
   AuthComponent.displayName = `withAuth(${WrappedComponent.displayName || WrappedComponent.name || "Component"})`;
 
   return AuthComponent;
