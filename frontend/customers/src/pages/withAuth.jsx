@@ -11,7 +11,7 @@ const withAuth = (WrappedComponent) => {
   const AuthComponent = (props) => {
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [loading, setLoading] = useState(true);
-    const [name, setName] = useState('');
+    const [userId, setUserId] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ const withAuth = (WrappedComponent) => {
         .then(res => {
           if (res.data.Status === "Success") {
             setIsAuthenticated(true);
-            setName(res.data.name);
+            setUserId(res.data.id);
           } else {
             setIsAuthenticated(false);
             setMessage(res.data.err || "Session expired. Please log in again.");
