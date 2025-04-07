@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 21, 2025 at 05:25 PM
+-- Generation Time: Apr 06, 2025 at 11:39 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,22 @@ SET time_zone = "+00:00";
 --
 -- Database: `polocity`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cart_items`
+--
+
+CREATE TABLE `cart_items` (
+  `cart_item_id` int(11) NOT NULL,
+  `ID` int(11) NOT NULL,
+  `ProductID` varchar(10) NOT NULL,
+  `VariationID` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL CHECK (`quantity` > 0),
+  `added_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -71,7 +87,7 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`ID`, `NAME`, `EMAIL`, `PHONE_NUM`, `PASSWORD`, `resetToken`, `resetTokenExpiry`, `createdAt`, `updatedAt`) VALUES
-(8, 'Venuja Prasanjith', 'venujagamage2002@gmail.com', '5654765765', '$2b$10$mCLKW6OKLKNhQP8sfEVmfOpibvC7d7hq.eknipmZTfemLHUJ4YxV.', NULL, NULL, '2025-03-21 09:40:17', '2025-03-21 09:40:17');
+(9, 'Venuja Prasanjith', 'venujagamage2002@gmail.com', '5654765765', '$2b$10$Zl1d5NBYQ3S156XrbXfA7.b13ksiwC2264VYtNAQ2cpJ7ytwDs7wW', NULL, NULL, '2025-04-04 11:20:11', '2025-04-04 11:20:11');
 
 -- --------------------------------------------------------
 
@@ -125,6 +141,31 @@ CREATE TABLE `expenses` (
 
 INSERT INTO `expenses` (`expenses_id`, `date`, `expenses_name`, `cost`, `description`, `createdAt`, `updatedAt`) VALUES
 (1, '2025-03-09', 'fvsfbv dsb', 100.00, 'cdsbvsedb edng edrgn d', '2025-03-09 09:49:26', '2025-03-09 09:49:26');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orders`
+--
+
+CREATE TABLE `orders` (
+  `Order_ID` varchar(36) NOT NULL,
+  `ID` int(11) NOT NULL,
+  `ProductID` varchar(10) NOT NULL,
+  `VariationID` int(11) NOT NULL,
+  `Quantity` int(11) NOT NULL CHECK (`Quantity` > 0),
+  `payment_id` varchar(36) DEFAULT NULL,
+  `TotalAmount` decimal(10,2) NOT NULL CHECK (`TotalAmount` >= 0),
+  `OrderStatus` enum('pending','processing','shipped','delivered','cancelled','returned','refunded') DEFAULT 'pending',
+  `PaymentStatus` enum('pending','paid','failed') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `payment_at` timestamp NULL DEFAULT NULL,
+  `DeliveryVia` varchar(50) DEFAULT NULL COMMENT 'Courier service name (e.g., FedEx, UPS)',
+  `DeliveryDate` date DEFAULT NULL COMMENT 'Estimated delivery date',
+  `tracking_number` varchar(100) DEFAULT NULL,
+  `CourierEmployeeName` varchar(100) DEFAULT NULL COMMENT 'Name of delivery person',
+  `CourierEmployeeNum` varchar(20) DEFAULT NULL COMMENT 'Phone number of delivery person'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Stores customer orders with delivery information';
 
 -- --------------------------------------------------------
 
@@ -274,6 +315,15 @@ INSERT INTO `sizes` (`SizeID`, `SizeValue`) VALUES
 --
 
 --
+-- Indexes for table `cart_items`
+--
+ALTER TABLE `cart_items`
+  ADD PRIMARY KEY (`cart_item_id`),
+  ADD UNIQUE KEY `unique_user_product_variation` (`ID`,`ProductID`,`VariationID`),
+  ADD KEY `ProductID` (`ProductID`),
+  ADD KEY `VariationID` (`VariationID`);
+
+--
 -- Indexes for table `colors`
 --
 ALTER TABLE `colors`
@@ -299,6 +349,18 @@ ALTER TABLE `employeedetails`
 --
 ALTER TABLE `expenses`
   ADD PRIMARY KEY (`expenses_id`);
+
+--
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`Order_ID`),
+  ADD KEY `ProductID` (`ProductID`),
+  ADD KEY `VariationID` (`VariationID`),
+  ADD KEY `idx_user` (`ID`),
+  ADD KEY `idx_payment` (`payment_id`),
+  ADD KEY `idx_tracking` (`tracking_number`),
+  ADD KEY `idx_status` (`OrderStatus`,`PaymentStatus`);
 
 --
 -- Indexes for table `owners`
@@ -333,6 +395,12 @@ ALTER TABLE `sizes`
 --
 
 --
+-- AUTO_INCREMENT for table `cart_items`
+--
+ALTER TABLE `cart_items`
+  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `colors`
 --
 ALTER TABLE `colors`
@@ -342,7 +410,7 @@ ALTER TABLE `colors`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `employeedetails`
@@ -377,6 +445,22 @@ ALTER TABLE `sizes`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `cart_items`
+--
+ALTER TABLE `cart_items`
+  ADD CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `customers` (`ID`),
+  ADD CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`ProductID`) REFERENCES `product_table` (`ProductID`),
+  ADD CONSTRAINT `cart_items_ibfk_3` FOREIGN KEY (`VariationID`) REFERENCES `product_variations` (`VariationID`);
+
+--
+-- Constraints for table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `customers` (`ID`),
+  ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`ProductID`) REFERENCES `product_table` (`ProductID`),
+  ADD CONSTRAINT `orders_ibfk_3` FOREIGN KEY (`VariationID`) REFERENCES `product_variations` (`VariationID`);
 
 --
 -- Constraints for table `product_variations`
