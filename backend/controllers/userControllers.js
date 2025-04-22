@@ -400,8 +400,8 @@ export const fetchCartItems = async (req, res) => {
               pt.ProductDescription,
               pt.UnitPrice,
               pv.VariationID,
-              s.SizeName AS size,
-              c.ColorName AS color,
+              s.SizeValue AS size,
+              c.ColorValue AS color,
               pv.units AS available_quantity
            FROM cart_items ci
            JOIN product_table pt ON ci.ProductID = pt.ProductID
@@ -417,14 +417,18 @@ export const fetchCartItems = async (req, res) => {
           quantity: item.quantity,
           added_at: item.added_at,
           updated_at: item.updated_at,
-          product_id: item.ProductID,
-          product_name: item.ProductName,
-          product_description: item.ProductDescription,
-          unit_price: item.UnitPrice,
-          variation_id: item.VariationID,
-          size: item.size,
-          color: item.color,
-          available_quantity: item.available_quantity
+          product: {
+              product_id: item.ProductID,
+              name: item.ProductName,
+              description: item.ProductDescription,
+              unit_price: item.UnitPrice
+          },
+          variation: {
+              variation_id: item.VariationID,
+              size: item.size,
+              color: item.color,
+              available_quantity: item.available_quantity
+          }
       }));
 
       return res.status(200).json({
