@@ -8,7 +8,7 @@ import './ShoppingCart.css';
 import withAuth from '../withAuth';
 import { FaShoppingCart, FaCreditCard, FaShieldAlt, FaStore, FaTrash } from 'react-icons/fa';
 
-const ShoppingCart = () => {
+const ShoppingCart = ({ userId }) => {
     const [items, setItems] = useState([
         {
             id: 1,
