@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-
 import React, { useState, useEffect } from 'react';
 import './ShoppingCart.css';
 import withAuth from '../withAuth';
@@ -35,12 +34,10 @@ const ShoppingCart = ({ userId }) => {
                     throw new Error(response.data.message || 'Failed to fetch cart items');
                 }
 
-                // Initialize items with selected: false
                 const itemsWithSelection = response.data.items.map(item => ({
                     ...item,
                     selected: false,
-                    // Add image_url if not present in response
-                    image_url: item.image_url || 'https://via.placeholder.com/100'
+                    image_url: item.image_url || 'https://via.placeholder.com/150'
                 }));
 
                 setCartItems(itemsWithSelection);
@@ -159,7 +156,7 @@ const ShoppingCart = ({ userId }) => {
     };
 
     const calculateTotal = () => {
-        return calculateSubtotal(); // Add shipping if needed
+        return calculateSubtotal();
     };
 
     if (loading) {
@@ -237,34 +234,44 @@ const ShoppingCart = ({ userId }) => {
                                     
                                     <div className="item-details">
                                         <h3>{item.product_name}</h3>
-                                        <p className="item-size-color">
-                                            Size: {item.size} | Color: {item.color}
-                                        </p>
-                                        <p className="item-stock">
-                                            Available: {item.available_quantity}
-                                        </p>
+                                        <p className="item-description">{item.product_description}</p>
+                                        <div className="item-attributes">
+                                            <div className="attribute">
+                                                <strong>Size:</strong> {item.size}
+                                            </div>
+                                            <div className="attribute">
+                                                <strong>Color:</strong> {item.color}
+                                            </div>
+                                            <div className="attribute">
+                                                <strong>Stock:</strong> {item.available_quantity}
+                                            </div>
+                                        </div>
                                     </div>
                                     
-                                    <div className="item-quantity">
-                                        <button 
-                                            onClick={() => updateQuantity(item.cart_item_id, item.quantity - 1)}
-                                            disabled={item.quantity <= 1 || updatingItems[item.cart_item_id]}
-                                        >
-                                            -
-                                        </button>
-                                        <span>
-                                            {updatingItems[item.cart_item_id] ? (
-                                                <FaSpinner className="spinner" />
-                                            ) : (
-                                                item.quantity
-                                            )}
-                                        </span>
-                                        <button 
-                                            onClick={() => updateQuantity(item.cart_item_id, item.quantity + 1)}
-                                            disabled={updatingItems[item.cart_item_id] || item.quantity >= item.available_quantity}
-                                        >
-                                            +
-                                        </button>
+                                    <div className="item-quantity-container">
+                                        <div className="item-quantity">
+                                            <button 
+                                                className="quantity-btn minus"
+                                                onClick={() => updateQuantity(item.cart_item_id, item.quantity - 1)}
+                                                disabled={item.quantity <= 1 || updatingItems[item.cart_item_id]}
+                                            >
+                                                -
+                                            </button>
+                                            <span className="quantity-value">
+                                                {updatingItems[item.cart_item_id] ? (
+                                                    <FaSpinner className="spinner" />
+                                                ) : (
+                                                    item.quantity
+                                                )}
+                                            </span>
+                                            <button 
+                                                className="quantity-btn plus"
+                                                onClick={() => updateQuantity(item.cart_item_id, item.quantity + 1)}
+                                                disabled={updatingItems[item.cart_item_id] || item.quantity >= item.available_quantity}
+                                            >
+                                                +
+                                            </button>
+                                        </div>
                                     </div>
                                     
                                     <div className="item-price">
