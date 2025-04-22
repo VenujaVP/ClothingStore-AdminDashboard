@@ -492,6 +492,7 @@ export const updateCartItem = (req, res) => {
 
 export const removeCartItem = (req, res) => {
   const { userId, cartItemId } = req.params;
+  console.log('Removing item from cart:', req.params);
 
   // Verify ownership first
   sqldb.query(

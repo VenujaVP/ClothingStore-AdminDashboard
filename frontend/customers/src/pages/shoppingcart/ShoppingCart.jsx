@@ -129,10 +129,11 @@ const ShoppingCart = ({ userId }) => {
 
     // Remove item from backend and frontend
     const removeItem = async (cartItemId) => {
+        console.error('Removing item:', cartItemId, userId);
         try {
             setUpdatingItems(prev => ({ ...prev, [cartItemId]: true }));
             
-            const response = await axios.delete(
+            const response = await axios.post(
                 `http://localhost:8082/api/user/remove-cart-item/${userId}/${cartItemId}`
             );
 

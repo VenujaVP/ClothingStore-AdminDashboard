@@ -28,7 +28,7 @@ router.get('/cart-items/:userId', fetchCartItems);
 router.put('/update-cart-item', updateCartItem);
 
 // Remove item from cart
-router.delete('/remove-cart-item/:userId/:cartItemId', removeCartItem);
+router.post('/remove-cart-item/:userId/:cartItemId', removeCartItem);
 
 // Check stock availability
 router.get('/check-stock/:variationId', checkStock);
