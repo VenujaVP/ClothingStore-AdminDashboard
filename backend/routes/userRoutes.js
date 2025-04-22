@@ -23,15 +23,14 @@ router.post('/add-to-cart', addToCart);
 
 // Cart endpoints
 router.post('/add-to-cart', addToCart);
+
 router.get('/cart-items/:userId', fetchCartItems);
-// Update cart item quantity
-router.put('/update-cart-item', updateCartItem);
+router.put('/update-cart-item', updateCartItem);  // Update cart item quantity
+router.post('/remove-cart-item/:userId/:cartItemId', removeCartItem);  // Remove item from cart
+router.get('/check-stock/:variationId', checkStock); // Check stock availability
 
-// Remove item from cart
-router.post('/remove-cart-item/:userId/:cartItemId', removeCartItem);
 
-// Check stock availability
-router.get('/check-stock/:variationId', checkStock);
+router.post('/remove-cart-item/shipping-address', addUserAddress);
 
 
 export default router;
