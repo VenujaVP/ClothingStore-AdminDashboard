@@ -36,6 +36,7 @@ router.get('/check-stock/:variationId', checkStock); // Check stock availability
 router.post('/shipping-address', addUserAddress);
 router.get('/addresses/:userId', getUserAddresses);  // Get all addresses for a user
 router.delete('/address/:userId/:addressId', deleteUserAddress);  // Delete an address
+router.put('/address/:userId/:addressId', updateUserAddress);
 
 
 export default router;
