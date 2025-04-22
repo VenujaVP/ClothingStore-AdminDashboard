@@ -385,61 +385,61 @@ import sqldb from '../config/sqldb.js';
 
 //________________________
 
-export const fetchCartItems = (req, res) => {
+export const fetchCartItems = async (req, res) => {
   const { userId } = req.params;
 
-  sqldb.query(
-      `SELECT 
-          ci.cart_item_id,
-          ci.quantity,
-          ci.added_at,
-          ci.updated_at,
-          pt.ProductID,
-          pt.ProductName,
-          pt.ProductDescription,
-          pt.UnitPrice,
-          pv.VariationID,
-          s.SizeValue AS size,
-          c.ColorValue AS color,
-          pv.units AS available_quantity
-       FROM cart_items ci
-       JOIN product_table pt ON ci.ProductID = pt.ProductID
-       JOIN product_variations pv ON ci.VariationID = pv.VariationID
-       JOIN sizes s ON pv.SizeID = s.SizeID
-       JOIN colors c ON pv.ColorID = c.ColorID
-       WHERE ci.customerID = ?`,
-      [userId],
-      (err, results) => {
-          if (err) {
-              console.error('Database error:', err);
-              return res.status(500).json({
-                  success: false,
-                  message: 'Failed to fetch cart items',
-                  error: err.message
-              });
-          }
+  try {
+      const [items] = await sqldb.query(
+          `SELECT 
+              ci.cart_item_id,
+              ci.quantity,
+              ci.added_at,
+              ci.updated_at,
+              pt.ProductID,
+              pt.ProductName,
+              pt.ProductDescription,
+              pt.UnitPrice,
+              pv.VariationID,
+              s.SizeValue AS size,
+              c.ColorValue AS color,
+              pv.units AS available_quantity
+           FROM cart_items ci
+           JOIN product_table pt ON ci.ProductID = pt.ProductID
+           JOIN product_variations pv ON ci.VariationID = pv.VariationID
+           JOIN sizes s ON pv.SizeID = s.SizeID
+           JOIN colors c ON pv.ColorID = c.ColorID
+           WHERE ci.customerID = ?`,
+          [userId]
+      );
 
-          const items = results.map(item => ({
-              cart_item_id: item.cart_item_id,
-              quantity: item.quantity,
-              added_at: item.added_at,
-              updated_at: item.updated_at,
-              product_id: item.ProductID,
-              product_name: item.ProductName,
-              product_description: item.ProductDescription,
-              unit_price: item.UnitPrice,
-              variation_id: item.VariationID,
-              size: item.size,
-              color: item.color,
-              available_quantity: item.available_quantity
-          }));
+      const processedItems = items.map(item => ({
+          cart_item_id: item.cart_item_id,
+          quantity: item.quantity,
+          added_at: item.added_at,
+          updated_at: item.updated_at,
+          product_id: item.ProductID,
+          product_name: item.ProductName,
+          product_description: item.ProductDescription,
+          unit_price: item.UnitPrice,
+          variation_id: item.VariationID,
+          size: item.size,
+          color: item.color,
+          available_quantity: item.available_quantity
+      }));
 
-          return res.status(200).json({
-              success: true,
-              items: items
-          });
-      }
-  );
+      return res.status(200).json({
+          success: true,
+          items: processedItems
+      });
+
+  } catch (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({
+          success: false,
+          message: 'Failed to fetch cart items',
+          error: err.message
+      });
+  }
 };
 
 export const updateCartItem = async (req, res) => {
