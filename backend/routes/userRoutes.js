@@ -31,7 +31,7 @@ router.post('/remove-cart-item/:userId/:cartItemId', removeCartItem);  // Remove
 router.get('/check-stock/:variationId', checkStock); // Check stock availability
 
 
-router.post('/remove-cart-item/shipping-address', addUserAddress);
+router.post('/shipping-address', addUserAddress);
 
 
 export default router;
