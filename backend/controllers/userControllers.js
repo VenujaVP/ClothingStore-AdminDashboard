@@ -394,26 +394,50 @@ export const fetchCartItems = async (req, res) => {
               ci.cart_item_id,
               ci.quantity,
               ci.added_at,
+              ci.updated_at,
               pt.ProductID,
               pt.ProductName,
               pt.ProductDescription,
               pt.UnitPrice,
               pt.image_urls,
+              pt.ShippingWeight,
+              pt.ReturnPolicy,
               pv.VariationID,
-              pv.Size,
-              pv.Color,
+              s.SizeName AS Size,
+              c.ColorName AS Color,
+              c.HexCode AS ColorHex,
               pv.units AS available_quantity
            FROM cart_items ci
            JOIN product_table pt ON ci.ProductID = pt.ProductID
            JOIN product_variations pv ON ci.VariationID = pv.VariationID
+           JOIN sizes s ON pv.SizeID = s.SizeID
+           JOIN colors c ON pv.ColorID = c.ColorID
            WHERE ci.customerID = ?`,
           [userId]
       );
 
-      // Process image URLs
+      // Process image URLs and format the response
       const processedItems = items.map(item => ({
-          ...item,
-          image_url: item.image_urls ? JSON.parse(item.image_urls)[0] : null
+          cart_item_id: item.cart_item_id,
+          quantity: item.quantity,
+          added_at: item.added_at,
+          updated_at: item.updated_at,
+          product: {
+              product_id: item.ProductID,
+              name: item.ProductName,
+              description: item.ProductDescription,
+              unit_price: item.UnitPrice,
+              image_url: item.image_urls ? JSON.parse(item.image_urls)[0] : null,
+              shipping_weight: item.ShippingWeight,
+              return_policy: item.ReturnPolicy
+          },
+          variation: {
+              variation_id: item.VariationID,
+              size: item.Size,
+              color: item.Color,
+              color_hex: item.ColorHex,
+              available_quantity: item.available_quantity
+          }
       }));
 
       return res.status(200).json({
