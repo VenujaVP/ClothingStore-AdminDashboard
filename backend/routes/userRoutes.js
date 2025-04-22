@@ -10,7 +10,9 @@ import {
     updateCartItem,
     removeCartItem,
     checkStock,
-    addUserAddress
+    addUserAddress,
+    getUserAddresses,
+    deleteUserAddress
     } from '../controllers/userControllers.js';
 
 const router = express.Router();
@@ -32,6 +34,8 @@ router.get('/check-stock/:variationId', checkStock); // Check stock availability
 
 
 router.post('/shipping-address', addUserAddress);
+router.get('/addresses/:userId', getUserAddresses);  // Get all addresses for a user
+router.delete('/address/:userId/:addressId', deleteUserAddress);  // Delete an address
 
 
 export default router;
