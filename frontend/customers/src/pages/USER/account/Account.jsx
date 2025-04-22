@@ -45,7 +45,7 @@ const handleNavigation = (path) => {
                     <a href="#settings" className="nav-item">
                         <FaCog /> Settings
                     </a>
-                    <a href="#shipping" className="nav-item" onClick={() => handleNavigation('/user-shipping-address-form')}>
+                    <a href="#shipping" className="nav-item" onClick={() => handleNavigation('/user-shipping-address')}>
                         <FaTruck /> Shipping Address
                     </a>
                     <a href="#messages" className="nav-item">
