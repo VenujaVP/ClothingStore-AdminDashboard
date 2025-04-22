@@ -1,6 +1,11 @@
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
+
+
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import './ShoppingCart.css';
 import withAuth from '../withAuth';
@@ -13,7 +18,9 @@ import {
   FaShieldAlt, 
   FaTrash,
   FaSpinner,
-  FaChevronLeft
+  FaChevronLeft,
+  FaPlus,
+  FaMinus
 } from 'react-icons/fa';
 
 const ShoppingCart = ({ userId }) => {
@@ -23,7 +30,6 @@ const ShoppingCart = ({ userId }) => {
     const [selectAll, setSelectAll] = useState(false);
     const [updatingItems, setUpdatingItems] = useState({});
 
-    // Fetch cart items for logged in user
     useEffect(() => {
         const fetchCartItems = async () => {
             try {
@@ -55,7 +61,6 @@ const ShoppingCart = ({ userId }) => {
         }
     }, [userId]);
 
-    // Toggle select all items
     const toggleSelectAll = () => {
         const newSelectAll = !selectAll;
         setSelectAll(newSelectAll);
@@ -65,7 +70,6 @@ const ShoppingCart = ({ userId }) => {
         })));
     };
 
-    // Toggle individual item selection
     const toggleItemSelection = (cartItemId) => {
         const updatedItems = cartItems.map(item => 
             item.cart_item_id === cartItemId 
@@ -77,7 +81,6 @@ const ShoppingCart = ({ userId }) => {
         setSelectAll(updatedItems.every(item => item.selected));
     };
 
-    // Update item quantity
     const updateQuantity = async (cartItemId, newQuantity) => {
         if (newQuantity < 1) return;
 
@@ -121,7 +124,6 @@ const ShoppingCart = ({ userId }) => {
         }
     };
 
-    // Remove item from cart
     const removeItem = async (cartItemId) => {
         try {
             setUpdatingItems(prev => ({ ...prev, [cartItemId]: true }));
@@ -145,10 +147,8 @@ const ShoppingCart = ({ userId }) => {
         }
     };
 
-    // Calculate selected items count
     const selectedItemsCount = cartItems.filter(item => item.selected).length;
 
-    // Calculate totals
     const calculateSubtotal = () => {
         return cartItems.reduce((total, item) => {
             return item.selected ? total + (parseFloat(item.unit_price) * item.quantity) : total;
@@ -226,71 +226,77 @@ const ShoppingCart = ({ userId }) => {
                                         type="checkbox"
                                         checked={item.selected}
                                         onChange={() => toggleItemSelection(item.cart_item_id)}
+                                        className="item-checkbox"
                                     />
                                     
                                     <div className="item-image">
                                         <img src={item.image_url} alt={item.product_name} />
                                     </div>
                                     
-                                    <div className="item-details">
-                                        <h3>{item.product_name}</h3>
-                                        <p className="item-description">{item.product_description}</p>
-                                        <div className="item-attributes">
-                                            <div className="attribute">
-                                                <strong>Size:</strong> {item.size}
-                                            </div>
-                                            <div className="attribute">
-                                                <strong>Color:</strong> {item.color}
-                                            </div>
-                                            <div className="attribute">
-                                                <strong>Stock:</strong> {item.available_quantity}
+                                    <div className="item-main-content">
+                                        <div className="item-details">
+                                            <h3 className="item-title">{item.product_name}</h3>
+                                            <p className="item-description">{item.product_description}</p>
+                                            <div className="item-attributes">
+                                                {item.size && (
+                                                    <div className="attribute">
+                                                        <strong>Size:</strong> {item.size}
+                                                    </div>
+                                                )}
+                                                {item.color && (
+                                                    <div className="attribute">
+                                                        <strong>Color:</strong> {item.color}
+                                                    </div>
+                                                )}
+                                                <div className="attribute">
+                                                    <strong>Stock:</strong> {item.available_quantity}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    
-                                    <div className="item-quantity-container">
-                                        <div className="item-quantity">
+                                        
+                                        <div className="item-actions">
+                                            <div className="item-price">
+                                                LKR {(parseFloat(item.unit_price) * item.quantity).toFixed(2)}
+                                            </div>
+                                            
+                                            <div className="item-quantity-controls">
+                                                <button 
+                                                    className="quantity-btn decrease"
+                                                    onClick={() => updateQuantity(item.cart_item_id, item.quantity - 1)}
+                                                    disabled={item.quantity <= 1 || updatingItems[item.cart_item_id]}
+                                                >
+                                                    <FaMinus />
+                                                </button>
+                                                <div className="quantity-display">
+                                                    {updatingItems[item.cart_item_id] ? (
+                                                        <FaSpinner className="spinner" />
+                                                    ) : (
+                                                        item.quantity
+                                                    )}
+                                                </div>
+                                                <button 
+                                                    className="quantity-btn increase"
+                                                    onClick={() => updateQuantity(item.cart_item_id, item.quantity + 1)}
+                                                    disabled={updatingItems[item.cart_item_id] || item.quantity >= item.available_quantity}
+                                                >
+                                                    <FaPlus />
+                                                </button>
+                                            </div>
+                                            
                                             <button 
-                                                className="quantity-btn minus"
-                                                onClick={() => updateQuantity(item.cart_item_id, item.quantity - 1)}
-                                                disabled={item.quantity <= 1 || updatingItems[item.cart_item_id]}
+                                                className="remove-item"
+                                                onClick={() => removeItem(item.cart_item_id)}
+                                                disabled={updatingItems[item.cart_item_id]}
+                                                title="Remove item"
                                             >
-                                                -
-                                            </button>
-                                            <span className="quantity-value">
                                                 {updatingItems[item.cart_item_id] ? (
                                                     <FaSpinner className="spinner" />
                                                 ) : (
-                                                    item.quantity
+                                                    <FaTrash />
                                                 )}
-                                            </span>
-                                            <button 
-                                                className="quantity-btn plus"
-                                                onClick={() => updateQuantity(item.cart_item_id, item.quantity + 1)}
-                                                disabled={updatingItems[item.cart_item_id] || item.quantity >= item.available_quantity}
-                                            >
-                                                +
                                             </button>
                                         </div>
                                     </div>
-                                    
-                                    <div className="item-price">
-                                        <span className="price">
-                                            LKR {(parseFloat(item.unit_price) * item.quantity).toFixed(2)}
-                                        </span>
-                                    </div>
-                                    
-                                    <button 
-                                        className="remove-item"
-                                        onClick={() => removeItem(item.cart_item_id)}
-                                        disabled={updatingItems[item.cart_item_id]}
-                                    >
-                                        {updatingItems[item.cart_item_id] ? (
-                                            <FaSpinner className="spinner" />
-                                        ) : (
-                                            <FaTrash />
-                                        )}
-                                    </button>
                                 </div>
                             ))}
                         </div>
@@ -348,7 +354,6 @@ const ShoppingCart = ({ userId }) => {
         </div>
     );
 };
-
 
 const AuthenticatedShoppingCart = withAuth(ShoppingCart);
 export default AuthenticatedShoppingCart;
