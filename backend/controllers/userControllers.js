@@ -301,3 +301,96 @@ import sqldb from '../config/sqldb.js';
       );
   };
 
+  export const addToCart = (req, res) => {
+    console.log('Adding item to cart:', req.body);
+    const { userId, item } = req.body;
+    const { productId, variationId, quantity } = item;
+
+    // Validate required fields
+    if (!userId || !productId || !variationId || !quantity) {
+        return res.status(400).json({
+            success: false,
+            message: 'Missing required fields (userId, productId, variationId, quantity)'
+        });
+    }
+
+    // 1. Verify product variation exists and has sufficient stock
+    sqldb.query(
+        `SELECT units FROM product_variations WHERE VariationID = ? AND units >= ?`,
+        [variationId, quantity],
+        (err, variationResults) => {
+            if (err) {
+                console.error('DB Error (variation check):', err);
+                return res.status(500).json({ success: false, message: 'Database error', error: err.message });
+            }
+
+            if (!variationResults || variationResults.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Product variation not found or insufficient stock'
+                });
+            }
+
+            // 2. Check if item already exists in cart
+            sqldb.query(
+                `SELECT cart_item_id, quantity FROM cart_items WHERE customerID = ? AND ProductID = ? AND VariationID = ?`,
+                [userId, productId, variationId],
+                (err, existingItemResults) => {
+                    if (err) {
+                        console.error('DB Error (existing cart item check):', err);
+                        return res.status(500).json({ success: false, message: 'Database error', error: err.message });
+                    }
+
+                    if (existingItemResults && existingItemResults.length > 0) {
+                        // 3A. Update the existing quantity
+                        const existingQuantity = existingItemResults[0].quantity;
+                        const newQuantity = existingQuantity + quantity;
+
+                        // Optional: check new quantity doesn't exceed stock
+                        const availableUnits = variationResults[0].units;
+                        if (newQuantity > availableUnits) {
+                            return res.status(400).json({
+                                success: false,
+                                message: 'Updated quantity exceeds available stock'
+                            });
+                        }
+
+                        sqldb.query(
+                            `UPDATE cart_items SET quantity = ? WHERE cart_item_id = ?`,
+                            [newQuantity, existingItemResults[0].cart_item_id],
+                            (err, updateResult) => {
+                                if (err) {
+                                    console.error('DB Error (updating cart item):', err);
+                                    return res.status(500).json({ success: false, message: 'Database error', error: err.message });
+                                }
+
+                                return res.status(200).json({
+                                    success: true,
+                                    message: 'Cart item quantity updated successfully'
+                                });
+                            }
+                        );
+                    } else {
+                        // 3B. Add new item to cart
+                        sqldb.query(
+                            `INSERT INTO cart_items (customerID, ProductID, VariationID, quantity) VALUES (?, ?, ?, ?)`,
+                            [userId, productId, variationId, quantity],
+                            (err, insertResult) => {
+                                if (err) {
+                                    console.error('DB Error (insert cart item):', err);
+                                    return res.status(500).json({ success: false, message: 'Database error', error: err.message });
+                                }
+
+                                // 4. Return success response
+                                return res.status(201).json({
+                                    success: true,
+                                    message: 'Item added to cart successfully'
+                                });
+                            }
+                        );
+                    }
+                }
+            );
+        }
+    );
+};
