@@ -214,87 +214,91 @@ const ShoppingCart = ({ userId }) => {
                 <div className="cart-content-wrapper">
                     <div className="cart-items-section">
                         <div className="cart-items">
-                            {cartItems.map(item => (
-                                <div 
-                                    key={item.cart_item_id} 
-                                    className={`cart-item ${item.selected ? 'selected' : ''}`}
-                                >
-                                    <div className="item-select">
-                                        <input 
-                                            type="checkbox"
-                                            checked={item.selected}
-                                            onChange={() => toggleItemSelection(item.cart_item_id)}
-                                            className="item-checkbox"
-                                        />
-                                    </div>
-                                    
-                                    <div className="item-image">
-                                        <img src={item.image_url} alt={item.product_name} />
-                                    </div>
-                                    
-                                    <div className="item-details">
-                                        <h3 className="item-title">{item.product_name}</h3>
-                                        <p className="item-description">{item.product_description}</p>
-                                        <div className="item-attributes">
-                                            {item.size && (
-                                                <div className="attribute">
-                                                    <strong>Size:</strong> {item.size}
-                                                </div>
-                                            )}
-                                            {item.color && (
-                                                <div className="attribute">
-                                                    <strong>Color:</strong> {item.color}
-                                                </div>
-                                            )}
-                                            <div className="attribute">
-                                                <strong>Stock:</strong> {item.available_quantity}
-                                            </div>
+
+                        {cartItems.map(item => (
+                        <div 
+                            key={item.cart_item_id} 
+                            className={`cart-item ${item.selected ? 'selected' : ''}`}
+                        >
+                            <div className="item-select">
+                                <input 
+                                    type="checkbox"
+                                    checked={item.selected}
+                                    onChange={() => toggleItemSelection(item.cart_item_id)}
+                                    className="item-checkbox"
+                                />
+                            </div>
+                            
+                            <div className="item-image">
+                                <img src={item.image_url} alt={item.product_name} />
+                            </div>
+                            
+                            <div className="item-details">
+                                <h3 className="item-title">{item.product_name}</h3>
+                                <p className="item-description">{item.product_description}</p>
+                                <div className="item-attributes">
+                                    {item.size && (
+                                        <div className="attribute">
+                                            <strong>Size:</strong> {item.size}
                                         </div>
-                                    </div>
-                                    
-                                    <div className="item-controls">
-                                        <div className="item-quantity-controls">
-                                            <button 
-                                                className="quantity-btn decrease"
-                                                onClick={() => updateQuantity(item.cart_item_id, item.quantity - 1)}
-                                                disabled={item.quantity <= 1 || updatingItems[item.cart_item_id]}
-                                            >
-                                                <FaMinus />
-                                            </button>
-                                            <div className="quantity-display">
-                                                {updatingItems[item.cart_item_id] ? (
-                                                    <FaSpinner className="spinner" />
-                                                ) : (
-                                                    item.quantity
-                                                )}
-                                            </div>
-                                            <button 
-                                                className="quantity-btn increase"
-                                                onClick={() => updateQuantity(item.cart_item_id, item.quantity + 1)}
-                                                disabled={updatingItems[item.cart_item_id] || item.quantity >= item.available_quantity}
-                                            >
-                                                <FaPlus />
-                                            </button>
+                                    )}
+                                    {item.color && (
+                                        <div className="attribute">
+                                            <strong>Color:</strong> {item.color}
                                         </div>
-                                        <div className="item-price">
-                                            LKR {(parseFloat(item.unit_price) * item.quantity).toFixed(2)}
-                                        </div>
+                                    )}
+                                    <div className="attribute">
+                                        <strong>Stock:</strong> {item.available_quantity}
                                     </div>
-                                    
+                                </div>
+                            </div>
+                            
+                            <div className="item-controls">
+                                <div className="item-quantity-controls">
                                     <button 
-                                        className="remove-item"
-                                        onClick={() => removeItem(item.cart_item_id)}
-                                        disabled={updatingItems[item.cart_item_id]}
-                                        title="Remove item"
+                                        className="quantity-btn decrease"
+                                        onClick={() => updateQuantity(item.cart_item_id, item.quantity - 1)}
+                                        disabled={item.quantity <= 1 || updatingItems[item.cart_item_id]}
                                     >
+                                        <FaMinus />
+                                    </button>
+                                    <div className="quantity-display">
                                         {updatingItems[item.cart_item_id] ? (
                                             <FaSpinner className="spinner" />
                                         ) : (
-                                            <FaTrash />
+                                            item.quantity
                                         )}
+                                    </div>
+                                    <button 
+                                        className="quantity-btn increase"
+                                        onClick={() => updateQuantity(item.cart_item_id, item.quantity + 1)}
+                                        disabled={updatingItems[item.cart_item_id] || item.quantity >= item.available_quantity}
+                                    >
+                                        <FaPlus />
                                     </button>
                                 </div>
-                            ))}
+                                <div className="item-price-container">
+                                    <div className="item-price">
+                                        LKR {(parseFloat(item.unit_price) * item.quantity).toFixed(2)}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button 
+                                className="remove-item"
+                                onClick={() => removeItem(item.cart_item_id)}
+                                disabled={updatingItems[item.cart_item_id]}
+                                title="Remove item"
+                            >
+                                {updatingItems[item.cart_item_id] ? (
+                                    <FaSpinner className="spinner" />
+                                ) : (
+                                    <FaTrash />
+                                )}
+                            </button>
+                        </div>
+                    ))}
+
                         </div>
                     </div>
 
