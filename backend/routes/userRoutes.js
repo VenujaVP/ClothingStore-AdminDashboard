@@ -12,4 +12,6 @@ router.post('/category-filter', filterProducts);
 router.get('/fetch-product-details/:productId', fetchProductDetails);
 router.post('/add-to-cart', addToCart);
 
+
+
 export default router;
