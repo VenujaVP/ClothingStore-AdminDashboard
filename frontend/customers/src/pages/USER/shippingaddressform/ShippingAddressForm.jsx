@@ -4,7 +4,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './ShippingAddressForm.css';
 import withAuth from '../../withAuth';
 import axios from 'axios';
@@ -12,6 +13,12 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ShippingAddressForm = ({ userId }) => {
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [addressId, setAddressId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [formData, setFormData] = useState({
     contactName: '',
     mobileNumber: '',
@@ -22,7 +29,6 @@ const ShippingAddressForm = ({ userId }) => {
     zipCode: '',
     isDefaultAddress: false,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const provinces = [
     'Western Province',
@@ -48,6 +54,25 @@ const ShippingAddressForm = ({ userId }) => {
     'Sabaragamuwa Province': ['Ratnapura', 'Kegalle'],
   };
 
+  // Initialize form data if in edit mode
+  useEffect(() => {
+    if (state?.addressData) {
+      const address = state.addressData;
+      setIsEditMode(true);
+      setAddressId(address.address_id);
+      setFormData({
+        contactName: address.contact_name,
+        mobileNumber: address.mobile_number,
+        streetAddress: address.street_address,
+        aptSuiteUnit: address.apt_suite_unit || '',
+        province: address.province,
+        district: address.district,
+        zipCode: address.zip_code,
+        isDefaultAddress: address.is_default,
+      });
+    }
+  }, [state]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -61,7 +86,6 @@ const ShippingAddressForm = ({ userId }) => {
     setIsSubmitting(true);
 
     try {
-      // Prepare the data for backend
       const addressData = {
         customerID: userId,
         contact_name: formData.contactName,
@@ -74,38 +98,26 @@ const ShippingAddressForm = ({ userId }) => {
         is_default: formData.isDefaultAddress
       };
 
-      // Send to backend
-      const response = await axios.post(
-        'http://localhost:8082/api/user/shipping-address',
-        addressData,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      if (!response.data.success) {
-        throw new Error(response.data.message || 'Failed to save address');
+      if (isEditMode) {
+        // Update existing address
+        const response = await axios.put(
+          `http://localhost:8082/api/user/address/${userId}/${addressId}`,
+          addressData
+        );
+        toast.success('Address updated successfully!');
+      } else {
+        // Create new address
+        const response = await axios.post(
+          'http://localhost:8082/api/user/shipping-address',
+          addressData
+        );
+        toast.success('Address added successfully!');
       }
 
-      toast.success('Shipping address saved successfully!');
-      
-      // Reset form after successful submission
-      setFormData({
-        contactName: '',
-        mobileNumber: '',
-        streetAddress: '',
-        aptSuiteUnit: '',
-        province: '',
-        district: '',
-        zipCode: '',
-        isDefaultAddress: false,
-      });
-
+      navigate('/user-shipping-address'); // Redirect back to addresses list
     } catch (error) {
-      console.error('Error saving shipping address:', error);
-      toast.error(error.response?.data?.message || 'Failed to save shipping address');
+      console.error('Error saving address:', error);
+      toast.error(error.response?.data?.message || 'Failed to save address');
     } finally {
       setIsSubmitting(false);
     }
@@ -113,7 +125,9 @@ const ShippingAddressForm = ({ userId }) => {
 
   return (
     <div className="shipping-address-page">
-      <h2>Shipping Address</h2>
+      <h2>{isEditMode ? 'Edit' : 'Add New'} Shipping Address</h2>
+      {isEditMode && <p className="edit-mode-indicator">Editing existing address</p>}
+      
       <form onSubmit={handleSubmit} className="address-form">
         {/* Contact Information */}
         <div className="form-group">
@@ -253,21 +267,7 @@ const ShippingAddressForm = ({ userId }) => {
             type="button" 
             className="cancel-btn"
             disabled={isSubmitting}
-            onClick={() => {
-              if (!isSubmitting) {
-                // Reset form or navigate away
-                setFormData({
-                  contactName: '',
-                  mobileNumber: '',
-                  streetAddress: '',
-                  aptSuiteUnit: '',
-                  province: '',
-                  district: '',
-                  zipCode: '',
-                  isDefaultAddress: false,
-                });
-              }
-            }}
+            onClick={() => navigate('/user-shipping-address')}
           >
             Cancel
           </button>
