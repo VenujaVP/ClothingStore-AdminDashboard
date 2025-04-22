@@ -382,3 +382,219 @@ import sqldb from '../config/sqldb.js';
         }
     );
 };
+
+//________________________
+
+export const fetchCartItems = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+      const [items] = await sqldb.query(
+          `SELECT 
+              ci.cart_item_id,
+              ci.quantity,
+              ci.added_at,
+              pt.ProductID,
+              pt.ProductName,
+              pt.ProductDescription,
+              pt.UnitPrice,
+              pt.image_urls,
+              pv.VariationID,
+              pv.Size,
+              pv.Color,
+              pv.units AS available_quantity
+           FROM cart_items ci
+           JOIN product_table pt ON ci.ProductID = pt.ProductID
+           JOIN product_variations pv ON ci.VariationID = pv.VariationID
+           WHERE ci.customerID = ?`,
+          [userId]
+      );
+
+      // Process image URLs
+      const processedItems = items.map(item => ({
+          ...item,
+          image_url: item.image_urls ? JSON.parse(item.image_urls)[0] : null
+      }));
+
+      return res.status(200).json({
+          success: true,
+          items: processedItems
+      });
+
+  } catch (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({
+          success: false,
+          message: 'Failed to fetch cart items',
+          error: err.message
+      });
+  }
+};
+
+/**
+* @desc    Update cart item quantity
+* @route   PUT /api/user/update-cart-item
+* @access  Private
+*/
+export const updateCartItem = async (req, res) => {
+  const { userId, cartItemId, quantity } = req.body;
+
+  if (!userId || !cartItemId || !quantity) {
+      return res.status(400).json({
+          success: false,
+          message: 'Missing required fields'
+      });
+  }
+
+  try {
+      // Verify item belongs to user
+      const [item] = await sqldb.query(
+          `SELECT VariationID FROM cart_items 
+           WHERE cart_item_id = ? AND customerID = ?`,
+          [cartItemId, userId]
+      );
+
+      if (!item.length) {
+          return res.status(404).json({
+              success: false,
+              message: 'Cart item not found'
+          });
+      }
+
+      // Check stock availability
+      const [stock] = await sqldb.query(
+          `SELECT units FROM product_variations 
+           WHERE VariationID = ? AND units >= ?`,
+          [item[0].VariationID, quantity]
+      );
+
+      if (!stock.length) {
+          return res.status(400).json({
+              success: false,
+              message: 'Insufficient stock available'
+          });
+      }
+
+      // Update quantity
+      await sqldb.query(
+          `UPDATE cart_items SET quantity = ? 
+           WHERE cart_item_id = ?`,
+          [quantity, cartItemId]
+      );
+
+      return res.status(200).json({
+          success: true,
+          message: 'Quantity updated successfully'
+      });
+
+  } catch (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({
+          success: false,
+          message: 'Failed to update quantity',
+          error: err.message
+      });
+  }
+};
+
+/**
+* @desc    Remove item from cart
+* @route   DELETE /api/user/remove-cart-item/:userId/:cartItemId
+* @access  Private
+*/
+export const removeCartItem = async (req, res) => {
+  const { userId, cartItemId } = req.params;
+
+  try {
+      const [result] = await sqldb.query(
+          `DELETE FROM cart_items 
+           WHERE cart_item_id = ? AND customerID = ?`,
+          [cartItemId, userId]
+      );
+
+      if (result.affectedRows === 0) {
+          return res.status(404).json({
+              success: false,
+              message: 'Cart item not found'
+          });
+      }
+
+      return res.status(200).json({
+          success: true,
+          message: 'Item removed from cart'
+      });
+
+  } catch (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({
+          success: false,
+          message: 'Failed to remove item',
+          error: err.message
+      });
+  }
+};
+
+
+export const getProductVariations = async (req, res) => {
+  const { productId } = req.params;
+
+  try {
+      const [variations] = await sqldb.query(
+          `SELECT 
+              v.VariationID,
+              v.Size,
+              v.Color,
+              v.units,
+              v.in_stock
+           FROM product_variations v
+           WHERE v.ProductID = ? AND v.in_stock = 1`,
+          [productId]
+      );
+
+      return res.status(200).json({
+          success: true,
+          variations
+      });
+
+  } catch (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({
+          success: false,
+          message: 'Failed to fetch variations',
+          error: err.message
+      });
+  }
+};
+
+
+export const checkStock = async (req, res) => {
+  const { variationId } = req.params;
+
+  try {
+      const [stock] = await sqldb.query(
+          `SELECT units AS available FROM product_variations 
+           WHERE VariationID = ?`,
+          [variationId]
+      );
+
+      if (!stock.length) {
+          return res.status(404).json({
+              success: false,
+              message: 'Variation not found'
+          });
+      }
+
+      return res.status(200).json({
+          success: true,
+          available: stock[0].available
+      });
+
+  } catch (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({
+          success: false,
+          message: 'Failed to check stock',
+          error: err.message
+      });
+  }
+};
