@@ -248,7 +248,51 @@ const ShoppingCart = ({ userId }) => {
                                         </div>
                                     </div>
                                     
-
+                                    <div className="item-price-actions">
+                                        <div className="item-price">
+                                            <span className="price">
+                                                LKR {(parseFloat(item.unit_price) * item.quantity).toFixed(2)}
+                                            </span>
+                                        </div>
+                                        
+                                        <div className="item-actions">
+                                            <button 
+                                                className="remove-item"
+                                                onClick={() => removeItem(item.cart_item_id)}
+                                                disabled={updatingItems[item.cart_item_id]}
+                                            >
+                                                {updatingItems[item.cart_item_id] ? (
+                                                    <FaSpinner className="spinner" />
+                                                ) : (
+                                                    <FaTrash />
+                                                )}
+                                            </button>
+                                            
+                                            <div className="item-quantity">
+                                                <button 
+                                                    className="quantity-btn minus"
+                                                    onClick={() => updateQuantity(item.cart_item_id, item.quantity - 1)}
+                                                    disabled={item.quantity <= 1 || updatingItems[item.cart_item_id]}
+                                                >
+                                                    -
+                                                </button>
+                                                <span className="quantity-value">
+                                                    {updatingItems[item.cart_item_id] ? (
+                                                        <FaSpinner className="spinner" />
+                                                    ) : (
+                                                        item.quantity
+                                                    )}
+                                                </span>
+                                                <button 
+                                                    className="quantity-btn plus"
+                                                    onClick={() => updateQuantity(item.cart_item_id, item.quantity + 1)}
+                                                    disabled={updatingItems[item.cart_item_id] || item.quantity >= item.available_quantity}
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                     
                                     <div className="item-price">
                                         <span className="price">
