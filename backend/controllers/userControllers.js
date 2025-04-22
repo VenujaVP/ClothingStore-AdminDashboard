@@ -737,3 +737,70 @@ export const deleteUserAddress = (req, res) => {
   );
 };
 
+// In your addressController.js
+exports.updateUserAddress = (req, res) => {
+  const { userId, addressId } = req.params;
+  const addressData = req.body;
+
+  // First verify ownership
+  sqldb.query(
+    'SELECT customerID FROM addresses WHERE address_id = ?',
+    [addressId],
+    (err, results) => {
+      if (err) {
+        return res.status(500).json({
+          success: false,
+          message: 'Database error',
+          error: err.message
+        });
+      }
+
+      if (!results[0] || results[0].customerID !== parseInt(userId)) {
+        return res.status(403).json({
+          success: false,
+          message: 'Unauthorized to update this address'
+        });
+      }
+
+      // Proceed with update
+      sqldb.query(
+        `UPDATE addresses SET
+          contact_name = ?,
+          mobile_number = ?,
+          street_address = ?,
+          apt_suite_unit = ?,
+          province = ?,
+          district = ?,
+          zip_code = ?,
+          is_default = ?,
+          updated_at = CURRENT_TIMESTAMP
+        WHERE address_id = ?`,
+        [
+          addressData.contact_name,
+          addressData.mobile_number,
+          addressData.street_address,
+          addressData.apt_suite_unit || null,
+          addressData.province,
+          addressData.district,
+          addressData.zip_code,
+          addressData.is_default || false,
+          addressId
+        ],
+        (err, result) => {
+          if (err) {
+            return res.status(500).json({
+              success: false,
+              message: 'Failed to update address',
+              error: err.message
+            });
+          }
+          
+          res.status(200).json({
+            success: true,
+            message: 'Address updated successfully'
+          });
+        }
+      );
+    }
+  );
+};
