@@ -399,7 +399,6 @@ export const fetchCartItems = async (req, res) => {
               pt.ProductName,
               pt.ProductDescription,
               pt.UnitPrice,
-              pt.image_urls,
               pt.ShippingWeight,
               pt.ReturnPolicy,
               pv.VariationID,

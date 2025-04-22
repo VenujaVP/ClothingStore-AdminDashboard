@@ -52,6 +52,10 @@ const ShoppingCart = ({ userId }) => {
         }
     };
 
+    useEffect(() => {
+        fetchCartItems();
+    }, []);
+
     // Fetch available variations for each product in cart
     const fetchAvailableVariations = async (items) => {
         try {
@@ -74,12 +78,6 @@ const ShoppingCart = ({ userId }) => {
             toast.error('Failed to load product variations');
         }
     };
-
-    useEffect(() => {
-        if (userId) {
-            fetchCartItems();
-        }
-    }, [userId]);
 
     // Toggle select all items
     const toggleSelectAll = () => {
