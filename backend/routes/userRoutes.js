@@ -9,7 +9,8 @@ import {
     fetchCartItems,
     updateCartItem,
     removeCartItem,
-    checkStock
+    checkStock,
+    addUserAddress
     } from '../controllers/userControllers.js';
 
 const router = express.Router();

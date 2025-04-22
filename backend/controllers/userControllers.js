@@ -572,4 +572,93 @@ export const checkStock = (req, res) => {
 
 //------------------------------------------------------------------------------
 
+export const addUserAddress = (req, res) => {
+  const {
+    customerID,
+    contact_name,
+    mobile_number,
+    street_address,
+    apt_suite_unit,
+    province,
+    district,
+    zip_code,
+    is_default
+  } = req.body;
 
+  console.log('Adding new shipping address:', req.body);
+
+  // Basic validation
+  if (!customerID || !contact_name || !mobile_number || !street_address || !province || !district || !zip_code) {
+    return res.status(400).json({
+      success: false,
+      message: 'Missing required fields'
+    });
+  }
+
+  // First check if we need to update existing default addresses
+  if (is_default) {
+    sqldb.query(
+      'UPDATE addresses SET is_default = FALSE WHERE customerID = ?',
+      [customerID],
+      (err, updateResults) => {
+        if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({
+            success: false,
+            message: 'Failed to update existing default addresses',
+            error: err.message
+          });
+        }
+
+        // Proceed with inserting the new address
+        insertNewAddress();
+      }
+    );
+  } else {
+    // Insert directly if not setting as default
+    insertNewAddress();
+  }
+
+  function insertNewAddress() {
+    sqldb.query(
+      `INSERT INTO addresses (
+        customerID,
+        contact_name,
+        mobile_number,
+        street_address,
+        apt_suite_unit,
+        province,
+        district,
+        zip_code,
+        is_default
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        customerID,
+        contact_name,
+        mobile_number,
+        street_address,
+        apt_suite_unit || null,
+        province,
+        district,
+        zip_code,
+        is_default || false
+      ],
+      (err, insertResults) => {
+        if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({
+            success: false,
+            message: 'Failed to add shipping address',
+            error: err.message
+          });
+        }
+
+        return res.status(201).json({
+          success: true,
+          message: 'Shipping address added successfully',
+          address_id: insertResults.insertId
+        });
+      }
+    );
+  }
+};
