@@ -65,7 +65,7 @@ function App() {
             <Route path="/user-payment-card-window" element={<AuthenticatedPaymentCardWindow/>} />
             <Route path="/user-pre-payment-page" element={<AuthenticatedPrePaymentPage/>} />
             <Route path="/user-product-view-page/:productId" element={<AuthenticatedProductViewPage/>} />
-            <Route path="/user-product-view-page/:productId" element={<AuthenticatedProductViewPage/>} />
+            {/* <Route path="/user-product-view-page/:productId" element={<AuthenticatedProductViewPage/>} /> */}
           </Routes>
         </main>
         {shouldDisplayFooter() && <Footer />}

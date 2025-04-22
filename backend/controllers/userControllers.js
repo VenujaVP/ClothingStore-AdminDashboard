@@ -303,6 +303,7 @@ import sqldb from '../config/sqldb.js';
 
 
 export const addToCart = async (req, res) => {
+    console.log('Adding item to cart:', req.body);
     const { userId, item } = req.body;
     const { productId, variationId, quantity } = item;
 
