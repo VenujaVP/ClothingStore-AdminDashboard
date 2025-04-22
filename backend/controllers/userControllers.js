@@ -442,7 +442,6 @@ export const fetchCartItems = (req, res) => {
   );
 };
 
-
 export const updateCartItem = async (req, res) => {
   const { userId, cartItemId, quantity } = req.body;
 
