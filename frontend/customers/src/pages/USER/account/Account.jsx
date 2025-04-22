@@ -13,7 +13,7 @@ import { FaUser, FaShoppingCart, FaCreditCard, FaUndo, FaComment,
 import { useNavigate } from 'react-router-dom';
 
 
-const Account = () => {
+const Account = ({ userId }) => {
 
 const navigate = useNavigate();
 

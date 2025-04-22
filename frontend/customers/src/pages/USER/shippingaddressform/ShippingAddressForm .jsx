@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import './ShippingAddressForm .css'
 import withAuth from '../../withAuth';
 
-const ShippingAddressForm = () => {
+const ShippingAddressForm = ({ userId }) => {
   const [formData, setFormData] = useState({
     contactName: '',
     mobileNumber: '',
