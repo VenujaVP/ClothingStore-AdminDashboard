@@ -503,7 +503,6 @@ export const updateCartItem = async (req, res) => {
   }
 };
 
-
 export const removeCartItem = async (req, res) => {
   const { userId, cartItemId } = req.params;
 
@@ -536,7 +535,6 @@ export const removeCartItem = async (req, res) => {
   }
 };
 
-
 export const getProductVariations = async (req, res) => {
   const { productId } = req.params;
 
@@ -567,7 +565,6 @@ export const getProductVariations = async (req, res) => {
       });
   }
 };
-
 
 export const checkStock = async (req, res) => {
   const { variationId } = req.params;
