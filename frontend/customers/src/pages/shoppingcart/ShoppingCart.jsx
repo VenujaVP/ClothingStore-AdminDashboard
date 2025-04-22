@@ -1,8 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-
-
 import React, { useState, useEffect } from 'react';
 import './ShoppingCart.css';
 import withAuth from '../withAuth';
@@ -27,32 +25,34 @@ const ShoppingCart = ({ userId }) => {
     const [selectAll, setSelectAll] = useState(false);
     const [updatingItems, setUpdatingItems] = useState({});
 
-    useEffect(() => {
-        const fetchCartItems = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(`http://localhost:8082/api/user/cart-items/${userId}`);
-                
-                if (!response.data.success) {
-                    throw new Error(response.data.message || 'Failed to fetch cart items');
-                }
-
-                const itemsWithSelection = response.data.items.map(item => ({
-                    ...item,
-                    selected: false,
-                    image_url: item.image_url || 'https://via.placeholder.com/150'
-                }));
-
-                setCartItems(itemsWithSelection);
-                
-            } catch (err) {
-                console.error('Error fetching cart items:', err);
-                setError(err.response?.data?.message || err.message || 'Failed to load cart');
-            } finally {
-                setLoading(false);
+    // Fetch cart items from backend
+    const fetchCartItems = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(`http://localhost:8082/api/user/cart-items/${userId}`);
+            
+            if (!response.data.success) {
+                throw new Error(response.data.message || 'Failed to fetch cart items');
             }
-        };
 
+            const itemsWithSelection = response.data.items.map(item => ({
+                ...item,
+                selected: false,
+                image_url: item.image_url || 'https://via.placeholder.com/150'
+            }));
+
+            setCartItems(itemsWithSelection);
+            setError(null);
+        } catch (err) {
+            console.error('Error fetching cart items:', err);
+            setError(err.response?.data?.message || err.message || 'Failed to load cart');
+            toast.error('Failed to load cart items');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         if (userId) {
             fetchCartItems();
         }
@@ -78,6 +78,7 @@ const ShoppingCart = ({ userId }) => {
         setSelectAll(updatedItems.every(item => item.selected));
     };
 
+    // Update quantity in backend and frontend
     const updateQuantity = async (cartItemId, newQuantity) => {
         if (newQuantity < 1) return;
 
@@ -85,6 +86,8 @@ const ShoppingCart = ({ userId }) => {
             setUpdatingItems(prev => ({ ...prev, [cartItemId]: true }));
             
             const item = cartItems.find(i => i.cart_item_id === cartItemId);
+            
+            // First check stock availability
             const stockResponse = await axios.get(
                 `http://localhost:8082/api/user/check-stock/${item.variation_id}`
             );
@@ -94,6 +97,7 @@ const ShoppingCart = ({ userId }) => {
                 return;
             }
 
+            // Update quantity in backend
             const updateResponse = await axios.put(
                 'http://localhost:8082/api/user/update-cart-item',
                 {
@@ -107,12 +111,14 @@ const ShoppingCart = ({ userId }) => {
                 throw new Error(updateResponse.data.message);
             }
 
+            // Update frontend state
             setCartItems(cartItems.map(item => 
                 item.cart_item_id === cartItemId 
                     ? { ...item, quantity: newQuantity } 
                     : item
             ));
             
+            toast.success('Quantity updated successfully');
         } catch (err) {
             console.error('Error updating quantity:', err);
             toast.error(err.response?.data?.message || 'Failed to update quantity');
@@ -121,6 +127,7 @@ const ShoppingCart = ({ userId }) => {
         }
     };
 
+    // Remove item from backend and frontend
     const removeItem = async (cartItemId) => {
         try {
             setUpdatingItems(prev => ({ ...prev, [cartItemId]: true }));
@@ -133,6 +140,7 @@ const ShoppingCart = ({ userId }) => {
                 throw new Error(response.data.message);
             }
 
+            // Update frontend state
             setCartItems(cartItems.filter(item => item.cart_item_id !== cartItemId));
             toast.success('Item removed from cart');
             
@@ -169,7 +177,7 @@ const ShoppingCart = ({ userId }) => {
         return (
             <div className="cart-error">
                 <p>{error}</p>
-                <button className="retry-btn" onClick={() => window.location.reload()}>
+                <button className="retry-btn" onClick={fetchCartItems}>
                     Retry
                 </button>
             </div>
@@ -214,91 +222,89 @@ const ShoppingCart = ({ userId }) => {
                 <div className="cart-content-wrapper">
                     <div className="cart-items-section">
                         <div className="cart-items">
-
-                        {cartItems.map(item => (
-                        <div 
-                            key={item.cart_item_id} 
-                            className={`cart-item ${item.selected ? 'selected' : ''}`}
-                        >
-                            <div className="item-select">
-                                <input 
-                                    type="checkbox"
-                                    checked={item.selected}
-                                    onChange={() => toggleItemSelection(item.cart_item_id)}
-                                    className="item-checkbox"
-                                />
-                            </div>
-                            
-                            <div className="item-image">
-                                <img src={item.image_url} alt={item.product_name} />
-                            </div>
-                            
-                            <div className="item-details">
-                                <h3 className="item-title">{item.product_name}</h3>
-                                <p className="item-description">{item.product_description}</p>
-                                <div className="item-attributes">
-                                    {item.size && (
-                                        <div className="attribute">
-                                            <strong>Size:</strong> {item.size}
-                                        </div>
-                                    )}
-                                    {item.color && (
-                                        <div className="attribute">
-                                            <strong>Color:</strong> {item.color}
-                                        </div>
-                                    )}
-                                    <div className="attribute">
-                                        <strong>Stock:</strong> {item.available_quantity}
+                            {cartItems.map(item => (
+                                <div 
+                                    key={item.cart_item_id} 
+                                    className={`cart-item ${item.selected ? 'selected' : ''}`}
+                                >
+                                    <div className="item-select">
+                                        <input 
+                                            type="checkbox"
+                                            checked={item.selected}
+                                            onChange={() => toggleItemSelection(item.cart_item_id)}
+                                            className="item-checkbox"
+                                        />
                                     </div>
-                                </div>
-                            </div>
-                            
-                            <div className="item-controls">
-                                <div className="item-quantity-controls">
+                                    
+                                    <div className="item-image">
+                                        <img src={item.image_url} alt={item.product_name} />
+                                    </div>
+                                    
+                                    <div className="item-details">
+                                        <h3 className="item-title">{item.product_name}</h3>
+                                        <p className="item-description">{item.product_description}</p>
+                                        <div className="item-attributes">
+                                            {item.size && (
+                                                <div className="attribute">
+                                                    <strong>Size:</strong> {item.size}
+                                                </div>
+                                            )}
+                                            {item.color && (
+                                                <div className="attribute">
+                                                    <strong>Color:</strong> {item.color}
+                                                </div>
+                                            )}
+                                            <div className="attribute">
+                                                <strong>Stock:</strong> {item.available_quantity}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="item-controls">
+                                        <div className="item-quantity-controls">
+                                            <button 
+                                                className="quantity-btn decrease"
+                                                onClick={() => updateQuantity(item.cart_item_id, item.quantity - 1)}
+                                                disabled={item.quantity <= 1 || updatingItems[item.cart_item_id]}
+                                            >
+                                                <FaMinus />
+                                            </button>
+                                            <div className="quantity-display">
+                                                {updatingItems[item.cart_item_id] ? (
+                                                    <FaSpinner className="spinner" />
+                                                ) : (
+                                                    item.quantity
+                                                )}
+                                            </div>
+                                            <button 
+                                                className="quantity-btn increase"
+                                                onClick={() => updateQuantity(item.cart_item_id, item.quantity + 1)}
+                                                disabled={updatingItems[item.cart_item_id] || item.quantity >= item.available_quantity}
+                                            >
+                                                <FaPlus />
+                                            </button>
+                                        </div>
+                                        <div className="item-price-container">
+                                            <div className="item-price">
+                                                LKR {(parseFloat(item.unit_price) * item.quantity).toFixed(2)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     <button 
-                                        className="quantity-btn decrease"
-                                        onClick={() => updateQuantity(item.cart_item_id, item.quantity - 1)}
-                                        disabled={item.quantity <= 1 || updatingItems[item.cart_item_id]}
+                                        className="remove-item"
+                                        onClick={() => removeItem(item.cart_item_id)}
+                                        disabled={updatingItems[item.cart_item_id]}
+                                        title="Remove item"
                                     >
-                                        <FaMinus />
-                                    </button>
-                                    <div className="quantity-display">
                                         {updatingItems[item.cart_item_id] ? (
                                             <FaSpinner className="spinner" />
                                         ) : (
-                                            item.quantity
+                                            <FaTrash />
                                         )}
-                                    </div>
-                                    <button 
-                                        className="quantity-btn increase"
-                                        onClick={() => updateQuantity(item.cart_item_id, item.quantity + 1)}
-                                        disabled={updatingItems[item.cart_item_id] || item.quantity >= item.available_quantity}
-                                    >
-                                        <FaPlus />
                                     </button>
                                 </div>
-                                <div className="item-price-container">
-                                    <div className="item-price">
-                                        LKR {(parseFloat(item.unit_price) * item.quantity).toFixed(2)}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <button 
-                                className="remove-item"
-                                onClick={() => removeItem(item.cart_item_id)}
-                                disabled={updatingItems[item.cart_item_id]}
-                                title="Remove item"
-                            >
-                                {updatingItems[item.cart_item_id] ? (
-                                    <FaSpinner className="spinner" />
-                                ) : (
-                                    <FaTrash />
-                                )}
-                            </button>
-                        </div>
-                    ))}
-
+                            ))}
                         </div>
                     </div>
 
