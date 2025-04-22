@@ -5,8 +5,11 @@
 /* eslint-disable no-unused-vars */
 
 import React, { useState } from 'react';
-import './ShippingAddressForm .css'
+import './ShippingAddressForm.css';
 import withAuth from '../../withAuth';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ShippingAddressForm = ({ userId }) => {
   const [formData, setFormData] = useState({
@@ -19,6 +22,7 @@ const ShippingAddressForm = ({ userId }) => {
     zipCode: '',
     isDefaultAddress: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const provinces = [
     'Western Province',
@@ -52,10 +56,59 @@ const ShippingAddressForm = ({ userId }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Data Submitted:', formData);
-    // Add your form submission logic here
+    setIsSubmitting(true);
+
+    try {
+      // Prepare the data for backend
+      const addressData = {
+        customerID: userId,
+        contact_name: formData.contactName,
+        mobile_number: formData.mobileNumber,
+        street_address: formData.streetAddress,
+        apt_suite_unit: formData.aptSuiteUnit,
+        province: formData.province,
+        district: formData.district,
+        zip_code: formData.zipCode,
+        is_default: formData.isDefaultAddress
+      };
+
+      // Send to backend
+      const response = await axios.post(
+        'http://localhost:8082/api/user/shipping-address',
+        addressData,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Failed to save address');
+      }
+
+      toast.success('Shipping address saved successfully!');
+      
+      // Reset form after successful submission
+      setFormData({
+        contactName: '',
+        mobileNumber: '',
+        streetAddress: '',
+        aptSuiteUnit: '',
+        province: '',
+        district: '',
+        zipCode: '',
+        isDefaultAddress: false,
+      });
+
+    } catch (error) {
+      console.error('Error saving shipping address:', error);
+      toast.error(error.response?.data?.message || 'Failed to save shipping address');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -72,6 +125,7 @@ const ShippingAddressForm = ({ userId }) => {
             value={formData.contactName}
             onChange={handleChange}
             required
+            disabled={isSubmitting}
           />
         </div>
 
@@ -87,6 +141,7 @@ const ShippingAddressForm = ({ userId }) => {
                 value={formData.mobileNumber}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -102,6 +157,7 @@ const ShippingAddressForm = ({ userId }) => {
             value={formData.streetAddress}
             onChange={handleChange}
             required
+            disabled={isSubmitting}
           />
         </div>
 
@@ -113,6 +169,7 @@ const ShippingAddressForm = ({ userId }) => {
             name="aptSuiteUnit"
             value={formData.aptSuiteUnit}
             onChange={handleChange}
+            disabled={isSubmitting}
           />
         </div>
 
@@ -125,6 +182,7 @@ const ShippingAddressForm = ({ userId }) => {
               value={formData.province}
               onChange={handleChange}
               required
+              disabled={isSubmitting}
             >
               <option value="">Select Province</option>
               {provinces.map((province) => (
@@ -143,7 +201,7 @@ const ShippingAddressForm = ({ userId }) => {
               value={formData.district}
               onChange={handleChange}
               required
-              disabled={!formData.province}
+              disabled={!formData.province || isSubmitting}
             >
               <option value="">Select District</option>
               {formData.province &&
@@ -165,6 +223,7 @@ const ShippingAddressForm = ({ userId }) => {
             value={formData.zipCode}
             onChange={handleChange}
             required
+            disabled={isSubmitting}
           />
         </div>
 
@@ -176,19 +235,47 @@ const ShippingAddressForm = ({ userId }) => {
             name="isDefaultAddress"
             checked={formData.isDefaultAddress}
             onChange={handleChange}
+            disabled={isSubmitting}
           />
           <label htmlFor="isDefaultAddress">Set as default shipping address</label>
         </div>
 
         {/* Form Actions */}
         <div className="form-actions">
-          <button type="submit" className="submit-btn">Confirm</button>
-          <button type="button" className="cancel-btn">Cancel</button>
+          <button 
+            type="submit" 
+            className="submit-btn"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Saving...' : 'Confirm'}
+          </button>
+          <button 
+            type="button" 
+            className="cancel-btn"
+            disabled={isSubmitting}
+            onClick={() => {
+              if (!isSubmitting) {
+                // Reset form or navigate away
+                setFormData({
+                  contactName: '',
+                  mobileNumber: '',
+                  streetAddress: '',
+                  aptSuiteUnit: '',
+                  province: '',
+                  district: '',
+                  zipCode: '',
+                  isDefaultAddress: false,
+                });
+              }
+            }}
+          >
+            Cancel
+          </button>
         </div>
       </form>
     </div>
   );
 };
 
-const AuthenticatedShippingAddressForm = withAuth(ShippingAddressForm);  
+const AuthenticatedShippingAddressForm = withAuth(ShippingAddressForm);
 export default AuthenticatedShippingAddressForm;
