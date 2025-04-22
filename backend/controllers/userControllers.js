@@ -340,8 +340,8 @@ import sqldb from '../config/sqldb.js';
                         console.error('DB Error (existing cart item check):', err);
                         return res.status(500).json({ success: false, message: 'Database error', error: err.message });
                     }
-
                     if (existingItemResults && existingItemResults.length > 0) {
+                      console.log("1")
                         // 3A. Update the existing quantity
                         const existingQuantity = existingItemResults[0].quantity;
                         const newQuantity = existingQuantity + quantity;
@@ -354,7 +354,8 @@ import sqldb from '../config/sqldb.js';
                                 message: 'Updated quantity exceeds available stock'
                             });
                         }
-
+                        console.log("1.1")
+                        
                         sqldb.query(
                             `UPDATE cart_items SET quantity = ? WHERE cart_item_id = ?`,
                             [newQuantity, existingItemResults[0].cart_item_id],
@@ -371,6 +372,7 @@ import sqldb from '../config/sqldb.js';
                             }
                         );
                     } else {
+                      console.log("2")
                         // 3B. Add new item to cart
                         sqldb.query(
                             `INSERT INTO cart_items (customerID, ProductID, VariationID, quantity) VALUES (?, ?, ?, ?)`,
