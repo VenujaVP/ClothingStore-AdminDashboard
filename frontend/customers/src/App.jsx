@@ -25,7 +25,7 @@ import AuthenticatedShoppingCart from './pages/shoppingcart/ShoppingCart';
 import AuthenticatedViewpage from './pages/Viewpage/Viewpage';
 import AuthenticatedAccount from './pages/USER/account/Account';
 import AuthenticatedShippingAddress from './pages/USER/shippingaddress/ShippingAddress';
-import AuthenticatedShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm '
+import AuthenticatedShippingAddressForm from './pages/USER/shippingaddressform/ShippingAddressForm'
 import AuthenticatedPaymentCardWindow from './pages/USER/paymentcardwindow/PaymentCardWindow';
 import AuthenticatedProductViewPage from './pages/ProductViewPage/ProductViewPage';
 import AuthenticatedPrePaymentPage from './pages/PrePaymentPage/PrePaymentPage'; 
