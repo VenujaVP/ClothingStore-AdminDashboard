@@ -35,10 +35,12 @@ const ShoppingCart = ({ userId }) => {
                     throw new Error(response.data.message || 'Failed to fetch cart items');
                 }
 
+                // Initialize items with selected: false
                 const itemsWithSelection = response.data.items.map(item => ({
                     ...item,
                     selected: false,
-                    image_url: item.image_url || 'https://via.placeholder.com/150'
+                    // Add image_url if not present in response
+                    image_url: item.image_url || 'https://via.placeholder.com/100'
                 }));
 
                 setCartItems(itemsWithSelection);
@@ -63,7 +65,7 @@ const ShoppingCart = ({ userId }) => {
         setCartItems(cartItems.map(item => ({ 
             ...item, 
             selected: newSelectAll 
-        }));
+        })));
     };
 
     // Toggle individual item selection
@@ -157,7 +159,7 @@ const ShoppingCart = ({ userId }) => {
     };
 
     const calculateTotal = () => {
-        return calculateSubtotal();
+        return calculateSubtotal(); // Add shipping if needed
     };
 
     if (loading) {
@@ -235,18 +237,12 @@ const ShoppingCart = ({ userId }) => {
                                     
                                     <div className="item-details">
                                         <h3>{item.product_name}</h3>
-                                        <p className="item-description">{item.product_description}</p>
-                                        <div className="item-attributes">
-                                            <div className="attribute">
-                                                <strong>Size:</strong> {item.size}
-                                            </div>
-                                            <div className="attribute">
-                                                <strong>Color:</strong> {item.color}
-                                            </div>
-                                            <div className="attribute">
-                                                <strong>Stock:</strong> {item.available_quantity}
-                                            </div>
-                                        </div>
+                                        <p className="item-size-color">
+                                            Size: {item.size} | Color: {item.color}
+                                        </p>
+                                        <p className="item-stock">
+                                            Available: {item.available_quantity}
+                                        </p>
                                     </div>
                                     
                                     <div className="item-quantity">
