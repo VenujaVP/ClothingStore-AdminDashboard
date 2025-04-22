@@ -136,12 +136,14 @@ const ShippingAddress = ({ userId }) => {
                 )}
               </div>
               <div className="address-actions">
-                <button 
+              <button 
                   className="edit-btn"
-                  onClick={() => navigate(`/user-shipping-address-form/${address.address_id}`)}
-                >
+                  onClick={() => navigate('/user-shipping-address-form', { 
+                    state: { addressData: address } 
+                  })}
+              >
                   Edit
-                </button>
+              </button>
                 <button 
                   className="delete-btn"
                   onClick={() => handleDeleteAddress(address.address_id)}
