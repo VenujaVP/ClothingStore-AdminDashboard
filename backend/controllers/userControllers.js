@@ -394,17 +394,13 @@ export const fetchCartItems = async (req, res) => {
               ci.cart_item_id,
               ci.quantity,
               ci.added_at,
-              ci.updated_at,
               pt.ProductID,
               pt.ProductName,
-              pt.ProductDescription,
               pt.UnitPrice,
-              pt.ShippingWeight,
-              pt.ReturnPolicy,
+              pt.image_urls,
               pv.VariationID,
-              s.SizeName AS Size,
-              c.ColorName AS Color,
-              c.HexCode AS ColorHex,
+              s.SizeName AS size,
+              c.ColorName AS color,
               pv.units AS available_quantity
            FROM cart_items ci
            JOIN product_table pt ON ci.ProductID = pt.ProductID
@@ -415,28 +411,18 @@ export const fetchCartItems = async (req, res) => {
           [userId]
       );
 
-      // Process image URLs and format the response
       const processedItems = items.map(item => ({
           cart_item_id: item.cart_item_id,
           quantity: item.quantity,
           added_at: item.added_at,
-          updated_at: item.updated_at,
-          product: {
-              product_id: item.ProductID,
-              name: item.ProductName,
-              description: item.ProductDescription,
-              unit_price: item.UnitPrice,
-              image_url: item.image_urls ? JSON.parse(item.image_urls)[0] : null,
-              shipping_weight: item.ShippingWeight,
-              return_policy: item.ReturnPolicy
-          },
-          variation: {
-              variation_id: item.VariationID,
-              size: item.Size,
-              color: item.Color,
-              color_hex: item.ColorHex,
-              available_quantity: item.available_quantity
-          }
+          product_id: item.ProductID,
+          product_name: item.ProductName,
+          unit_price: item.UnitPrice,
+          image_url: item.image_urls ? JSON.parse(item.image_urls)[0] : null,
+          variation_id: item.VariationID,
+          size: item.size,
+          color: item.color,
+          available_quantity: item.available_quantity
       }));
 
       return res.status(200).json({
