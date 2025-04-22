@@ -6,7 +6,10 @@ import {
     filterProducts, 
     fetchProductDetails, 
     addToCart, 
-    fetchCartItems, 
+    fetchCartItems,
+    updateCartItem,
+    removeCartItem,
+    checkStock
     } from '../controllers/userControllers.js';
 
 const router = express.Router();

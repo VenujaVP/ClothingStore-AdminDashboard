@@ -442,6 +442,131 @@ export const fetchCartItems = (req, res) => {
   );
 };
 
+export const updateCartItem = (req, res) => {
+  const { userId, cartItemId, quantity } = req.body;
 
+  // First verify ownership
+  sqldb.query(
+      'SELECT customerID FROM cart_items WHERE cart_item_id = ?',
+      [cartItemId],
+      (err, results) => {
+          if (err) {
+              console.error('Database error:', err);
+              return res.status(500).json({
+                  success: false,
+                  message: 'Failed to verify cart item ownership',
+                  error: err.message
+              });
+          }
+
+          if (!results[0] || results[0].customerID !== parseInt(userId)) {
+              return res.status(403).json({
+                  success: false,
+                  message: 'You do not have permission to modify this item'
+              });
+          }
+
+          // Update quantity
+          sqldb.query(
+              'UPDATE cart_items SET quantity = ? WHERE cart_item_id = ?',
+              [quantity, cartItemId],
+              (err, updateResults) => {
+                  if (err) {
+                      console.error('Database error:', err);
+                      return res.status(500).json({
+                          success: false,
+                          message: 'Failed to update cart item',
+                          error: err.message
+                      });
+                  }
+
+                  return res.status(200).json({
+                      success: true,
+                      message: 'Cart item updated successfully'
+                  });
+              }
+          );
+      }
+  );
+};
+
+export const removeCartItem = (req, res) => {
+  const { userId, cartItemId } = req.params;
+
+  // Verify ownership first
+  sqldb.query(
+      'SELECT customerID FROM cart_items WHERE cart_item_id = ?',
+      [cartItemId],
+      (err, results) => {
+          if (err) {
+              console.error('Database error:', err);
+              return res.status(500).json({
+                  success: false,
+                  message: 'Failed to verify cart item ownership',
+                  error: err.message
+              });
+          }
+
+          if (!results[0] || results[0].customerID !== parseInt(userId)) {
+              return res.status(403).json({
+                  success: false,
+                  message: 'You do not have permission to remove this item'
+              });
+          }
+
+          // Delete the item
+          sqldb.query(
+              'DELETE FROM cart_items WHERE cart_item_id = ?',
+              [cartItemId],
+              (err, deleteResults) => {
+                  if (err) {
+                      console.error('Database error:', err);
+                      return res.status(500).json({
+                          success: false,
+                          message: 'Failed to remove cart item',
+                          error: err.message
+                      });
+                  }
+
+                  return res.status(200).json({
+                      success: true,
+                      message: 'Item removed from cart successfully'
+                  });
+              }
+          );
+      }
+  );
+};
+
+export const checkStock = (req, res) => {
+  const { variationId } = req.params;
+
+  sqldb.query(
+      'SELECT units FROM product_variations WHERE VariationID = ?',
+      [variationId],
+      (err, results) => {
+          if (err) {
+              console.error('Database error:', err);
+              return res.status(500).json({
+                  success: false,
+                  message: 'Failed to check stock',
+                  error: err.message
+              });
+          }
+
+          if (!results[0]) {
+              return res.status(404).json({
+                  success: false,
+                  message: 'Product variation not found'
+              });
+          }
+
+          return res.status(200).json({
+              success: true,
+              available: results[0].units
+          });
+      }
+  );
+};
 
 
