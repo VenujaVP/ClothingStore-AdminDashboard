@@ -738,7 +738,7 @@ export const deleteUserAddress = (req, res) => {
 };
 
 // In your addressController.js
-exports.updateUserAddress = (req, res) => {
+export const updateUserAddress = (req, res) => {
   const { userId, addressId } = req.params;
   const addressData = req.body;
 

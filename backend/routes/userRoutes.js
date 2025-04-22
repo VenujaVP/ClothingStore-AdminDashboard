@@ -12,7 +12,8 @@ import {
     checkStock,
     addUserAddress,
     getUserAddresses,
-    deleteUserAddress
+    deleteUserAddress,
+    updateUserAddress
     } from '../controllers/userControllers.js';
 
 const router = express.Router();
