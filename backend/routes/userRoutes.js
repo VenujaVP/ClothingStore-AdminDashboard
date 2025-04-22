@@ -6,12 +6,7 @@ import {
     filterProducts, 
     fetchProductDetails, 
     addToCart, 
-    fetchCartItems,
-    // updateCartItem,
-    // updateCartVariation,
-    // removeCartItem,
-    // checkStock,
-    // getProductVariations 
+    fetchCartItems, 
     } from '../controllers/userControllers.js';
 
 const router = express.Router();
@@ -26,12 +21,14 @@ router.post('/add-to-cart', addToCart);
 // Cart endpoints
 router.post('/add-to-cart', addToCart);
 router.get('/cart-items/:userId', fetchCartItems);
-// router.put('/update-cart-item', updateCartItem);
-// // router.put('/update-cart-variation', updateCartVariation);
-// router.delete('/remove-cart-item/:userId/:cartItemId', removeCartItem);
-// router.get('/check-stock/:variationId', checkStock);
+// Update cart item quantity
+router.put('/update-cart-item', updateCartItem);
 
-// // Product endpoints
-// router.get('/product-variations/:productId', getProductVariations);
+// Remove item from cart
+router.delete('/remove-cart-item/:userId/:cartItemId', removeCartItem);
+
+// Check stock availability
+router.get('/check-stock/:variationId', checkStock);
+
 
 export default router;
