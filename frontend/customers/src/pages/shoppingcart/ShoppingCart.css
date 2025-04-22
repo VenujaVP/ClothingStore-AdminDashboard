@@ -464,103 +464,6 @@
     background: #f0f9f6;
 }
 
-/* Item Price and Actions Container */
-.item-price-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 15px;
-    margin-left: auto;
-}
-
-.item-actions {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-/* Quantity Controls */
-.item-quantity {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #f5f7fb;
-    border-radius: 8px;
-    padding: 5px;
-}
-
-.quantity-btn {
-    width: 30px;
-    height: 30px;
-    border: none;
-    background: white;
-    color: #23b893;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-}
-
-.quantity-btn:hover {
-    background: #23b893;
-    color: white;
-}
-
-.quantity-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background: #f5f7fb;
-    color: #aaa;
-    box-shadow: none;
-}
-
-.quantity-value {
-    width: 30px;
-    text-align: center;
-    font-weight: 500;
-    color: #333;
-    font-size: 0.95rem;
-}
-
-/* Price Display */
-.item-price {
-    text-align: right;
-}
-
-.price {
-    font-weight: 600;
-    color: #23b893;
-    font-size: 1.1rem;
-    white-space: nowrap;
-}
-
-/* Remove Item Button */
-.remove-item {
-    background: none;
-    border: none;
-    color: #ff6b6b;
-    cursor: pointer;
-    padding: 8px;
-    transition: all 0.2s ease;
-    font-size: 1.1rem;
-}
-
-.remove-item:hover {
-    color: #ff4444;
-    transform: scale(1.1);
-}
-
-.remove-item:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
-
 /* Responsive Design */
 @media (max-width: 1200px) {
     .cart-container {
@@ -622,25 +525,6 @@
         right: 16px;
         margin: 0;
     }
-    .item-price-actions {
-        flex-direction: row;
-        width: 100%;
-        justify-content: space-between;
-        margin-top: 12px;
-    }
-    
-    .item-actions {
-        gap: 10px;
-    }
-    
-    .item-quantity {
-        gap: 5px;
-    }
-    
-    .quantity-btn {
-        width: 28px;
-        height: 28px;
-    }
 }
 
 @media (max-width: 480px) {
@@ -682,23 +566,5 @@
 
     .checkout-btn {
         padding: 12px;
-    }
-    .item-price .price {
-        font-size: 1rem;
-    }
-    
-    .quantity-btn {
-        width: 26px;
-        height: 26px;
-        font-size: 0.9rem;
-    }
-    
-    .quantity-value {
-        width: 26px;
-        font-size: 0.9rem;
-    }
-    
-    .remove-item {
-        font-size: 1rem;
     }
 }
