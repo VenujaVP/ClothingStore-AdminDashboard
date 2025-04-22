@@ -431,11 +431,7 @@ export const fetchCartItems = async (req, res) => {
   }
 };
 
-/**
-* @desc    Update cart item quantity
-* @route   PUT /api/user/update-cart-item
-* @access  Private
-*/
+
 export const updateCartItem = async (req, res) => {
   const { userId, cartItemId, quantity } = req.body;
 
@@ -497,11 +493,7 @@ export const updateCartItem = async (req, res) => {
   }
 };
 
-/**
-* @desc    Remove item from cart
-* @route   DELETE /api/user/remove-cart-item/:userId/:cartItemId
-* @access  Private
-*/
+
 export const removeCartItem = async (req, res) => {
   const { userId, cartItemId } = req.params;
 
