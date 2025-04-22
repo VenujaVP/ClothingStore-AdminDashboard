@@ -13,9 +13,9 @@ import {
   FaShoppingCart, 
   FaCreditCard, 
   FaShieldAlt, 
-  FaStore, 
   FaTrash,
-  FaSpinner
+  FaSpinner,
+  FaChevronLeft
 } from 'react-icons/fa';
 
 const ShoppingCart = ({ userId }) => {
@@ -27,49 +27,37 @@ const ShoppingCart = ({ userId }) => {
     const [availableVariations, setAvailableVariations] = useState({});
 
     // Fetch cart items for logged in user
-    useEffect(() => {
-        const fetchCartItems = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(`http://localhost:8082/api/user/cart-items/${userId}`);
-                
-                if (!response.data.success) {
-                    throw new Error(response.data.message || 'Failed to fetch cart items');
-                }
-
-                // Initialize items with selected: false
-                const itemsWithSelection = response.data.items.map(item => ({
-                    ...item,
-                    selected: false
-                }));
-
-                setCartItems(itemsWithSelection);
-                
-                // Pre-fetch available variations for each product
-                fetchAvailableVariations(response.data.items);
-                
-            } catch (err) {
-                console.error('Error fetching cart items:', err);
-                setError(err.response?.data?.message || err.message || 'Failed to load cart');
-            } finally {
-                setLoading(false);
+    const fetchCartItems = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(`http://localhost:8082/api/user/cart-items/${userId}`);
+            
+            if (!response.data.success) {
+                throw new Error(response.data.message || 'Failed to fetch cart items');
             }
-        };
 
-        if (userId) {
-            fetchCartItems();
+            const itemsWithSelection = response.data.items.map(item => ({
+                ...item,
+                selected: false
+            }));
+
+            setCartItems(itemsWithSelection);
+            fetchAvailableVariations(response.data.items);
+            
+        } catch (err) {
+            console.error('Error fetching cart items:', err);
+            setError(err.response?.data?.message || err.message || 'Failed to load cart');
+        } finally {
+            setLoading(false);
         }
-    }, [userId]);
+    };
 
     // Fetch available variations for each product in cart
     const fetchAvailableVariations = async (items) => {
         try {
             const variationsMap = {};
-            
-            // Get unique product IDs from cart
             const productIds = [...new Set(items.map(item => item.ProductID))];
             
-            // Fetch variations for each product
             for (const productId of productIds) {
                 const response = await axios.get(
                     `http://localhost:8082/api/user/product-variations/${productId}`
@@ -86,6 +74,12 @@ const ShoppingCart = ({ userId }) => {
             toast.error('Failed to load product variations');
         }
     };
+
+    useEffect(() => {
+        if (userId) {
+            fetchCartItems();
+        }
+    }, [userId]);
 
     // Toggle select all items
     const toggleSelectAll = () => {
@@ -113,25 +107,21 @@ const ShoppingCart = ({ userId }) => {
         try {
             setUpdatingItems(prev => ({ ...prev, [cartItemId]: true }));
             
-            // First check stock availability
+            // Check stock first
             const item = cartItems.find(i => i.cart_item_id === cartItemId);
-            const response = await axios.get(
+            const stockResponse = await axios.get(
                 `http://localhost:8082/api/user/check-stock/${item.VariationID}`
             );
 
-            if (!response.data.success || response.data.available < newQuantity) {
-                toast.error(`Only ${response.data.available} units available`);
+            if (!stockResponse.data.success || stockResponse.data.available < newQuantity) {
+                toast.error(`Only ${stockResponse.data.available} units available`);
                 return;
             }
 
             // Update quantity in backend
             const updateResponse = await axios.put(
                 'http://localhost:8082/api/user/update-cart-item',
-                {
-                    userId,
-                    cartItemId,
-                    quantity: newQuantity
-                }
+                { userId, cartItemId, quantity: newQuantity }
             );
 
             if (!updateResponse.data.success) {
@@ -184,11 +174,7 @@ const ShoppingCart = ({ userId }) => {
             
             const response = await axios.put(
                 'http://localhost:8082/api/user/update-cart-variation',
-                {
-                    userId,
-                    cartItemId,
-                    variationId: newVariationId
-                }
+                { userId, cartItemId, variationId: newVariationId }
             );
 
             if (!response.data.success) {
@@ -213,21 +199,49 @@ const ShoppingCart = ({ userId }) => {
         }
     };
 
+    // Proceed to checkout
+    const proceedToCheckout = () => {
+        const selectedItems = cartItems.filter(item => item.selected);
+        if (selectedItems.length === 0) {
+            toast.error('Please select items to checkout');
+            return;
+        }
+
+        const orderData = {
+            items: selectedItems.map(item => ({
+                cartItemId: item.cart_item_id,
+                productId: item.ProductID,
+                productName: item.ProductName,
+                variationId: item.VariationID,
+                size: item.Size,
+                color: item.Color,
+                quantity: item.quantity,
+                unitPrice: item.UnitPrice,
+                image: item.image_url,
+                availableQuantity: item.available_quantity
+            })),
+            subtotal: calculateSubtotal(),
+            total: calculateTotal()
+        };
+
+        // Navigate to checkout page
+        console.log('Proceeding to checkout with:', orderData);
+        // navigate('/checkout', { state: orderData });
+        toast.success(`Proceeding to checkout with ${selectedItems.length} items`);
+    };
+
     // Calculate selected items count
     const selectedItemsCount = cartItems.filter(item => item.selected).length;
 
     // Calculate totals
     const calculateSubtotal = () => {
         return cartItems.reduce((total, item) => {
-            if (item.selected) {
-                return total + (item.UnitPrice * item.quantity);
-            }
-            return total;
+            return item.selected ? total + (item.UnitPrice * item.quantity) : total;
         }, 0);
     };
 
     const calculateTotal = () => {
-        return calculateSubtotal(); // Add shipping, discounts etc. if needed
+        return calculateSubtotal(); // Add shipping, taxes, discounts if needed
     };
 
     if (loading) {
@@ -243,10 +257,7 @@ const ShoppingCart = ({ userId }) => {
         return (
             <div className="cart-error">
                 <p>{error}</p>
-                <button 
-                    className="retry-btn"
-                    onClick={() => window.location.reload()}
-                >
+                <button className="retry-btn" onClick={fetchCartItems}>
                     Retry
                 </button>
             </div>
@@ -258,7 +269,7 @@ const ShoppingCart = ({ userId }) => {
             <div className="empty-cart">
                 <FaShoppingCart className="empty-cart-icon" />
                 <h2>Your cart is empty</h2>
-                <p>Looks like you haven't added anything to your cart yet</p>
+                <p>Looks like you haven ' t added anything to your cart yet</p>
                 <button 
                     className="continue-shopping-btn"
                     onClick={() => window.location.href = '/'}
@@ -271,24 +282,26 @@ const ShoppingCart = ({ userId }) => {
 
     return (
         <div className="cart-page">
+            <button onClick={() => window.history.back()} className="back-button">
+                <FaChevronLeft /> Continue Shopping
+            </button>
+
             <div className="cart-container">
                 <div className="cart-header">
                     <h1><FaShoppingCart /> Your Cart ({cartItems.length})</h1>
-                    {cartItems.length > 0 && (
-                        <div className="select-all">
-                            <input 
-                                type="checkbox" 
-                                checked={selectAll}
-                                onChange={toggleSelectAll}
-                            />
-                            <span>Select All Items</span>
-                        </div>
-                    )}
+                    <div className="select-all">
+                        <input 
+                            type="checkbox" 
+                            checked={selectAll}
+                            onChange={toggleSelectAll}
+                        />
+                        <span>Select All Items</span>
+                    </div>
                 </div>
 
                 <div className="cart-content-wrapper">
-                    <div className="cart-cart-items-section">
-                        <div className="cart-cart-items">
+                    <div className="cart-items-section">
+                        <div className="cart-items">
                             {cartItems.map(item => {
                                 const variations = availableVariations[item.ProductID] || [];
                                 const currentVariation = variations.find(v => v.VariationID === item.VariationID);
@@ -378,7 +391,7 @@ const ShoppingCart = ({ userId }) => {
                                             </div>
                                         </div>
                                         
-                                        <div className="item-quantity-cart">
+                                        <div className="item-quantity">
                                             <button 
                                                 onClick={() => updateQuantity(item.cart_item_id, item.quantity - 1)}
                                                 disabled={item.quantity <= 1 || updatingItems[item.cart_item_id]}
@@ -444,6 +457,7 @@ const ShoppingCart = ({ userId }) => {
                             </div>
                             <button 
                                 className="checkout-btn"
+                                onClick={proceedToCheckout}
                                 disabled={selectedItemsCount === 0}
                             >
                                 Proceed to Checkout ({selectedItemsCount})
@@ -462,7 +476,7 @@ const ShoppingCart = ({ userId }) => {
 
                         <div className="buyer-protection">
                             <FaShieldAlt />
-                            <p>Buyer Protection: Get full refund if the item is not as described or not delivered</p>
+                            <p>Buyer Protection: Full refund if item is not as described</p>
                         </div>
                     </div>
                 </div>
