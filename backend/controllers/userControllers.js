@@ -663,4 +663,76 @@ export const addUserAddress = (req, res) => {
   }
 };
 
+// Get all addresses for a user
+export const getUserAddresses = (req, res) => {
+  const { userId } = req.params;
 
+  sqldb.query(
+      `SELECT * FROM addresses WHERE customerID = ? ORDER BY is_default DESC, address_id DESC`,
+      [userId],
+      (err, results) => {
+          if (err) {
+              console.error('Database error:', err);
+              return res.status(500).json({
+                  success: false,
+                  message: 'Failed to fetch addresses',
+                  error: err.message
+              });
+          }
+
+          return res.status(200).json({
+              success: true,
+              addresses: results
+          });
+      }
+  );
+};
+
+// Delete an address
+export const deleteUserAddress = (req, res) => {
+  const { userId, addressId } = req.params;
+
+  // First verify ownership
+  sqldb.query(
+      'SELECT customerID FROM addresses WHERE address_id = ?',
+      [addressId],
+      (err, results) => {
+          if (err) {
+              console.error('Database error:', err);
+              return res.status(500).json({
+                  success: false,
+                  message: 'Failed to verify address ownership',
+                  error: err.message
+              });
+          }
+
+          if (!results[0] || results[0].customerID !== parseInt(userId)) {
+              return res.status(403).json({
+                  success: false,
+                  message: 'You do not have permission to delete this address'
+              });
+          }
+
+          // Delete the address
+          sqldb.query(
+              'DELETE FROM addresses WHERE address_id = ?',
+              [addressId],
+              (err, deleteResults) => {
+                  if (err) {
+                      console.error('Database error:', err);
+                      return res.status(500).json({
+                          success: false,
+                          message: 'Failed to delete address',
+                          error: err.message
+                      });
+                  }
+
+                  return res.status(200).json({
+                      success: true,
+                      message: 'Address deleted successfully'
+                  });
+              }
+          );
+      }
+  );
+};
