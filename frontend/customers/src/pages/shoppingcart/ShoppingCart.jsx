@@ -53,8 +53,10 @@ const ShoppingCart = ({ userId }) => {
     };
 
     useEffect(() => {
-        fetchCartItems();
-    }, []);
+        if (userId) {
+            fetchCartItems();
+        }
+    }, [userId]);
 
     // Fetch available variations for each product in cart
     const fetchAvailableVariations = async (items) => {
