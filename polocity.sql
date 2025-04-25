@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 06, 2025 at 11:39 PM
+-- Generation Time: Apr 25, 2025 at 06:31 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -24,12 +24,33 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `addresses`
+--
+
+CREATE TABLE `addresses` (
+  `address_id` int(11) NOT NULL,
+  `customerID` int(11) NOT NULL,
+  `contact_name` varchar(100) NOT NULL,
+  `mobile_number` varchar(15) NOT NULL,
+  `street_address` varchar(255) NOT NULL,
+  `apt_suite_unit` varchar(50) DEFAULT NULL,
+  `province` varchar(50) NOT NULL,
+  `district` varchar(50) NOT NULL,
+  `zip_code` varchar(10) NOT NULL,
+  `is_default` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `cart_items`
 --
 
 CREATE TABLE `cart_items` (
   `cart_item_id` int(11) NOT NULL,
-  `ID` int(11) NOT NULL,
+  `customerID` int(11) NOT NULL,
   `ProductID` varchar(10) NOT NULL,
   `VariationID` int(11) NOT NULL,
   `quantity` int(11) NOT NULL CHECK (`quantity` > 0),
@@ -315,11 +336,18 @@ INSERT INTO `sizes` (`SizeID`, `SizeValue`) VALUES
 --
 
 --
+-- Indexes for table `addresses`
+--
+ALTER TABLE `addresses`
+  ADD PRIMARY KEY (`address_id`),
+  ADD KEY `customerID` (`customerID`);
+
+--
 -- Indexes for table `cart_items`
 --
 ALTER TABLE `cart_items`
   ADD PRIMARY KEY (`cart_item_id`),
-  ADD UNIQUE KEY `unique_user_product_variation` (`ID`,`ProductID`,`VariationID`),
+  ADD UNIQUE KEY `unique_user_product_variation` (`customerID`,`ProductID`,`VariationID`),
   ADD KEY `ProductID` (`ProductID`),
   ADD KEY `VariationID` (`VariationID`);
 
@@ -395,6 +423,12 @@ ALTER TABLE `sizes`
 --
 
 --
+-- AUTO_INCREMENT for table `addresses`
+--
+ALTER TABLE `addresses`
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
@@ -447,10 +481,16 @@ ALTER TABLE `sizes`
 --
 
 --
+-- Constraints for table `addresses`
+--
+ALTER TABLE `addresses`
+  ADD CONSTRAINT `addresses_ibfk_1` FOREIGN KEY (`customerID`) REFERENCES `customers` (`ID`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  ADD CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `customers` (`ID`),
+  ADD CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`customerID`) REFERENCES `customers` (`ID`),
   ADD CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`ProductID`) REFERENCES `product_table` (`ProductID`),
   ADD CONSTRAINT `cart_items_ibfk_3` FOREIGN KEY (`VariationID`) REFERENCES `product_variations` (`VariationID`);
 

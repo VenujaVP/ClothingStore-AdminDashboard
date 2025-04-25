@@ -143,7 +143,7 @@ CREATE TABLE cart_items (
     FOREIGN KEY (customerID) REFERENCES customers(ID),
     FOREIGN KEY (ProductID) REFERENCES product_table(ProductID),
     FOREIGN KEY (VariationID) REFERENCES product_variations(VariationID),
-    UNIQUE KEY unique_user_product_variation (ID, ProductID, VariationID)
+    UNIQUE KEY unique_user_product_variation (customerID, ProductID, VariationID)
 );
 
 CREATE TABLE addresses (
