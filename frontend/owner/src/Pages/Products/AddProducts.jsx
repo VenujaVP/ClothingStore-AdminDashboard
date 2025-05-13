@@ -217,7 +217,7 @@ const handleSubmit = (e) => {
       // Send data to the backend
       axios.post('http://localhost:8082/api/owner/owner-add-product', formData)
         .then(res => {
-          if (res.data && res.data.Status === "Success") {
+          if (res.data && res.data.Status === "success") {
             console.log('Product added successfully:', res.data);
             setFormData({
               product_id: '',
