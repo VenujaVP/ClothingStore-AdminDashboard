@@ -21,7 +21,8 @@ import PasswordResetFinish from './pages/Enter/PasswordReset/PasswordResetFinish
 import AddEmployee from './Pages/Employee/AddEmployee';
 import AuthenticatedAddProducts from './Pages/Products/AddProducts';
 import AuthenticatedProductList from './Pages/Products/ProductList';
-import AuthenticatedAddExpenses from './Pages/Expenses/AddExpenses'
+import AuthenticatedAddExpenses from './Pages/Expenses/AddExpenses';
+import AuthenticatedEmployeeList from './Pages/Employee/EmployeeList';
 
 
 const App = () => {
@@ -76,6 +77,7 @@ const App = () => {
           
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/employees/add" element={<AddEmployee />} />
+          <Route path="/employees/list" element={<AuthenticatedEmployeeList />} />
           <Route path="/products/add" element={<AuthenticatedAddProducts />} />
           <Route path="/products/list" element={<AuthenticatedProductList />} />
           <Route path="/expenses/add" element={<AuthenticatedAddExpenses />} />
