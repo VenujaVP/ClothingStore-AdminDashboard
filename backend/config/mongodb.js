@@ -7,12 +7,12 @@ dotenv.config();
 
 // Replace with your actual credentials
 const username = process.env.MONGODB_USERNAME;
-const password = encodeURIComponent('rS4E3jmoeJl7OR6u'); // Always encode passwords
+const password = encodeURIComponent(process.env.MONGODB_PASSWORD); // Always encode passwords
 const cluster = process.env.MONGODB_CLUSTER;
 const dbName = process.env.MONGODB_NAME;
 
 // ✅ Now it's safe to log
-console.log(process.env.MONGODB_USERNAME, process.env.MONGODB_CLUSTER, process.env.MONGODB_NAME);
+// console.log(process.env.MONGODB_USERNAME, process.env.MONGODB_CLUSTER, process.env.MONGODB_NAME);
 
 // Construct URI
 const uri = `mongodb+srv://${username}:${password}@${cluster}/${dbName}?retryWrites=true&w=majority&appName=Cluster0`;
