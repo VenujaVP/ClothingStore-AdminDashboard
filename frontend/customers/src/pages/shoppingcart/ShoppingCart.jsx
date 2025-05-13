@@ -7,6 +7,7 @@ import withAuth from '../withAuth';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 import { 
   FaShoppingCart, 
   FaCreditCard, 
@@ -19,11 +20,13 @@ import {
 } from 'react-icons/fa';
 
 const ShoppingCart = ({ userId }) => {
+    const navigate = useNavigate();
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectAll, setSelectAll] = useState(false);
     const [updatingItems, setUpdatingItems] = useState({});
+    const [processingCheckout, setProcessingCheckout] = useState(false);
 
     // Fetch cart items from backend
     const fetchCartItems = async () => {
@@ -37,11 +40,12 @@ const ShoppingCart = ({ userId }) => {
 
             const itemsWithSelection = response.data.items.map(item => ({
                 ...item,
-                selected: false,
+                selected: true, // Default to selected for better UX
                 image_url: item.image_url || 'https://via.placeholder.com/150'
             }));
 
             setCartItems(itemsWithSelection);
+            setSelectAll(true); // Default select all items
             setError(null);
         } catch (err) {
             console.error('Error fetching cart items:', err);
@@ -129,7 +133,7 @@ const ShoppingCart = ({ userId }) => {
 
     // Remove item from backend and frontend
     const removeItem = async (cartItemId) => {
-        console.error('Removing item:', cartItemId, userId);
+        console.log('Removing item:', cartItemId, userId);
         try {
             setUpdatingItems(prev => ({ ...prev, [cartItemId]: true }));
             
@@ -165,6 +169,44 @@ const ShoppingCart = ({ userId }) => {
         return calculateSubtotal();
     };
 
+    // Process checkout and navigate to pre-payment page
+    const proceedToCheckout = async () => {
+        try {
+            setProcessingCheckout(true);
+            const selectedItems = cartItems.filter(item => item.selected);
+            
+            if (selectedItems.length === 0) {
+                toast.error('Please select at least one item');
+                return;
+            }
+
+            // Format the items for the PrePaymentPage component
+            const checkoutItems = selectedItems.map(item => ({
+                productId: item.product_id,
+                productName: item.product_name,
+                variationId: item.variation_id,
+                size: item.size,
+                color: item.color,
+                quantity: item.quantity,
+                unitPrice: parseFloat(item.unit_price),
+                totalPrice: parseFloat(item.unit_price) * item.quantity,
+                image: item.image_url || 'https://via.placeholder.com/150',
+                variationDetails: {
+                    inStock: item.available_quantity > 0,
+                    availableQuantity: item.available_quantity
+                }
+            }));
+
+            // Navigate to the PrePaymentPage with the selected items
+            navigate('/user-pre-payment-page', { state: checkoutItems });
+        } catch (err) {
+            console.error('Error proceeding to checkout:', err);
+            toast.error('Failed to proceed to checkout. Please try again.');
+        } finally {
+            setProcessingCheckout(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="cart-loading">
@@ -193,7 +235,7 @@ const ShoppingCart = ({ userId }) => {
                 <p>Looks like you haven't added anything to your cart yet</p>
                 <button 
                     className="continue-shopping-btn"
-                    onClick={() => window.location.href = '/'}
+                    onClick={() => navigate('/')}
                 >
                     Continue Shopping
                 </button>
@@ -203,7 +245,7 @@ const ShoppingCart = ({ userId }) => {
 
     return (
         <div className="cart-page">
-            <button onClick={() => window.history.back()} className="back-button">
+            <button onClick={() => navigate(-1)} className="back-button">
                 <FaChevronLeft /> Continue Shopping
             </button>
 
@@ -330,14 +372,16 @@ const ShoppingCart = ({ userId }) => {
                             </div>
                             <button 
                                 className="checkout-btn"
-                                onClick={() => {
-                                    const selectedItems = cartItems.filter(item => item.selected);
-                                    console.log('Proceeding to checkout with:', selectedItems);
-                                    toast.success(`Proceeding to checkout with ${selectedItems.length} items`);
-                                }}
-                                disabled={selectedItemsCount === 0}
+                                onClick={proceedToCheckout}
+                                disabled={selectedItemsCount === 0 || processingCheckout}
                             >
-                                Proceed to Checkout ({selectedItemsCount})
+                                {processingCheckout ? (
+                                    <>
+                                        <FaSpinner className="spinner" /> Processing...
+                                    </>
+                                ) : (
+                                    `Proceed to Checkout (${selectedItemsCount})`
+                                )}
                             </button>
                         </div>
 
