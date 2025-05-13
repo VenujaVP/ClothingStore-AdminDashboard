@@ -4,7 +4,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 
 import React, { useState, useEffect } from 'react';
-import withAuth from '../../withAuth';
+import withAuth from '../withAuth';
 import './EmployeeList.css';
 import { 
   FaSearch, FaEdit, FaTrash, FaSort, FaFilter, FaEye, 
