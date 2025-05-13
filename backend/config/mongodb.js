@@ -1,12 +1,18 @@
 // config/mongodb.js
 
 import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Replace with your actual credentials
-const username = 'venujagamage2002';
+const username = process.env.MONGODB_USERNAME;
 const password = encodeURIComponent('rS4E3jmoeJl7OR6u'); // Always encode passwords
-const cluster = 'cluster0.jsrp0t4.mongodb.net';
-const dbName = 'polocity';
+const cluster = process.env.MONGODB_CLUSTER;
+const dbName = process.env.MONGODB_NAME;
+
+// ✅ Now it's safe to log
+console.log(process.env.MONGODB_USERNAME, process.env.MONGODB_CLUSTER, process.env.MONGODB_NAME);
 
 // Construct URI
 const uri = `mongodb+srv://${username}:${password}@${cluster}/${dbName}?retryWrites=true&w=majority&appName=Cluster0`;
