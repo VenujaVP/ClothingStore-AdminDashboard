@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { connectToDatabase, closeDatabaseConnection } from '../config/mongodb.js';
 
 async function insertSampleProduct() {
@@ -12,7 +13,7 @@ async function insertSampleProduct() {
 
     // Create a sample product document
     const sampleProduct = {
-      _id: new ObjectId("68234d05b3aecf1e446a2609"), // optional: you can also let MongoDB auto-generate it
+      _id: new ObjectId("68234d05b3aecf1e446a2609"),  // ← this line needs the import above!
       product_name: 'Premium Cotton Shirt',
       description: 'A high-quality cotton shirt for everyday wear.',
       price: 1499,
@@ -31,12 +32,10 @@ async function insertSampleProduct() {
   } catch (error) {
     console.error('❌ Error inserting product into MongoDB:', error);
   } finally {
-    // Close the database connection
     await closeDatabaseConnection();
   }
 }
 
-// Run the insert function
 insertSampleProduct()
   .then(() => console.log('🏁 MongoDB insert test completed'))
   .catch(err => console.error('💥 Insert test failed with error:', err));
