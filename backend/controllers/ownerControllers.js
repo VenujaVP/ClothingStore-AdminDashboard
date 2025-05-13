@@ -612,3 +612,50 @@ export const getProductWithImages = async (req, res) => {
     });
   }
 };
+
+export const getProductImageById = async (req, res) => {
+  try {
+    const { imageId } = req.params;
+    
+    if (!imageId) {
+      return res.status(400).json({
+        message: 'Image ID is required',
+        Status: 'error'
+      });
+    }
+    
+    // Connect to MongoDB
+    const { db } = await connectToDatabase();
+    const productImagesCollection = db.collection('product_images');
+    
+    // Find the specific image by ID
+    const image = await productImagesCollection.findOne({ 
+      _id: new ObjectId(imageId) 
+    });
+    
+    if (!image) {
+      return res.status(404).json({
+        message: 'Image not found',
+        Status: 'error'
+      });
+    }
+    
+    // Convert the base64 image data to a buffer
+    const imageBuffer = Buffer.from(image.image_data, 'base64');
+    
+    // Set appropriate headers
+    res.set('Content-Type', image.content_type);
+    res.set('Content-Disposition', `inline; filename="${image.image_name}"`);
+    
+    // Send the actual image data
+    res.send(imageBuffer);
+    
+  } catch (error) {
+    console.error('Error fetching product image by ID:', error);
+    res.status(500).json({
+      message: 'Error fetching image',
+      error: error.message,
+      Status: 'error'
+    });
+  }
+};
