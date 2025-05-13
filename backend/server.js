@@ -2,15 +2,16 @@
 
 // to run - npm start
 
-//npm init -y - Initialize the Backend
-//"start": "nodemon server.js","dev": "nodemon server.js" - meekth dnn packace.json eke sctipt nodemon active krnn
-//"type": "module", - main eken phlt dnn package.json wlt
+// npm init -y - Initialize the Backend
+// "start": "nodemon server.js","dev": "nodemon server.js" - meekth dnn packace.json eke sctipt nodemon active krnn
+// "type": "module", - main eken phlt dnn package.json wlt
 
-//npm i -D nodemon ->developer depemdancy
+// npm i -D nodemon ->developer depemdancy
 
 // npm install mysql2 dotenv bcrypt jsonwebtoken express cors cookie-parser mongoose express-validator
-//npm install express-validator for validations = for Parameterized Queries:
-//npm install nodemailer
+// npm install express-validator for validations = for Parameterized Queries:
+// npm install nodemailer
+// npm install mongodb mongoose
 
 
 import sqldb from './config/sqldb.js'
