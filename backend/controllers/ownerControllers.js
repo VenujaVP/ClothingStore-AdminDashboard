@@ -132,9 +132,6 @@ export const ownerCreateProduct = async (req, res) => {
       return res.status(400).json({ message: 'All required fields are missing' });
     }
 
-    if (!Array.isArray(variations) || variations.length === 0) {
-      return res.status(400).json({ message: 'At least one product variation is required' });
-    }
 
     // Insert product into SQL database
     const insertProductQuery = `
