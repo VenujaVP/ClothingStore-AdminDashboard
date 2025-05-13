@@ -22,12 +22,14 @@ const PrePaymentPage = ({ userId }) => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [newAddress, setNewAddress] = useState({
-    street: '',
-    city: '',
-    state: '',
-    postalCode: '',
-    country: 'Sri Lanka',
-    isDefault: false
+    contact_name: '',
+    mobile_number: '',
+    street_address: '',
+    apt_suite_unit: '',
+    province: '',
+    district: '',
+    zip_code: '',
+    is_default: false
   });
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [processing, setProcessing] = useState(false);
@@ -48,37 +50,58 @@ const PrePaymentPage = ({ userId }) => {
 
   // Fetch user data
   useEffect(() => {
-    if (!userId || loading) return;
+    const fetchUserData = async () => {
+      if (!userId) {
+        toast.error('User authentication required');
+        navigate('/login');
+        return;
+      }
 
-    const fetchData = async () => {
       try {
         // Fetch user addresses
-        const addressesRes = await axios.get(`http://localhost:8082/api/user/addresses/${userId}`);
-        setAddresses(addressesRes.data.addresses || []);
-        const defaultAddress = addressesRes.data.addresses.find(addr => addr.isDefault);
-        if (defaultAddress) setSelectedAddress(defaultAddress._id);
-
-        // Fetch delivery options
-        const deliveryRes = await axios.get('http://localhost:8082/api/delivery-options');
-        setDeliveryOptions(deliveryRes.data.deliveryOptions || []);
-        if (deliveryRes.data.deliveryOptions?.length > 0) {
-          setSelectedDelivery(deliveryRes.data.deliveryOptions[0]._id);
+        const addressesResponse = await axios.get(`http://localhost:8082/api/user/addresses/${userId}`);
+        
+        if (addressesResponse.data.success) {
+          setAddresses(addressesResponse.data.addresses || []);
+          
+          // Set default address if available
+          const defaultAddress = addressesResponse.data.addresses.find(address => address.is_default);
+          if (defaultAddress) {
+            setSelectedAddress(defaultAddress.address_id.toString());
+          } else if (addressesResponse.data.addresses.length > 0) {
+            // If no default address, select the first one
+            setSelectedAddress(addressesResponse.data.addresses[0].address_id.toString());
+          }
+        } else {
+          console.error('Failed to fetch addresses:', addressesResponse.data.message);
         }
-
-        // Fetch payment methods
-        const paymentRes = await axios.get('http://localhost:8082/api/payment-methods');
-        setPaymentMethods(paymentRes.data.paymentMethods || []);
-        if (paymentRes.data.paymentMethods?.length > 0) {
-          setSelectedPayment(paymentRes.data.paymentMethods[0]._id);
-        }
+        
+        // Fetch delivery options (placeholder for now)
+        const mockDeliveryOptions = [
+          { _id: 'standard', name: 'Standard Delivery', cost: 350, estimatedDays: '3-5' },
+          { _id: 'express', name: 'Express Delivery', cost: 650, estimatedDays: '1-2' }
+        ];
+        setDeliveryOptions(mockDeliveryOptions);
+        setSelectedDelivery('standard');
+        
+        // Fetch payment methods (placeholder for now)
+        const mockPaymentMethods = [
+          { _id: 'cod', name: 'Cash on Delivery', description: 'Pay when your order arrives' },
+          { _id: 'card', name: 'Credit/Debit Card', description: 'Secure online payment' }
+        ];
+        setPaymentMethods(mockPaymentMethods);
+        setSelectedPayment('cod');
+        
       } catch (err) {
-        console.error('Error fetching data:', err);
-        toast.error(err.response?.data?.message || 'Failed to load checkout data');
+        console.error('Error fetching user data:', err);
+        toast.error('Failed to load user data. Please try again.');
       }
     };
 
-    fetchData();
-  }, [userId, loading]);
+    if (!loading) {
+      fetchUserData();
+    }
+  }, [userId, navigate, loading]);
 
   const handleAddressChange = (e) => {
     setSelectedAddress(e.target.value);
@@ -101,17 +124,54 @@ const PrePaymentPage = ({ userId }) => {
   };
 
   const saveNewAddress = async () => {
-    try {
-      if (!newAddress.street || !newAddress.city || !newAddress.postalCode) {
-        toast.error('Please fill all required address fields');
-        return;
-      }
+    // Validation
+    if (!newAddress.contact_name || !newAddress.mobile_number || 
+        !newAddress.street_address || !newAddress.province || 
+        !newAddress.district || !newAddress.zip_code) {
+      toast.error('Please fill all required fields');
+      return;
+    }
 
-      const response = await axios.post(`http://localhost:8082/api/user/addresses/${userId}`, newAddress);
-      setAddresses([...addresses, response.data.address]);
-      setSelectedAddress(response.data.address._id);
-      setShowAddressForm(false);
-      toast.success('Address saved successfully');
+    try {
+      const response = await axios.post('http://localhost:8082/api/user/shipping-address', {
+        customerID: userId,
+        contact_name: newAddress.contact_name,
+        mobile_number: newAddress.mobile_number,
+        street_address: newAddress.street_address,
+        apt_suite_unit: newAddress.apt_suite_unit,
+        province: newAddress.province,
+        district: newAddress.district,
+        zip_code: newAddress.zip_code,
+        is_default: newAddress.is_default
+      });
+
+      if (response.data.success) {
+        toast.success('Address added successfully');
+        
+        // Refresh addresses
+        const addressesResponse = await axios.get(`http://localhost:8082/api/user/addresses/${userId}`);
+        if (addressesResponse.data.success) {
+          setAddresses(addressesResponse.data.addresses);
+          
+          // Select the newly added address
+          setSelectedAddress(response.data.address_id.toString());
+        }
+        
+        // Reset form and hide it
+        setNewAddress({
+          contact_name: '',
+          mobile_number: '',
+          street_address: '',
+          apt_suite_unit: '',
+          province: '',
+          district: '',
+          zip_code: '',
+          is_default: false
+        });
+        setShowAddressForm(false);
+      } else {
+        throw new Error(response.data.message || 'Failed to add address');
+      }
     } catch (err) {
       console.error('Error saving address:', err);
       toast.error(err.response?.data?.message || 'Failed to save address');
@@ -253,21 +313,23 @@ const PrePaymentPage = ({ userId }) => {
               {addresses.length > 0 ? (
                 <div className="address-options">
                   {addresses.map(address => (
-                    <div key={address._id} className="address-option">
+                    <div key={address.address_id} className="address-option">
                       <input
                         type="radio"
-                        id={`address-${address._id}`}
+                        id={`address-${address.address_id}`}
                         name="address"
-                        value={address._id}
-                        checked={selectedAddress === address._id}
+                        value={address.address_id}
+                        checked={selectedAddress === address.address_id.toString()}
                         onChange={handleAddressChange}
                       />
-                      <label htmlFor={`address-${address._id}`}>
+                      <label htmlFor={`address-${address.address_id}`}>
                         <div className="address-details">
-                          <p>{address.street}</p>
-                          <p>{address.city}, {address.state}</p>
-                          <p>{address.postalCode}, {address.country}</p>
-                          {address.isDefault && <span className="default-badge">Default</span>}
+                          <p><strong>{address.contact_name}</strong> • {address.mobile_number}</p>
+                          <p>{address.street_address}</p>
+                          {address.apt_suite_unit && <p>{address.apt_suite_unit}</p>}
+                          <p>{address.district}, {address.province}</p>
+                          <p>{address.zip_code}</p>
+                          {address.is_default && <span className="default-badge">Default</span>}
                         </div>
                       </label>
                     </div>
@@ -287,60 +349,98 @@ const PrePaymentPage = ({ userId }) => {
               {showAddressForm && (
                 <div className="new-address-form">
                   <div className="form-group">
+                    <label>Full Name*</label>
+                    <input
+                      type="text"
+                      name="contact_name"
+                      value={newAddress.contact_name || ''}
+                      onChange={handleNewAddressChange}
+                      required
+                      placeholder="Enter recipient's full name"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Mobile Number*</label>
+                    <input
+                      type="tel"
+                      name="mobile_number"
+                      value={newAddress.mobile_number || ''}
+                      onChange={handleNewAddressChange}
+                      required
+                      placeholder="Enter contact phone number"
+                    />
+                  </div>
+                  <div className="form-group">
                     <label>Street Address*</label>
                     <input
                       type="text"
-                      name="street"
-                      value={newAddress.street}
+                      name="street_address"
+                      value={newAddress.street_address || ''}
                       onChange={handleNewAddressChange}
                       required
+                      placeholder="Enter street address"
                     />
                   </div>
                   <div className="form-group">
-                    <label>City*</label>
+                    <label>Apartment, Suite, Unit (Optional)</label>
                     <input
                       type="text"
-                      name="city"
-                      value={newAddress.city}
+                      name="apt_suite_unit"
+                      value={newAddress.apt_suite_unit || ''}
                       onChange={handleNewAddressChange}
-                      required
+                      placeholder="Apt, Suite, Unit, etc. (optional)"
                     />
                   </div>
-                  <div className="form-group">
-                    <label>State/Province</label>
-                    <input
-                      type="text"
-                      name="state"
-                      value={newAddress.state}
-                      onChange={handleNewAddressChange}
-                    />
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Province*</label>
+                      <select
+                        name="province"
+                        value={newAddress.province || ''}
+                        onChange={handleNewAddressChange}
+                        required
+                      >
+                        <option value="">Select Province</option>
+                        <option value="Western">Western</option>
+                        <option value="Central">Central</option>
+                        <option value="Southern">Southern</option>
+                        <option value="Northern">Northern</option>
+                        <option value="Eastern">Eastern</option>
+                        <option value="North Western">North Western</option>
+                        <option value="North Central">North Central</option>
+                        <option value="Uva">Uva</option>
+                        <option value="Sabaragamuwa">Sabaragamuwa</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>District*</label>
+                      <input
+                        type="text"
+                        name="district"
+                        value={newAddress.district || ''}
+                        onChange={handleNewAddressChange}
+                        required
+                        placeholder="Enter district"
+                      />
+                    </div>
                   </div>
                   <div className="form-group">
                     <label>Postal Code*</label>
                     <input
                       type="text"
-                      name="postalCode"
-                      value={newAddress.postalCode}
+                      name="zip_code"
+                      value={newAddress.zip_code || ''}
                       onChange={handleNewAddressChange}
                       required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Country</label>
-                    <input
-                      type="text"
-                      name="country"
-                      value={newAddress.country}
-                      onChange={handleNewAddressChange}
-                      disabled
+                      placeholder="Enter postal code"
                     />
                   </div>
                   <div className="form-group checkbox">
                     <input
                       type="checkbox"
                       id="defaultAddress"
-                      name="isDefault"
-                      checked={newAddress.isDefault}
+                      name="is_default"
+                      checked={newAddress.is_default || false}
                       onChange={handleNewAddressChange}
                     />
                     <label htmlFor="defaultAddress">Set as default address</label>
@@ -351,90 +451,13 @@ const PrePaymentPage = ({ userId }) => {
                 </div>
               )}
             </section>
-
-            {/* Delivery Options Section */}
-            <section className="checkout-section">
-              <h2>Delivery Options</h2>
-              {deliveryOptions.length > 0 ? (
-                <div className="delivery-options">
-                  {deliveryOptions.map(option => (
-                    <div key={option._id} className="delivery-option">
-                      <input
-                        type="radio"
-                        id={`delivery-${option._id}`}
-                        name="delivery"
-                        value={option._id}
-                        checked={selectedDelivery === option._id}
-                        onChange={handleDeliveryChange}
-                      />
-                      <label htmlFor={`delivery-${option._id}`}>
-                        <div className="delivery-details">
-                          <span className="delivery-name">{option.name}</span>
-                          <span className="delivery-cost">LKR {option.cost.toFixed(2)}</span>
-                          <span className="delivery-time">{option.estimatedDays} business days</span>
-                        </div>
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="no-options">No delivery options available.</p>
-              )}
-            </section>
-
-            {/* Payment Method Section */}
-            <section className="checkout-section">
-              <h2>Payment Method</h2>
-              {paymentMethods.length > 0 ? (
-                <div className="payment-options">
-                  {paymentMethods.map(method => (
-                    <div key={method._id} className="payment-option">
-                      <input
-                        type="radio"
-                        id={`payment-${method._id}`}
-                        name="payment"
-                        value={method._id}
-                        checked={selectedPayment === method._id}
-                        onChange={handlePaymentChange}
-                      />
-                      <label htmlFor={`payment-${method._id}`}>
-                        <div className="payment-details">
-                          <span className="payment-name">{method.name}</span>
-                          {method.description && (
-                            <span className="payment-desc">{method.description}</span>
-                          )}
-                        </div>
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="no-options">No payment methods available.</p>
-              )}
-            </section>
-
-            {/* Place Order Button */}
-            <div className="place-order-section">
-              <button 
-                className="place-order-btn"
-                onClick={placeOrder}
-                disabled={!selectedAddress || !selectedDelivery || !selectedPayment || processing}
-              >
-                {processing ? (
-                  <>
-                    <span className="spinner"></span> Processing...
-                  </>
-                ) : (
-                  `Pay LKR ${calculateTotal()}`
-                )}
-              </button>
-            </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
 
 const AuthenticatedPrePaymentPage = withAuth(PrePaymentPage);
 export default AuthenticatedPrePaymentPage;
