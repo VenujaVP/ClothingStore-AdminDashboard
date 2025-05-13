@@ -1,0 +1,39 @@
+ProductID
+ProductName
+ProductDescription
+Picture
+UnitPrice
+Date Added
+Gender 
+Limited Edition
+Material
+Fabric Type
+Return Policy
+Shipping Weight
+Availability Status
+Wishlist Count
+FinalRating
+
+
+UnitinStock
+Size
+Color
+
+Category 
+Customer Reviews
+
+
+i need small chenge in 
+in Product Variations section like bellow
+[
+    | Size    |  | Size    |   | Size    | 
+    | Color  |  | Color  |  | Color  |   [+]  
+    | Unites|  | Unites |  | Unites |   [- ] 
+]
+
+add button add variation fields in horizontally.
+also add - button to remove variation fields, but minimum need 1
+also perfectly  handle styles and space in Variations section.
+
++++++++++++++++++++++++++++++++++++++++++++++++++=
+

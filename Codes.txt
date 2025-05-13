@@ -102,3 +102,32 @@ payment_method
 payment_status
 transaction_id
 created_at
+
+
+erDiagram
+    CART_ITEMS {
+        int cart_item_id PK
+        int customerID FK
+        varchar ProductID FK
+        int VariationID FK
+        int quantity
+        timestamp added_at
+        timestamp updated_at
+    }
+
+
+erDiagram
+    ADDRESSES {
+        int address_id PK
+        int customerID FK
+        varchar contact_name
+        varchar mobile_number
+        varchar street_address
+        varchar apt_suite_unit
+        varchar province
+        varchar district
+        varchar zip_code
+        boolean is_default
+        timestamp created_at
+        timestamp updated_at
+    }
