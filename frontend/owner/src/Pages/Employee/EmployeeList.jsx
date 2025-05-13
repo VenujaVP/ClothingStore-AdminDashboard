@@ -4,97 +4,78 @@
 /* eslint-disable react/react-in-jsx-scope */
 
 import React, { useState, useEffect } from 'react';
-import withAuth from '../withAuth';
+import withAuth from '../../withAuth';
 import './EmployeeList.css';
-import { FaSearch, FaEdit, FaTrash, FaSort, FaFilter, FaEye, FaUserShield } from 'react-icons/fa';
+import { 
+  FaSearch, FaEdit, FaTrash, FaSort, FaFilter, FaEye, 
+  FaUserShield, FaTimes, FaExclamationTriangle, FaCheck 
+} from 'react-icons/fa';
 import axios from 'axios';
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 const EmployeeList = () => {
-  // Sample data - replace with API call in useEffect
-  const [employees, setEmployees] = useState([
-    {
-      id: 1,
-      username: 'johndoe',
-      first_name: 'John',
-      last_name: 'Doe',
-      email: 'john.doe@example.com',
-      phone_1: '123-456-7890',
-      role: 'Manager',
-      entry_date: '2023-01-15',
-    },
-    {
-      id: 2,
-      username: 'janesmith',
-      first_name: 'Jane',
-      last_name: 'Smith',
-      email: 'jane.smith@example.com',
-      phone_1: '987-654-3210',
-      role: 'Sales',
-      entry_date: '2023-02-20',
-    },
-    {
-      id: 3,
-      username: 'bobwilson',
-      first_name: 'Bob',
-      last_name: 'Wilson',
-      email: 'bob.wilson@example.com',
-      phone_1: '555-123-4567',
-      role: 'Inventory',
-      entry_date: '2023-03-10',
-    },
-    {
-      id: 4,
-      username: 'alicejohnson',
-      first_name: 'Alice',
-      last_name: 'Johnson',
-      email: 'alice.johnson@example.com',
-      phone_1: '222-333-4444',
-      role: 'Sales',
-      entry_date: '2023-04-05',
-    },
-    {
-      id: 5,
-      username: 'michaelbrown',
-      first_name: 'Michael',
-      last_name: 'Brown',
-      email: 'michael.brown@example.com',
-      phone_1: '111-222-3333',
-      role: 'Manager',
-      entry_date: '2023-05-12',
-    },
-  ]);
-
+  // State for employees data
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Search and filter states
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'desc' });
   const [filters, setFilters] = useState({
     role: '',
     startDate: '',
     endDate: '',
   });
+  
+  // Dialog states
+  const [viewDialog, setViewDialog] = useState({ open: false, employee: null });
+  const [editDialog, setEditDialog] = useState({ open: false, employee: null });
+  const [editForm, setEditForm] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone_1: '',
+    phone_2: '',
+    role: '',
+  });
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, id: null });
+  
+  // Form validation
+  const [formErrors, setFormErrors] = useState({});
+  
+  // Alerts
   const [alert, setAlert] = useState({
     open: false,
     message: '',
     severity: 'success'
   });
 
-  // Uncomment this to fetch data from API when component mounts
-  // useEffect(() => {
-  //   const fetchEmployees = async () => {
-  //     try {
-  //       const response = await axios.get('http://localhost:8082/api/owner/employees');
-  //       setEmployees(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching employees:', error);
-  //       setAlert({
-  //         open: true,
-  //         message: 'Failed to load employee data',
-  //         severity: 'error'
-  //       });
-  //     }
-  //   };
-  //   fetchEmployees();
-  // }, []);
+  // Fetch employees on component mount
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  // Function to fetch employees from API
+  const fetchEmployees = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get('http://localhost:8082/api/owner/employees');
+      if (response.data && response.data.Status === 'success') {
+        setEmployees(response.data.employees);
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch employees');
+      }
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+      setAlert({
+        open: true,
+        message: error.response?.data?.message || 'Failed to load employee data',
+        severity: 'error'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Handle search input change
   const handleSearchChange = (e) => {
@@ -165,60 +146,175 @@ const EmployeeList = () => {
     return matchesSearch && matchesRole && matchesDate;
   });
 
-  // Handle delete employee
-  const handleDelete = async (id) => {
-    // Uncomment this for actual API integration
-    // try {
-    //   await axios.delete(`http://localhost:8082/api/owner/employees/${id}`);
-    //   setEmployees(employees.filter(employee => employee.id !== id));
-    //   setAlert({
-    //     open: true,
-    //     message: 'Employee deleted successfully',
-    //     severity: 'success'
-    //   });
-    // } catch (error) {
-    //   console.error('Error deleting employee:', error);
-    //   setAlert({
-    //     open: true,
-    //     message: 'Failed to delete employee',
-    //     severity: 'error'
-    //   });
-    // }
+  // View employee details
+  const handleViewEmployee = (employee) => {
+    setViewDialog({ open: true, employee });
+  };
 
-    // For demo, just remove from state
-    setEmployees(employees.filter(employee => employee.id !== id));
-    setAlert({
-      open: true,
-      message: 'Employee deleted successfully',
-      severity: 'success'
+  // Close view dialog
+  const handleCloseViewDialog = () => {
+    setViewDialog({ open: false, employee: null });
+  };
+
+  // Open edit dialog
+  const handleEditEmployee = (employee) => {
+    setEditForm({
+      first_name: employee.first_name,
+      last_name: employee.last_name,
+      email: employee.email,
+      phone_1: employee.phone_1,
+      phone_2: employee.phone_2 || '',
+      role: employee.role,
+    });
+    setFormErrors({});
+    setEditDialog({ open: true, employee });
+  };
+
+  // Close edit dialog
+  const handleCloseEditDialog = () => {
+    setEditDialog({ open: false, employee: null });
+    setFormErrors({});
+  };
+
+  // Handle edit form input changes
+  const handleEditFormChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm({
+      ...editForm,
+      [name]: value,
     });
   };
 
-  // Handle view employee details
-  const handleView = (id) => {
-    // Navigate to employee details page
-    console.log(`View employee with ID: ${id}`);
-    // Uncomment to implement navigation
-    // navigate(`/employee/${id}`);
+  // Validate form
+  const validateForm = () => {
+    const errors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\d{10}$/;
+    
+    if (!editForm.first_name.trim()) {
+      errors.first_name = "First name is required";
+    }
+    
+    if (!editForm.last_name.trim()) {
+      errors.last_name = "Last name is required";
+    }
+    
+    if (!editForm.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!emailRegex.test(editForm.email)) {
+      errors.email = "Please enter a valid email address";
+    }
+    
+    if (!editForm.phone_1.trim()) {
+      errors.phone_1 = "Primary phone number is required";
+    } else if (!phoneRegex.test(editForm.phone_1.replace(/[^0-9]/g, ''))) {
+      errors.phone_1 = "Phone number must be 10 digits";
+    }
+    
+    if (editForm.phone_2 && !phoneRegex.test(editForm.phone_2.replace(/[^0-9]/g, ''))) {
+      errors.phone_2 = "Phone number must be 10 digits";
+    }
+    
+    if (!editForm.role.trim()) {
+      errors.role = "Role is required";
+    }
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
-  // Handle edit employee
-  const handleEdit = (id) => {
-    console.log(`Edit employee with ID: ${id}`);
-    // Uncomment to implement navigation
-    // navigate(`/employee/edit/${id}`);
+  // Submit edit form
+  const handleSubmitEdit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+    
+    try {
+      const response = await axios.put(
+        `http://localhost:8082/api/owner/employees/${editDialog.employee.id}`,
+        {
+          first_name: editForm.first_name,
+          last_name: editForm.last_name,
+          email: editForm.email,
+          phone_1: editForm.phone_1,
+          phone_2: editForm.phone_2,
+          role: editForm.role,
+        }
+      );
+      
+      if (response.data && response.data.Status === 'success') {
+        // Close dialog and refresh employee list
+        setEditDialog({ open: false, employee: null });
+        fetchEmployees();
+        setAlert({
+          open: true,
+          message: 'Employee updated successfully',
+          severity: 'success'
+        });
+      } else {
+        throw new Error(response.data.message || 'Error updating employee');
+      }
+    } catch (error) {
+      console.error('Error updating employee:', error);
+      setAlert({
+        open: true,
+        message: error.response?.data?.message || 'Error updating employee',
+        severity: 'error'
+      });
+    }
+  };
+
+  // Open delete confirmation dialog
+  const handleConfirmDelete = (id) => {
+    setConfirmDialog({ open: true, id });
+  };
+
+  // Close delete confirmation dialog
+  const handleCloseConfirmDialog = () => {
+    setConfirmDialog({ open: false, id: null });
+  };
+
+  // Delete employee
+  const handleDeleteEmployee = async () => {
+    if (!confirmDialog.id) return;
+    
+    try {
+      const response = await axios.delete(`http://localhost:8082/api/owner/employees/${confirmDialog.id}`);
+      
+      if (response.data && response.data.Status === 'success') {
+        // Update employee list
+        setEmployees(employees.filter(employee => employee.id !== confirmDialog.id));
+        setAlert({
+          open: true,
+          message: 'Employee deleted successfully',
+          severity: 'success'
+        });
+      } else {
+        throw new Error(response.data.message || 'Error deleting employee');
+      }
+    } catch (error) {
+      console.error('Error deleting employee:', error);
+      setAlert({
+        open: true,
+        message: error.response?.data?.message || 'Error deleting employee',
+        severity: 'error'
+      });
+    } finally {
+      // Close confirmation dialog
+      setConfirmDialog({ open: false, id: null });
+    }
   };
 
   return (
     <div className="employee-list-container">
       <div className="employee-list-card">
-        <h2>Employee List</h2>
+        <h2>Employee Management</h2>
         <div className="search-bar">
           <div className="input-group">
             <FaSearch className="input-icon" />
             <input
               type="text"
-              placeholder="Search employees..."
+              placeholder="Search employees by name, email, or username..."
               value={searchQuery}
               onChange={handleSearchChange}
             />
@@ -259,54 +355,287 @@ const EmployeeList = () => {
             </div>
           </div>
         </div>
-        <table className="employee-table">
-          <thead>
-            <tr>
-              <th onClick={() => handleSort('id')}>ID <FaSort className="sort-icon" /></th>
-              <th onClick={() => handleSort('username')}>Username <FaSort className="sort-icon" /></th>
-              <th onClick={() => handleSort('first_name')}>First Name <FaSort className="sort-icon" /></th>
-              <th onClick={() => handleSort('last_name')}>Last Name <FaSort className="sort-icon" /></th>
-              <th onClick={() => handleSort('email')}>Email <FaSort className="sort-icon" /></th>
-              <th onClick={() => handleSort('phone_1')}>Phone <FaSort className="sort-icon" /></th>
-              <th onClick={() => handleSort('role')}>Role <FaSort className="sort-icon" /></th>
-              <th onClick={() => handleSort('entry_date')}>Entry Date <FaSort className="sort-icon" /></th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredEmployees.map((employee) => (
-              <tr key={employee.id}>
-                <td>{employee.id}</td>
-                <td>{employee.username}</td>
-                <td>{employee.first_name}</td>
-                <td>{employee.last_name}</td>
-                <td>{employee.email}</td>
-                <td>{employee.phone_1}</td>
-                <td>
-                  <span className={`role-badge ${employee.role.toLowerCase()}`}>
-                    <FaUserShield /> {employee.role}
-                  </span>
-                </td>
-                <td>{employee.entry_date}</td>
-                <td>
-                  <button className="view-btn" onClick={() => handleView(employee.id)}>
-                    <FaEye /> View
-                  </button>
-                  <button className="edit-btn" onClick={() => handleEdit(employee.id)}>
-                    <FaEdit /> Edit
-                  </button>
-                  <button className="delete-btn" onClick={() => handleDelete(employee.id)}>
-                    <FaTrash /> Delete
-                  </button>
-                </td>
+        
+        {loading ? (
+          <div className="loading-message">Loading employees...</div>
+        ) : (
+          <table className="employee-table">
+            <thead>
+              <tr>
+                <th onClick={() => handleSort('id')}>ID {sortConfig.key === 'id' && <FaSort className="sort-icon" />}</th>
+                <th onClick={() => handleSort('username')}>Username {sortConfig.key === 'username' && <FaSort className="sort-icon" />}</th>
+                <th onClick={() => handleSort('first_name')}>First Name {sortConfig.key === 'first_name' && <FaSort className="sort-icon" />}</th>
+                <th onClick={() => handleSort('last_name')}>Last Name {sortConfig.key === 'last_name' && <FaSort className="sort-icon" />}</th>
+                <th onClick={() => handleSort('email')}>Email {sortConfig.key === 'email' && <FaSort className="sort-icon" />}</th>
+                <th onClick={() => handleSort('phone_1')}>Phone {sortConfig.key === 'phone_1' && <FaSort className="sort-icon" />}</th>
+                <th onClick={() => handleSort('role')}>Role {sortConfig.key === 'role' && <FaSort className="sort-icon" />}</th>
+                <th onClick={() => handleSort('entry_date')}>Entry Date {sortConfig.key === 'entry_date' && <FaSort className="sort-icon" />}</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        {filteredEmployees.length === 0 && (
+            </thead>
+            <tbody>
+              {filteredEmployees.map((employee) => (
+                <tr key={employee.id}>
+                  <td>{employee.id}</td>
+                  <td>{employee.username}</td>
+                  <td>{employee.first_name}</td>
+                  <td>{employee.last_name}</td>
+                  <td>{employee.email}</td>
+                  <td>{employee.phone_1}</td>
+                  <td>
+                    <span className={`role-badge ${employee.role.toLowerCase()}`}>
+                      <FaUserShield /> {employee.role}
+                    </span>
+                  </td>
+                  <td>{employee.entry_date}</td>
+                  <td className="action-buttons">
+                    <button className="view-btn" onClick={() => handleViewEmployee(employee)}>
+                      <FaEye /> View
+                    </button>
+                    <button className="edit-btn" onClick={() => handleEditEmployee(employee)}>
+                      <FaEdit /> Edit
+                    </button>
+                    <button className="delete-btn" onClick={() => handleConfirmDelete(employee.id)}>
+                      <FaTrash /> Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        
+        {!loading && filteredEmployees.length === 0 && (
           <div className="no-results">No employees match your search criteria</div>
         )}
       </div>
+      
+      {/* View Employee Dialog */}
+      <Dialog 
+        open={viewDialog.open} 
+        onClose={handleCloseViewDialog}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle className="dialog-title">
+          Employee Details
+          <button className="close-btn" onClick={handleCloseViewDialog}>
+            <FaTimes />
+          </button>
+        </DialogTitle>
+        <DialogContent>
+          {viewDialog.employee && (
+            <div className="employee-details">
+              <div className="detail-group">
+                <span className="detail-label">Employee ID:</span>
+                <span className="detail-value">{viewDialog.employee.id}</span>
+              </div>
+              <div className="detail-group">
+                <span className="detail-label">Username:</span>
+                <span className="detail-value">{viewDialog.employee.username}</span>
+              </div>
+              <div className="detail-group">
+                <span className="detail-label">Name:</span>
+                <span className="detail-value">{`${viewDialog.employee.first_name} ${viewDialog.employee.last_name}`}</span>
+              </div>
+              <div className="detail-group">
+                <span className="detail-label">Email:</span>
+                <span className="detail-value">{viewDialog.employee.email}</span>
+              </div>
+              <div className="detail-group">
+                <span className="detail-label">Primary Phone:</span>
+                <span className="detail-value">{viewDialog.employee.phone_1}</span>
+              </div>
+              <div className="detail-group">
+                <span className="detail-label">Secondary Phone:</span>
+                <span className="detail-value">{viewDialog.employee.phone_2 || 'Not provided'}</span>
+              </div>
+              <div className="detail-group">
+                <span className="detail-label">Role:</span>
+                <span className={`detail-value role-badge ${viewDialog.employee.role.toLowerCase()}`}>
+                  <FaUserShield /> {viewDialog.employee.role}
+                </span>
+              </div>
+              <div className="detail-group">
+                <span className="detail-label">Entry Date:</span>
+                <span className="detail-value">{viewDialog.employee.entry_date}</span>
+              </div>
+              <div className="detail-group">
+                <span className="detail-label">Created At:</span>
+                <span className="detail-value">{new Date(viewDialog.employee.createdAt).toLocaleString()}</span>
+              </div>
+              <div className="detail-group">
+                <span className="detail-label">Last Updated:</span>
+                <span className="detail-value">{new Date(viewDialog.employee.updatedAt).toLocaleString()}</span>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseViewDialog} color="primary" variant="contained">
+            Close
+          </Button>
+          <Button 
+            onClick={() => {
+              handleCloseViewDialog();
+              if (viewDialog.employee) {
+                handleEditEmployee(viewDialog.employee);
+              }
+            }} 
+            color="secondary"
+            variant="contained"
+          >
+            Edit
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      {/* Edit Employee Dialog */}
+      <Dialog 
+        open={editDialog.open} 
+        onClose={handleCloseEditDialog}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle className="dialog-title">
+          Edit Employee
+          <button className="close-btn" onClick={handleCloseEditDialog}>
+            <FaTimes />
+          </button>
+        </DialogTitle>
+        <DialogContent>
+          {editDialog.employee && (
+            <div className="edit-form">
+              <div className="form-row">
+                <div className="form-group">
+                  <TextField
+                    label="First Name"
+                    name="first_name"
+                    value={editForm.first_name}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    margin="normal"
+                    error={!!formErrors.first_name}
+                    helperText={formErrors.first_name}
+                  />
+                </div>
+                <div className="form-group">
+                  <TextField
+                    label="Last Name"
+                    name="last_name"
+                    value={editForm.last_name}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    margin="normal"
+                    error={!!formErrors.last_name}
+                    helperText={formErrors.last_name}
+                  />
+                </div>
+              </div>
+              <TextField
+                label="Email"
+                name="email"
+                value={editForm.email}
+                onChange={handleEditFormChange}
+                fullWidth
+                margin="normal"
+                error={!!formErrors.email}
+                helperText={formErrors.email}
+              />
+              <div className="form-row">
+                <div className="form-group">
+                  <TextField
+                    label="Primary Phone"
+                    name="phone_1"
+                    value={editForm.phone_1}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    margin="normal"
+                    error={!!formErrors.phone_1}
+                    helperText={formErrors.phone_1}
+                  />
+                </div>
+                <div className="form-group">
+                  <TextField
+                    label="Secondary Phone (Optional)"
+                    name="phone_2"
+                    value={editForm.phone_2}
+                    onChange={handleEditFormChange}
+                    fullWidth
+                    margin="normal"
+                    error={!!formErrors.phone_2}
+                    helperText={formErrors.phone_2}
+                  />
+                </div>
+              </div>
+              <FormControl fullWidth margin="normal" error={!!formErrors.role}>
+                <InputLabel>Role</InputLabel>
+                <Select
+                  name="role"
+                  value={editForm.role}
+                  onChange={handleEditFormChange}
+                  label="Role"
+                >
+                  <MenuItem value="Manager">Manager</MenuItem>
+                  <MenuItem value="Admin">Admin</MenuItem>
+                  <MenuItem value="Sales">Sales</MenuItem>
+                  <MenuItem value="Inventory">Inventory</MenuItem>
+                </Select>
+                {formErrors.role && (
+                  <span className="error-text">{formErrors.role}</span>
+                )}
+              </FormControl>
+              
+              <div className="form-info">
+                <p className="info-text">
+                  <strong>Note:</strong> Some fields cannot be changed:
+                </p>
+                <ul className="info-list">
+                  <li>Username: {editDialog.employee.username}</li>
+                  <li>Entry Date: {editDialog.employee.entry_date}</li>
+                  <li>Employee ID: {editDialog.employee.id}</li>
+                </ul>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditDialog} color="default" variant="outlined">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmitEdit} color="primary" variant="contained">
+            Save Changes
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      {/* Delete Confirmation Dialog */}
+      <Dialog 
+        open={confirmDialog.open} 
+        onClose={handleCloseConfirmDialog}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle className="warning-dialog-title">
+          <FaExclamationTriangle /> Confirm Delete
+        </DialogTitle>
+        <DialogContent>
+          <div className="confirm-delete-content">
+            <p>Are you sure you want to delete this employee?</p>
+            <p>This action cannot be undone.</p>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirmDialog} color="default" variant="outlined">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteEmployee} color="error" variant="contained" startIcon={<FaTrash />}>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      {/* Notification Snackbar */}
       <Snackbar 
         open={alert.open} 
         autoHideDuration={6000} 
@@ -316,6 +645,7 @@ const EmployeeList = () => {
           onClose={() => setAlert({...alert, open: false})} 
           severity={alert.severity} 
           sx={{ width: '100%' }}
+          icon={alert.severity === 'success' ? <FaCheck /> : <FaExclamationTriangle />}
         >
           {alert.message}
         </Alert>
