@@ -192,6 +192,7 @@ export const ownerCreateProduct = async (req, res) => {
           }
 
           const SizeID = sizeResult[0].SizeID;
+          console.log('SizeID:', SizeID);
 
           // Get ColorID
           const getColorIDQuery = 'SELECT ColorID FROM colors WHERE ColorValue = ?';
@@ -207,6 +208,7 @@ export const ownerCreateProduct = async (req, res) => {
             }
 
             const ColorID = colorResult[0].ColorID;
+            console.log('ColorID:', ColorID);
 
             // Insert the variation
             const variationValues = [product_id, SizeID, ColorID, units];
