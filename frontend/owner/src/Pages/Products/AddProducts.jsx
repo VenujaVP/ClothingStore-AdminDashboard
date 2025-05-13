@@ -501,6 +501,7 @@ const handleSubmit = (e) => {
               </button>
             </div>
           </div>
+          
           {/* Total Units */}
           <div className="form-row">
             <div className="form-group">
