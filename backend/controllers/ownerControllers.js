@@ -173,84 +173,58 @@ export const ownerCreateProduct = async (req, res) => {
       }
 
       console.log('Product base data inserted successfully');
-
-      // Use a counter to track when all variations are processed
-      let processedCount = 0;
-      let successCount = 0;
-      let errorOccurred = false;
       
-      // If there are no variations (which shouldn't happen due to validation), return success
-      if (product_variations.length === 0) {
-        return res.status(200).json({
-          message: 'Product added successfully',
-          Status: 'success'
-        });
-      }
-
-      // Process each variation
-      product_variations.forEach((variation, index) => {
+      // Process variations one by one (sequentially) to avoid race conditions
+      const processVariations = async (index) => {
+        // If we've processed all variations, send success response
+        if (index >= product_variations.length) {
+          console.log(`All ${index} variations added successfully`);
+          return res.status(200).json({
+            message: 'Product and variations added successfully',
+            Status: 'success',
+          });
+        }
+        
+        const variation = product_variations[index];
         const { size, color, units } = variation;
+        
         console.log(`Processing variation ${index + 1}/${product_variations.length}: Size=${size}, Color=${color}, Units=${units}`);
-
-        // Step 1: Get SizeID
+        
+        // Get SizeID
         sqldb.query('SELECT SizeID FROM sizes WHERE SizeValue = ?', [size], (sizeErr, sizeResult) => {
-          if (sizeErr) {
-            console.error(`Error fetching SizeID for "${size}":`, sizeErr);
-            if (!errorOccurred) {
-              errorOccurred = true;
-              return res.status(500).json({ 
-                message: `Error fetching SizeID: ${sizeErr.message}`,
-                Status: 'error'
-              });
-            }
-            return;
+          if (sizeErr || !sizeResult || sizeResult.length === 0) {
+            const errorMsg = sizeErr 
+              ? `Error fetching SizeID: ${sizeErr.message}` 
+              : `Size "${size}" not found in database`;
+            
+            console.error(errorMsg);
+            return res.status(sizeErr ? 500 : 404).json({ 
+              message: errorMsg,
+              Status: 'error'
+            });
           }
-
-          if (!sizeResult || sizeResult.length === 0) {
-            console.error(`Size "${size}" not found in database`);
-            if (!errorOccurred) {
-              errorOccurred = true;
-              return res.status(404).json({ 
-                message: `Size "${size}" not found in database`,
-                Status: 'error'
-              });
-            }
-            return;
-          }
-
+          
           const SizeID = sizeResult[0].SizeID;
           console.log(`Found SizeID for "${size}": ${SizeID}`);
-
-          // Step 2: Get ColorID
+          
+          // Get ColorID
           sqldb.query('SELECT ColorID FROM colors WHERE ColorValue = ?', [color], (colorErr, colorResult) => {
-            if (colorErr) {
-              console.error(`Error fetching ColorID for "${color}":`, colorErr);
-              if (!errorOccurred) {
-                errorOccurred = true;
-                return res.status(500).json({ 
-                  message: `Error fetching ColorID: ${colorErr.message}`,
-                  Status: 'error'
-                });
-              }
-              return;
+            if (colorErr || !colorResult || colorResult.length === 0) {
+              const errorMsg = colorErr 
+                ? `Error fetching ColorID: ${colorErr.message}` 
+                : `Color "${color}" not found in database`;
+              
+              console.error(errorMsg);
+              return res.status(colorErr ? 500 : 404).json({ 
+                message: errorMsg,
+                Status: 'error'
+              });
             }
-
-            if (!colorResult || colorResult.length === 0) {
-              console.error(`Color "${color}" not found in database`);
-              if (!errorOccurred) {
-                errorOccurred = true;
-                return res.status(404).json({ 
-                  message: `Color "${color}" not found in database`,
-                  Status: 'error'
-                });
-              }
-              return;
-            }
-
+            
             const ColorID = colorResult[0].ColorID;
             console.log(`Found ColorID for "${color}": ${ColorID}`);
-
-            // Step 3: Insert variation into product_variations table
+            
+            // Insert variation
             const insertVariationQuery = `
               INSERT INTO product_variations 
                 (ProductID, SizeID, ColorID, units)
@@ -260,35 +234,32 @@ export const ownerCreateProduct = async (req, res) => {
             const variationValues = [product_id, SizeID, ColorID, units];
             
             sqldb.query(insertVariationQuery, variationValues, (variationErr, variationResult) => {
-              processedCount++;
-              
               if (variationErr) {
                 console.error(`Error inserting variation ${index + 1}:`, variationErr);
-                if (!errorOccurred) {
-                  errorOccurred = true;
-                  return res.status(500).json({ 
-                    message: `Error inserting variation: ${variationErr.message}`,
-                    Status: 'error'
-                  });
-                }
-                return;
-              }
-
-              console.log(`Variation added successfully with ID: ${variationResult.insertId}`);
-              successCount++;
-
-              // Check if all variations have been processed
-              if (processedCount === product_variations.length && !errorOccurred) {
-                console.log(`All ${successCount} variations added successfully`);
-                res.status(200).json({
-                  message: 'Product and variations added successfully',
-                  Status: 'success',
+                return res.status(500).json({ 
+                  message: `Error inserting variation: ${variationErr.message}`,
+                  Status: 'error'
                 });
               }
+              
+              console.log(`Variation added successfully with ID: ${variationResult.insertId}`);
+              
+              // Process next variation
+              processVariations(index + 1);
             });
           });
         });
-      });
+      };
+      
+      // Start processing variations from index 0
+      if (product_variations.length > 0) {
+        processVariations(0);
+      } else {
+        res.status(200).json({
+          message: 'Product added successfully (no variations)',
+          Status: 'success'
+        });
+      }
     });
   } catch (error) {
     console.error('Error in product creation:', error);
