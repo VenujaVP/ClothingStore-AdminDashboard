@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
 import sqldb from '../config/sqldb.js';
 import nodemailer from 'nodemailer';
-import { console } from 'node:inspector/promises';
 
 // import { validateEmail, validatePhoneNumber, validateRole } from './validations';  // Import validation functions
 
@@ -104,6 +103,7 @@ export const ownerCreateEmployee = (req, res) => {
 };
 
 export const ownerCreateProduct = async (req, res) => {
+  console.log(req.body);
   try {
     // Extract form data from req.body (text fields)
     const {
@@ -168,40 +168,56 @@ export const ownerCreateProduct = async (req, res) => {
     });
 
     // 2. Insert product variations
-    for (const variation of variations) {
+
+    // Insert product variations into product_variations table
+    // Loop through each variation and insert it
+    product_variations.forEach((variation) => {
       const { size, color, units } = variation;
 
-      // Get SizeID and ColorID
-      const [sizeResult] = await new Promise((resolve, reject) => {
-        sqldb.query('SELECT SizeID FROM sizes WHERE SizeValue = ?', [size], (err, result) => {
-          if (err) return reject(err);
-          resolve(result);
-        });
-      });
+      // Get SizeID and ColorID from sizes and colors tables
+      const getSizeIDQuery = 'SELECT SizeID FROM sizes WHERE SizeValue = ?';
+      const getColorIDQuery = 'SELECT ColorID FROM colors WHERE ColorValue = ?';
 
-      const [colorResult] = await new Promise((resolve, reject) => {
-        sqldb.query('SELECT ColorID FROM colors WHERE ColorValue = ?', [color], (err, result) => {
-          if (err) return reject(err);
-          resolve(result);
-        });
-      });
+      // Execute queries to get SizeID and ColorID
+      sqldb.query(getSizeIDQuery, [size], (err, sizeResult) => {
+        if (err) {
+          console.error('Error fetching SizeID:', err);
+          return res.status(500).json({ message: 'Error fetching SizeID' });
+        }
 
-      if (!sizeResult || !colorResult) {
-        throw new Error('Invalid size or color specified');
-      }
+        const SizeID = sizeResult[0]?.SizeID;
+        console.log('SizeID:', SizeID);
 
-      // Insert variation
-      await new Promise((resolve, reject) => {
-        sqldb.query(
-          'INSERT INTO product_variations (ProductID, SizeID, ColorID, units) VALUES (?, ?, ?, ?)',
-          [product_id, sizeResult.SizeID, colorResult.ColorID, units],
-          (err, result) => {
-            if (err) return reject(err);
-            resolve(result);
+        sqldb.query(getColorIDQuery, [color], (err, colorResult) => {
+          if (err) {
+            console.error('Error fetching ColorID:', err);
+            return res.status(500).json({ message: 'Error fetching ColorID' });
           }
-        );
+
+          const ColorID = colorResult[0]?.ColorID;
+          console.log('ColorID:', ColorID);
+
+          // Insert the variation
+          const variationValues = [product_id, SizeID, ColorID, units];
+          console.log('Inserting variation:', variationValues);
+
+          const insertVariationQuery = `
+            INSERT INTO product_variations 
+              (ProductID, SizeID, ColorID, units)
+            VALUES (?, ?, ?, ?)
+          `;
+
+          sqldb.query(insertVariationQuery, variationValues, (err, variationResult) => {
+            if (err) {
+              console.error('Error inserting variation:', err);
+              return res.status(500).json({ message: 'Error inserting variation into the database' });
+            }
+            
+            console.log('Variation added successfully');
+          });
+        });
       });
-    }
+    });
 
     // 3. Handle image uploads to MongoDB if files exist
     if (req.files && req.files.length > 0) {
@@ -276,7 +292,6 @@ export const ownerAddExpenses = (req, res) => {
 };
 
 export const fetchSizes = (req, res) => {
-    console.log("Fetching sizes...");
     const sql = 'SELECT * FROM sizes'; // Query to fetch all sizes
     // Execute the query
     sqldb.query(sql, (err, result) => {
