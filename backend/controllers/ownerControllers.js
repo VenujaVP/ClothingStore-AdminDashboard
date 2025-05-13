@@ -172,8 +172,24 @@ export const fetchColors = (req, res) => {
 };
 
 export const ownerCreateProduct = async (req, res) => {
-  console.log('Received request to create product:', req.body);
+  console.log('Received request to create product');
+  console.log('Files received:', req.files ? req.files.length : 'No files');
+  console.log('Body:', req.body);
+  
   try {
+    // Parse product_variations from JSON if it's a string
+    if (req.body.product_variations && typeof req.body.product_variations === 'string') {
+      try {
+        req.body.product_variations = JSON.parse(req.body.product_variations);
+      } catch (parseError) {
+        console.error('Error parsing product_variations JSON:', parseError);
+        return res.status(400).json({
+          message: 'Invalid product_variations format',
+          Status: 'error'
+        });
+      }
+    }
+
     // Extract form data from req.body
     const {
       product_id,

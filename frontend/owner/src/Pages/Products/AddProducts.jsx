@@ -115,18 +115,26 @@ const AddProducts = () => {
 const handleImageChange = (event) => {
   const files = event.target.files;
   if (files.length > 0) {
-    const newImageFiles = [...imageFiles, ...Array.from(files)];
-    const newImageUrls = Array.from(files).map((file) => URL.createObjectURL(file));
+    // Store the actual File objects
+    const newImageFiles = [...imageFiles];
+    const newImageUrls = [...uploadedImages];
     
-    const updatedImages = [...uploadedImages, ...newImageUrls];
+    // Process each file
+    Array.from(files).forEach(file => {
+      newImageFiles.push(file);
+      newImageUrls.push(URL.createObjectURL(file));
+    });
     
-    if (updatedImages.length > 10) {
+    // Check if we exceed the limit
+    if (newImageUrls.length > 10) {
       alert("You can upload up to 10 images.");
       return;
     }
     
-    setImageFiles(newImageFiles.slice(0, 10));
-    setUploadedImages(updatedImages.slice(0, 10));
+    setImageFiles(newImageFiles);
+    setUploadedImages(newImageUrls);
+    
+    console.log(`Added ${files.length} new files. Total: ${newImageFiles.length}`);
   }
 };
 
@@ -134,11 +142,16 @@ const handleRemoveImage = (index) => {
   const updatedImages = [...uploadedImages];
   const updatedImageFiles = [...imageFiles];
   
+  // Release object URL to prevent memory leaks
+  URL.revokeObjectURL(uploadedImages[index]);
+  
   updatedImages.splice(index, 1);
   updatedImageFiles.splice(index, 1);
   
   setUploadedImages(updatedImages);
   setImageFiles(updatedImageFiles);
+  
+  console.log(`Removed image at index ${index}. ${updatedImageFiles.length} images remaining.`);
 };
 
 
@@ -227,24 +240,33 @@ const handleSubmit = (e) => {
       // Create a FormData object to send both JSON and files
       const formDataToSend = new FormData();
       
-      // Add all the text fields
+      console.log("Preparing form data to send...");
+      
+      // Add all the text fields (except product_variations)
       Object.keys(formData).forEach(key => {
         if (key !== 'product_variations') {
+          console.log(`Adding ${key}: ${formData[key]}`);
           formDataToSend.append(key, formData[key]);
         }
       });
       
       // Add product variations as a stringified JSON
+      console.log(`Adding product_variations (${formData.product_variations.length} variations)`);
       formDataToSend.append('product_variations', JSON.stringify(formData.product_variations));
       
       // Add all uploaded images
-      // First, grab the actual file objects instead of just URLs
-      const fileInput = document.querySelector('input[type="file"]');
-      if (fileInput && fileInput.files.length > 0) {
-        for (let i = 0; i < fileInput.files.length; i++) {
-          formDataToSend.append('images', fileInput.files[i]);
+      if (imageFiles && imageFiles.length > 0) {
+        console.log(`Attaching ${imageFiles.length} images`);
+        for (let i = 0; i < imageFiles.length; i++) {
+          console.log(`Adding image ${i+1}: ${imageFiles[i].name}`);
+          formDataToSend.append('images', imageFiles[i]);
         }
+      } else {
+        console.log("No images to upload");
       }
+      
+      // Log FormData content (for debugging)
+      console.log("FormData prepared, sending request...");
       
       // Send data to backend using axios
       axios.post('http://localhost:8082/api/owner/owner-add-product', formDataToSend, {
@@ -274,18 +296,20 @@ const handleSubmit = (e) => {
             });
             // Clear uploaded images
             setUploadedImages([]);
+            setImageFiles([]);
             setAlertSeverity("success");
             setMessage('Product added successfully!');
             setOpen(true);
           } else {
             console.error('Error adding product:', res);
             setAlertSeverity("error");
-            setMessage(res.data.Error || 'An error occurred while adding product');
+            setMessage(res.data.message || 'An error occurred while adding product');
             setOpen(true);
           }
         })
         .catch(err => {
           console.error('Error:', err);
+          console.error('Error response:', err.response?.data);
           setAlertSeverity('error');
           setMessage(err.response?.data?.message || 'Server error. Please try again.');
           setOpen(true);

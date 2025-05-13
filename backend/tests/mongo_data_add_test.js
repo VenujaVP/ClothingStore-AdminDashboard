@@ -13,7 +13,7 @@ async function insertSampleProduct() {
 
     // Create a sample product document
     const sampleProduct = {
-      _id: new ObjectId("68234d05b3aecf1e446a2609"),  // ← this line needs the import above!
+      _id: new ObjectId("68234d05b3aecf1e446a2606"),  // ← this line needs the import above!
       product_name: 'Premium Cotton Shirt',
       description: 'A high-quality cotton shirt for everyday wear.',
       price: 1499,
