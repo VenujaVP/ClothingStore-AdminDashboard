@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 25, 2025 at 06:31 AM
+-- Generation Time: May 13, 2025 at 02:54 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -42,6 +42,16 @@ CREATE TABLE `addresses` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `addresses`
+--
+
+INSERT INTO `addresses` (`address_id`, `customerID`, `contact_name`, `mobile_number`, `street_address`, `apt_suite_unit`, `province`, `district`, `zip_code`, `is_default`, `created_at`, `updated_at`) VALUES
+(1, 10, 'Venuja', '7777777777', 'AAAAAAAAAAAAA, AAAAAAAAAAAAAAAA, AAAAAAAAAAA', 'AAAAAAAAAAA', 'Southern Province', 'Hambantota', '433534', 0, '2025-04-25 04:36:03', '2025-04-25 04:36:03'),
+(2, 10, 'bbbbbbbbbbbbbb', '2222222222222', 'bbbbbbbbbbbbbbbbb, bbbbbbbbb, bbbbbbbbbbbb', 'bb', 'Western Province', 'Gampaha', '5555555', 1, '2025-04-25 04:36:39', '2025-04-25 04:36:39'),
+(3, 11, 'dsvsdvsb', '35636346', 'kdddddddddddddd', 'bbbbbbbbbbbbbbbbb', 'Northern Province', 'Kilinochchi', '433534', 0, '2025-05-13 04:10:11', '2025-05-13 04:10:57'),
+(4, 11, 'dddddddddddddddddddddddddd', 'e33333', 'vewwwwwwwwwwwwwwwww', 'fbsbszbf sz', 'North Western Province', 'Kurunegala', '333333', 1, '2025-05-13 04:10:57', '2025-05-13 04:10:57');
+
 -- --------------------------------------------------------
 
 --
@@ -57,6 +67,16 @@ CREATE TABLE `cart_items` (
   `added_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `cart_items`
+--
+
+INSERT INTO `cart_items` (`cart_item_id`, `customerID`, `ProductID`, `VariationID`, `quantity`, `added_at`, `updated_at`) VALUES
+(1, 10, 'P002', 4, 5, '2025-04-25 04:33:46', '2025-04-25 04:34:04'),
+(2, 10, 'P003', 6, 6, '2025-04-25 04:34:49', '2025-04-25 04:34:49'),
+(6, 11, 'P002', 4, 6, '2025-05-13 04:07:55', '2025-05-13 04:07:55'),
+(7, 11, 'P003', 7, 4, '2025-05-13 04:08:27', '2025-05-13 04:08:27');
 
 -- --------------------------------------------------------
 
@@ -108,7 +128,8 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`ID`, `NAME`, `EMAIL`, `PHONE_NUM`, `PASSWORD`, `resetToken`, `resetTokenExpiry`, `createdAt`, `updatedAt`) VALUES
-(9, 'Venuja Prasanjith', 'venujagamage2002@gmail.com', '5654765765', '$2b$10$Zl1d5NBYQ3S156XrbXfA7.b13ksiwC2264VYtNAQ2cpJ7ytwDs7wW', NULL, NULL, '2025-04-04 11:20:11', '2025-04-04 11:20:11');
+(10, 'Venuja Prasanjith', 'venujagamage2002@gmail.com', '5654765765', '$2b$10$kCH/XllJK0oU2osicHQWTOjCY2G8kYMaPAnDDnGq3tGlM4S65uW8O', NULL, NULL, '2025-04-25 04:33:08', '2025-04-25 04:33:08'),
+(11, 'Venuja Prasanjith', 'airdropvpcryptonew@gmail.com', '5654765765', '$2b$10$gBc8cXL1Y4nMWZjUKhRHIOl9bv41W3C2hEKhwiDaTaOKJVm2vvcpG', NULL, NULL, '2025-05-13 04:07:00', '2025-05-13 04:07:00');
 
 -- --------------------------------------------------------
 
@@ -212,8 +233,8 @@ CREATE TABLE `owners` (
 --
 
 INSERT INTO `owners` (`ID`, `EMAIL`, `PHONE_NUM`, `PASSWORD`, `resetToken`, `resetTokenExpiry`, `createdAt`, `updatedAt`, `F_NAME`, `L_NAME`) VALUES
-(4, 'venujaforex@gmail.com', '5654765765', '$2b$10$3A/QMM85qb1Pq7WrTz7yCuCfIuwuSJXuT3XZUHtZEEFA4rXDoP3Ay', NULL, NULL, '2025-03-09 07:02:23', '2025-03-09 07:02:23', 'Venuja', 'Prasanjith'),
-(5, 'venujagamage2002@gmail.com', '5654765765', '$2b$10$Gm9VfTp.WWOYorKvtH2PVONK.LKC1L.IX0.LrtU0MWC54Pf/C96mK', NULL, NULL, '2025-03-16 10:11:55', '2025-03-16 10:11:55', 'Venuja', 'Prasanjith');
+(4, 'venujaforex@gmail.com', '5654765765', '$2b$10$gBc8cXL1Y4nMWZjUKhRHIOl9bv41W3C2hEKhwiDaTaOKJVm2vvcpG', NULL, NULL, '2025-03-09 07:02:23', '2025-05-13 04:14:53', 'Venuja', 'Prasanjith'),
+(5, 'venujagamage2002@gmail.com', '5654765765', '$2b$10$gBc8cXL1Y4nMWZjUKhRHIOl9bv41W3C2hEKhwiDaTaOKJVm2vvcpG', NULL, NULL, '2025-03-16 10:11:55', '2025-05-13 04:15:34', 'Venuja', 'Prasanjith');
 
 -- --------------------------------------------------------
 
@@ -245,6 +266,7 @@ CREATE TABLE `product_table` (
 --
 
 INSERT INTO `product_table` (`ProductID`, `ProductName`, `ProductDescription`, `UnitPrice`, `DateAdded`, `ShippingWeight`, `Category1`, `Category2`, `Category3`, `Material`, `FabricType`, `ReturnPolicy`, `WishlistCount`, `FinalRating`, `createdAt`, `updatedAt`) VALUES
+('2ww2w2w', 'wwwwwwwwwwww', 'wwwwwwwwwwwww', 22.00, '2025-05-13', 22.00, 'WOMEN', NULL, NULL, NULL, NULL, NULL, 0, 0.00, '2025-05-13 10:27:57', '2025-05-13 10:27:57'),
 ('P001', 'Floral Printed Blouse', 'A stylish floral printed blouse for casual wear.', 19.00, '2025-03-16', 0.50, 'WOMEN', 'Tops & Tees', 'Crop Tops', 'Cotton', 'Velvet', '7 days return', 0, 1.00, '2025-03-16 15:19:56', '2025-03-17 08:46:16'),
 ('P002', 'Black Crop Top', 'Trendy black crop top for summer outfits.', 15.00, '2025-03-16', 0.30, 'WOMEN', 'Tops & Tees', 'Crop Tops', 'Cotton', 'Satin', '7 days return', 0, 0.00, '2025-03-16 15:21:33', '2025-03-16 15:21:33'),
 ('P003', 'Oversized Graphic T-Shirt', 'Casual oversized t-shirt with a trendy graphic print.', 22.00, '2025-03-16', 0.40, 'WOMEN', 'Tops & Tees', 'T-Shirts', 'Cotton', 'Jersey', '7 days return', 0, 0.00, '2025-03-16 15:22:49', '2025-03-16 15:22:49'),
@@ -254,8 +276,7 @@ INSERT INTO `product_table` (`ProductID`, `ProductName`, `ProductDescription`, `
 ('P007', 'High-Waist Trousers', 'Comfortable high-waist trousers for office and casual wear.', 30.00, '2025-03-16', 0.70, 'WOMEN', 'Dresses & Bottoms', 'Trousers', NULL, NULL, '7 days return', 0, 0.00, '2025-03-16 15:31:28', '2025-03-16 15:31:28'),
 ('P0077', 'Kids\' Sneakers', 'Comfortable sneakers for kid', 10.00, '2025-03-16', 9.00, 'MEN', 'Bottoms', 'Trousers', NULL, NULL, 'Comfortable sneakers for kid', 0, 0.00, '2025-03-16 15:53:07', '2025-03-16 15:53:07'),
 ('P010', 'Silk Nightwear Set', 'Comfortable silk nightwear set for a luxurious sleep.', 45.00, '2025-03-16', 0.40, 'WOMEN', 'Special Categories', 'Night & Loungewear', 'Silk', 'Satin', '7 days return', 0, 0.00, '2025-03-16 15:32:32', '2025-03-16 15:32:32'),
-('W002', 'Floral Printed Blouse', 'Casual and comfortable T-shirt for men', 10.00, '2025-03-16', 1.00, 'MEN', 'Bottoms', 'Trousers', 'Linen', 'Chiffon', '-', 0, 0.00, '2025-03-16 15:49:56', '2025-03-16 15:49:56'),
-('W0041', 'Leather Wallet', 'Premium leather wallet for men', 39.00, '2025-03-16', 0.20, 'ACCESSORIES', 'Belts', NULL, NULL, NULL, 'Premium leather wallet for men', 0, 0.00, '2025-03-16 15:53:59', '2025-03-16 15:53:59');
+('W002', 'Floral Printed Blouse', 'Casual and comfortable T-shirt for men', 10.00, '2025-03-16', 1.00, 'MEN', 'Bottoms', 'Trousers', 'Linen', 'Chiffon', '-', 0, 0.00, '2025-03-16 15:49:56', '2025-03-16 15:49:56');
 
 -- --------------------------------------------------------
 
@@ -300,12 +321,12 @@ INSERT INTO `product_variations` (`VariationID`, `ProductID`, `SizeID`, `ColorID
 (23, 'P007', 2, 4, 12),
 (24, 'P010', 3, 1, 30),
 (25, 'P010', 2, 5, 11),
-(26, 'W002', 4, 2, 11),
 (27, 'W002', 1, 5, 12),
 (28, 'W002', 7, 1, 8),
 (29, 'P0077', 4, 2, 11),
-(30, 'W0041', 4, 4, 12),
-(31, 'W0041', 2, 5, 8);
+(90, '2ww2w2w', 1, 10, 22),
+(91, '2ww2w2w', 3, 2, 22),
+(92, '2ww2w2w', 3, 8, 18);
 
 -- --------------------------------------------------------
 
@@ -426,13 +447,13 @@ ALTER TABLE `sizes`
 -- AUTO_INCREMENT for table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cart_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `colors`
@@ -444,7 +465,7 @@ ALTER TABLE `colors`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `employeedetails`
@@ -468,7 +489,7 @@ ALTER TABLE `owners`
 -- AUTO_INCREMENT for table `product_variations`
 --
 ALTER TABLE `product_variations`
-  MODIFY `VariationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `VariationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
 -- AUTO_INCREMENT for table `sizes`
