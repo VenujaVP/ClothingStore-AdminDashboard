@@ -192,129 +192,42 @@ export const ownerEmployeeAddValidate = [
     .withMessage('Confirm Password is required')
 ];
 
-export const ownerProductAddValidate = [
-  // Validate product_id
-  body('product_id')
-    .notEmpty()
-    .withMessage('Product ID is required')
-    .isString()
-    .withMessage('Product ID must be a string')
-    .isLength({ max: 10 })
-    .withMessage('Product ID must be at most 10 characters'),
-
-  // Validate product_name
-  body('product_name')
-    .notEmpty()
-    .withMessage('Product Name is required')
-    .isString()
-    .withMessage('Product Name must be a string')
-    .isLength({ max: 255 })
-    .withMessage('Product Name must be at most 255 characters'),
-
-  // Validate product_description
-  body('product_description')
-    .optional()
-    .isString()
-    .withMessage('Product Description must be a string'),
-
-  // Validate unit_price
-  body('unit_price')
-    .notEmpty()
-    .withMessage('Unit Price is required')
-    .isDecimal()
-    .withMessage('Unit Price must be a decimal number')
-    .custom((value) => value > 0)
-    .withMessage('Unit Price must be greater than 0'),
-
-  // Validate date_added
-  body('date_added')
-    .notEmpty()
-    .withMessage('Date Added is required')
-    .isDate()
-    .withMessage('Date Added must be a valid date'),
-
-  // Validate shipping_weight
-  body('shipping_weight')
-    .optional()
-    .isDecimal()
-    .withMessage('Shipping Weight must be a decimal number')
-    .custom((value) => value > 0)
-    .withMessage('Shipping Weight must be greater than 0'),
-
-  // Validate total_units
-  body('total_units')
-    .notEmpty()
-    .withMessage('Total Units is required')
-    .isInt({ min: 0 })
-    .withMessage('Total Units must be a non-negative integer'),
-
-  // Validate category1
-  body('category1')
-    .notEmpty()
-    .withMessage('Category 1 is required')
-    .isString()
-    .withMessage('Category 1 must be a string')
-    .isLength({ max: 100 })
-    .withMessage('Category 1 must be at most 100 characters'),
-
-  // Validate category2
-  body('category2')
-    .optional()
-    .isString()
-    .withMessage('Category 2 must be a string')
-    .isLength({ max: 100 })
-    .withMessage('Category 2 must be at most 100 characters'),
-
-  // Validate category3
-  body('category3')
-    .optional()
-    .isString()
-    .withMessage('Category 3 must be a string')
-    .isLength({ max: 100 })
-    .withMessage('Category 3 must be at most 100 characters'),
-
-  // Validate material
-  body('material')
-    .optional()
-    .isString()
-    .withMessage('Material must be a string')
-    .isLength({ max: 100 })
-    .withMessage('Material must be at most 100 characters'),
-
-  // Validate fabric_type
-  body('fabric_type')
-    .optional()
-    .isString()
-    .withMessage('Fabric Type must be a string')
-    .isLength({ max: 100 })
-    .withMessage('Fabric Type must be at most 100 characters'),
-
-  // Validate return_policy
-  body('return_policy')
-    .optional()
-    .isString()
-    .withMessage('Return Policy must be a string')
-    .isLength({ max: 50 })
-    .withMessage('Return Policy must be at most 50 characters'),
-
-  // Validate product_variations
-  body('product_variations')
-    .isArray({ min: 1 })
-    .withMessage('At least one product variation is required')
-    .custom((variations) => {
-      // Validate each variation
-      for (const variation of variations) {
-        if (!variation.size || !variation.color || !variation.units) {
-          throw new Error('Each variation must have size, color, and units');
-        }
-        if (typeof variation.units !== 'number' || variation.units < 0) {
-          throw new Error('Units must be a non-negative number');
-        }
-      }
-      return true;
-    })
-    .withMessage('Invalid product variations'),
-];
+export const ownerProductAddValidate = (req, res, next) => {
+  // For multipart/form-data, req.body.product_variations will be a string
+  // Parse it to convert to JSON
+  if (req.body.product_variations && typeof req.body.product_variations === 'string') {
+    try {
+      req.body.product_variations = JSON.parse(req.body.product_variations);
+    } catch (error) {
+      return res.status(400).json({ 
+        message: 'Invalid product variations format',
+        Status: 'error'
+      });
+    }
+  }
+  
+  // Check for required fields
+  const { product_id, product_name, unit_price, date_added, category1 } = req.body;
+  
+  if (!product_id || !product_name || !unit_price || !date_added || !category1) {
+    return res.status(400).json({ 
+      message: 'Required fields are missing',
+      Status: 'error'
+    });
+  }
+  
+  // Check if product variations exist
+  const variations = req.body.product_variations;
+  if (!Array.isArray(variations) || variations.length === 0) {
+    return res.status(400).json({ 
+      message: 'At least one product variation is required',
+      Status: 'error'
+    });
+  }
+  
+  // Continue to the controller
+  next();
+};
 
 export const ownerExpensesAddValidate = [
   // Validate and sanitize expenses_id
