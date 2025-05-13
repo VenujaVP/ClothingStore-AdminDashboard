@@ -3,15 +3,17 @@
 
 
 import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Replace these values with your actual credentials
 const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
 const MONGODB_PASSWORD = encodeURIComponent(process.env.MONGODB_PASSWORD);
 const MONGODB_CLUSTER = process.env.MONGODB_CLUSTER;
-const DB_NAME = process.env.DB_NAME;
+const MONGODB_NAME = process.env.MONGODB_NAME;
 
 // Construct the connection URI
-const MONGODB_URI = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_CLUSTER}/${DB_NAME}?retryWrites=true&w=majority`;
+const MONGODB_URI = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_CLUSTER}/${MONGODB_NAME}?retryWrites=true&w=majority`;
 
 // Connection caching
 let cachedClient = null;
