@@ -103,6 +103,7 @@ export const ownerCreateEmployee = (req, res) => {
 };
 
 export const ownerCreateProduct = async (req, res) => {
+  consol.loge.log('Received request to create product:', req.body);
   try {
     // Extract form data from req.body (text fields)
     const {
@@ -234,7 +235,7 @@ export const ownerCreateProduct = async (req, res) => {
     // Success response
     res.status(200).json({ 
       message: 'Product, variations, and images added successfully', 
-      Status: 'Success' 
+      Status: 'success' 
     });
 
   } catch (error) {
