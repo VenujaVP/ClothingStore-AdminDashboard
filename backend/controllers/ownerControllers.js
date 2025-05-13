@@ -493,3 +493,122 @@ export const getProductImages = async (req, res) => {
     });
   }
 };
+
+export const getProductWithImages = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    
+    if (!productId) {
+      return res.status(400).json({
+        message: 'Product ID is required',
+        Status: 'error'
+      });
+    }
+    
+    // Step 1: Get product details from SQL database
+    const getProductQuery = `
+      SELECT p.*,
+        (SELECT SUM(units) FROM product_variations WHERE ProductID = p.ProductID) as TotalStock
+      FROM product_table p
+      WHERE p.ProductID = ?
+    `;
+    
+    sqldb.query(getProductQuery, [productId], async (err, productResult) => {
+      if (err) {
+        console.error('Error fetching product from SQL:', err);
+        return res.status(500).json({
+          message: 'Error fetching product details',
+          error: err.message,
+          Status: 'error'
+        });
+      }
+      
+      if (!productResult || productResult.length === 0) {
+        return res.status(404).json({
+          message: 'Product not found',
+          Status: 'error'
+        });
+      }
+      
+      const product = productResult[0];
+      
+      // Step 2: Get product variations
+      const getVariationsQuery = `
+        SELECT v.*, s.SizeValue, c.ColorValue 
+        FROM product_variations v
+        JOIN sizes s ON v.SizeID = s.SizeID
+        JOIN colors c ON v.ColorID = c.ColorID
+        WHERE v.ProductID = ?
+      `;
+      
+      sqldb.query(getVariationsQuery, [productId], async (varErr, variationsResult) => {
+        if (varErr) {
+          console.error('Error fetching product variations:', varErr);
+          return res.status(500).json({
+            message: 'Error fetching product variations',
+            error: varErr.message,
+            Status: 'error'
+          });
+        }
+        
+        // Step 3: Get product images from MongoDB
+        try {
+          const { db } = await connectToDatabase();
+          const productImagesCollection = db.collection('product_images');
+          
+          // Find images for the product
+          const images = await productImagesCollection.find({ 
+            product_id: productId 
+          }).sort({ 
+            is_primary: -1, // Primary images first
+            order: 1        // Then by order
+          }).toArray();
+          
+          console.log(`Found ${images.length} images for product ${productId}`);
+          
+          // Format image data - exclude actual binary data to keep response smaller
+          const formattedImages = images.map(img => ({
+            id: img._id,
+            image_name: img.image_name,
+            content_type: img.content_type,
+            is_primary: img.is_primary,
+            order: img.order,
+            // Create a URL to access this image (assuming you'll create this endpoint)
+            image_url: `/api/products/images/${img._id}`
+          }));
+          
+          // Combine all data into a single response
+          res.status(200).json({
+            Status: 'success',
+            product: {
+              ...product,
+              variations: variationsResult || [],
+              images: formattedImages || []
+            }
+          });
+          
+        } catch (mongoErr) {
+          console.error('Error fetching product images from MongoDB:', mongoErr);
+          // Still return product data even if image fetch fails
+          res.status(200).json({
+            Status: 'success',
+            product: {
+              ...product,
+              variations: variationsResult || [],
+              images: [],
+              image_error: 'Failed to fetch product images'
+            }
+          });
+        }
+      });
+    });
+    
+  } catch (error) {
+    console.error('Error in getProductWithImages:', error);
+    res.status(500).json({
+      message: 'Error fetching product with images',
+      error: error.message,
+      Status: 'error'
+    });
+  }
+};
