@@ -23,12 +23,12 @@ router.post('/owner-add-expenses', ownerExpensesAddValidate, ownerAddExpenses);
 router.get('/fetch-sizes', fetchSizes);
 router.get('/fetch-colors', fetchColors);
 
-// Updated route with both validation and file upload middleware
+// In ownerRoutes.js
 router.post(
   '/owner-add-product',
-  upload.array('images', 10), // Handles 'images' field in multipart/form-data
-  ownerProductAddValidate,    // Your validation middleware
-  ownerCreateProduct          // Controller logic
+  upload.array('images', 10), // This handles file uploads
+  ownerProductAddValidate,    // Validation middleware
+  ownerCreateProduct          // Controller function
 );
 
 export default router;
