@@ -424,3 +424,56 @@ export const ownerCreateProduct = async (req, res) => {
     });
   }
 };
+
+export const getProductImages = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    
+    if (!productId) {
+      return res.status(400).json({
+        message: 'Product ID is required',
+        Status: 'error'
+      });
+    }
+    
+    // Connect to MongoDB
+    const { db } = await connectToDatabase();
+    const productImagesCollection = db.collection('product_images');
+    
+    // Find images for the product
+    const images = await productImagesCollection.find({ 
+      product_id: productId 
+    }).sort({ 
+      is_primary: -1, // Primary images first
+      order: 1        // Then by order
+    }).toArray();
+    
+    // Return images (with or without image data depending on query param)
+    const includeData = req.query.includeData === 'true';
+    
+    const formattedImages = images.map(img => ({
+      id: img._id,
+      product_id: img.product_id,
+      image_name: img.image_name,
+      content_type: img.content_type,
+      uploaded_at: img.uploaded_at,
+      is_primary: img.is_primary,
+      order: img.order,
+      // Only include image data if requested
+      ...(includeData && { image_data: img.image_data })
+    }));
+    
+    res.status(200).json({
+      status: 'success',
+      count: formattedImages.length,
+      images: formattedImages
+    });
+  } catch (error) {
+    console.error('Error fetching product images:', error);
+    res.status(500).json({
+      message: 'Error fetching product images',
+      error: error.message,
+      Status: 'error'
+    });
+  }
+};

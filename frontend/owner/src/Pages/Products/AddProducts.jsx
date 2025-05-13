@@ -59,6 +59,7 @@ const categories = {
 
 const AddProducts = () => {
     const [uploadedImages, setUploadedImages] = useState([]);
+    const [imageFiles, setImageFiles] = useState([]);
     const [optionsCategory2, setOptionsCategory2] = useState([]);
     const [optionsCategory3, setOptionsCategory3] = useState([]);
 
@@ -111,25 +112,34 @@ const AddProducts = () => {
 
 
 //---------------------------------------------------------------------------------------------------------------------------  
-  const handleImageChange = (event) => {
-    const files = event.target.files;
-    if (files.length > 0) {
-      const newImages = Array.from(files).map((file) => URL.createObjectURL(file));
-      const updatedImages = [...uploadedImages, ...newImages];
-      if (updatedImages.length > 10) {
-        alert("You can upload up to 10 images.");
-        return;
-      }
-      setUploadedImages(updatedImages);
+const handleImageChange = (event) => {
+  const files = event.target.files;
+  if (files.length > 0) {
+    const newImageFiles = [...imageFiles, ...Array.from(files)];
+    const newImageUrls = Array.from(files).map((file) => URL.createObjectURL(file));
+    
+    const updatedImages = [...uploadedImages, ...newImageUrls];
+    
+    if (updatedImages.length > 10) {
+      alert("You can upload up to 10 images.");
+      return;
     }
-  };
+    
+    setImageFiles(newImageFiles.slice(0, 10));
+    setUploadedImages(updatedImages.slice(0, 10));
+  }
+};
 
-  const handleRemoveImage = (index) => {
-    const updatedImages = [...uploadedImages];
-    updatedImages.splice(index, 1);
-    setUploadedImages(updatedImages);
-  };
-
+const handleRemoveImage = (index) => {
+  const updatedImages = [...uploadedImages];
+  const updatedImageFiles = [...imageFiles];
+  
+  updatedImages.splice(index, 1);
+  updatedImageFiles.splice(index, 1);
+  
+  setUploadedImages(updatedImages);
+  setImageFiles(updatedImageFiles);
+};
 
 
 //---------------------------------------------------------------------------------------------------------------------------  
@@ -214,11 +224,38 @@ const handleSubmit = (e) => {
   productValidationSchema
     .validate(formData, { abortEarly: false })
     .then(() => {
-      // Send data to the backend
-      axios.post('http://localhost:8082/api/owner/owner-add-product', formData)
+      // Create a FormData object to send both JSON and files
+      const formDataToSend = new FormData();
+      
+      // Add all the text fields
+      Object.keys(formData).forEach(key => {
+        if (key !== 'product_variations') {
+          formDataToSend.append(key, formData[key]);
+        }
+      });
+      
+      // Add product variations as a stringified JSON
+      formDataToSend.append('product_variations', JSON.stringify(formData.product_variations));
+      
+      // Add all uploaded images
+      // First, grab the actual file objects instead of just URLs
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput && fileInput.files.length > 0) {
+        for (let i = 0; i < fileInput.files.length; i++) {
+          formDataToSend.append('images', fileInput.files[i]);
+        }
+      }
+      
+      // Send data to backend using axios
+      axios.post('http://localhost:8082/api/owner/owner-add-product', formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
         .then(res => {
           if (res.data && res.data.Status === "success") {
             console.log('Product added successfully:', res.data);
+            // Reset form after successful submission
             setFormData({
               product_id: '',
               product_name: '',
@@ -235,6 +272,8 @@ const handleSubmit = (e) => {
               return_policy: '',
               product_variations: [{ size: '', color: '', units: '' }],
             });
+            // Clear uploaded images
+            setUploadedImages([]);
             setAlertSeverity("success");
             setMessage('Product added successfully!');
             setOpen(true);
