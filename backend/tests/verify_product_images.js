@@ -1,3 +1,5 @@
+//node tests/verify_product_images.js 2w2w2w2wwww
+
 import { ObjectId } from 'mongodb';
 import { connectToDatabase, closeDatabaseConnection } from '../config/mongodb.js';
 import fs from 'fs/promises';
