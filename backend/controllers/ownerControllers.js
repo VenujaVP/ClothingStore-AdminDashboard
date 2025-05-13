@@ -441,6 +441,10 @@ export const ownerCreateProduct = async (req, res) => {
   }
 };
 
+
+
+
+
 export const getProductImages = async (req, res) => {
   try {
     const { productId } = req.params;
