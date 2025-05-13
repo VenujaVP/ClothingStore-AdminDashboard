@@ -113,7 +113,7 @@ export const ownerCreateProduct = async (req, res) => {
       unit_price,
       date_added,
       shipping_weight,
-      total_units,  // Added this to handle total_units from request
+      total_units,
       category1,
       category2,
       category3,
@@ -125,15 +125,21 @@ export const ownerCreateProduct = async (req, res) => {
 
     // Validate product_variations
     if (!Array.isArray(product_variations) || product_variations.length === 0) {
-      return res.status(400).json({ message: 'At least one product variation is required' });
+      return res.status(400).json({ 
+        message: 'At least one product variation is required',
+        Status: 'error'
+      });
     }
 
     // Validation for empty fields
     if (!product_id || !product_name || !unit_price || !date_added || !category1) {
-      return res.status(400).json({ message: 'All required fields are missing' });
+      return res.status(400).json({ 
+        message: 'All required fields are missing',
+        Status: 'error'
+      });
     }
 
-    // Insert product into SQL database
+    // Insert product into product_table
     const insertProductQuery = `
       INSERT INTO product_table 
         (ProductID, ProductName, ProductDescription, UnitPrice, DateAdded, ShippingWeight, Category1, Category2, Category3, Material, FabricType, ReturnPolicy)
@@ -168,40 +174,44 @@ export const ownerCreateProduct = async (req, res) => {
 
       console.log('Product base data inserted successfully');
 
-      // Insert product variations into product_variations table
-      const insertVariationQuery = `
-        INSERT INTO product_variations 
-          (ProductID, SizeID, ColorID, units)
-        VALUES (?, ?, ?, ?)
-      `;
-
-      // Track the completion of variation insertions
-      let completedVariations = 0;
-      let hasErrors = false;
-
-      // If there are no variations, return success
+      // Use a counter to track when all variations are processed
+      let processedCount = 0;
+      let successCount = 0;
+      let errorOccurred = false;
+      
+      // If there are no variations (which shouldn't happen due to validation), return success
       if (product_variations.length === 0) {
         return res.status(200).json({
-          message: 'Product added successfully (no variations)',
+          message: 'Product added successfully',
           Status: 'success'
         });
       }
 
       // Process each variation
-      product_variations.forEach((variation) => {
+      product_variations.forEach((variation, index) => {
         const { size, color, units } = variation;
-        console.log(`Processing variation: Size=${size}, Color=${color}, Units=${units}`);
+        console.log(`Processing variation ${index + 1}/${product_variations.length}: Size=${size}, Color=${color}, Units=${units}`);
 
-        // Get SizeID from sizes table
-        sqldb.query('SELECT SizeID FROM sizes WHERE SizeValue = ?', [size], (err, sizeResult) => {
-          if (err || !sizeResult || sizeResult.length === 0) {
-            console.error(`Error or no result for size "${size}":`, err || 'No matching size found');
-            
-            if (!hasErrors) {
-              hasErrors = true;
-              const errorMsg = err ? `Error fetching SizeID: ${err.message}` : `Size "${size}" not found`;
-              return res.status(err ? 500 : 404).json({ 
-                message: errorMsg,
+        // Step 1: Get SizeID
+        sqldb.query('SELECT SizeID FROM sizes WHERE SizeValue = ?', [size], (sizeErr, sizeResult) => {
+          if (sizeErr) {
+            console.error(`Error fetching SizeID for "${size}":`, sizeErr);
+            if (!errorOccurred) {
+              errorOccurred = true;
+              return res.status(500).json({ 
+                message: `Error fetching SizeID: ${sizeErr.message}`,
+                Status: 'error'
+              });
+            }
+            return;
+          }
+
+          if (!sizeResult || sizeResult.length === 0) {
+            console.error(`Size "${size}" not found in database`);
+            if (!errorOccurred) {
+              errorOccurred = true;
+              return res.status(404).json({ 
+                message: `Size "${size}" not found in database`,
                 Status: 'error'
               });
             }
@@ -211,16 +221,26 @@ export const ownerCreateProduct = async (req, res) => {
           const SizeID = sizeResult[0].SizeID;
           console.log(`Found SizeID for "${size}": ${SizeID}`);
 
-          // Get ColorID from colors table
-          sqldb.query('SELECT ColorID FROM colors WHERE ColorValue = ?', [color], (err, colorResult) => {
-            if (err || !colorResult || colorResult.length === 0) {
-              console.error(`Error or no result for color "${color}":`, err || 'No matching color found');
-              
-              if (!hasErrors) {
-                hasErrors = true;
-                const errorMsg = err ? `Error fetching ColorID: ${err.message}` : `Color "${color}" not found`;
-                return res.status(err ? 500 : 404).json({ 
-                  message: errorMsg,
+          // Step 2: Get ColorID
+          sqldb.query('SELECT ColorID FROM colors WHERE ColorValue = ?', [color], (colorErr, colorResult) => {
+            if (colorErr) {
+              console.error(`Error fetching ColorID for "${color}":`, colorErr);
+              if (!errorOccurred) {
+                errorOccurred = true;
+                return res.status(500).json({ 
+                  message: `Error fetching ColorID: ${colorErr.message}`,
+                  Status: 'error'
+                });
+              }
+              return;
+            }
+
+            if (!colorResult || colorResult.length === 0) {
+              console.error(`Color "${color}" not found in database`);
+              if (!errorOccurred) {
+                errorOccurred = true;
+                return res.status(404).json({ 
+                  message: `Color "${color}" not found in database`,
                   Status: 'error'
                 });
               }
@@ -230,32 +250,38 @@ export const ownerCreateProduct = async (req, res) => {
             const ColorID = colorResult[0].ColorID;
             console.log(`Found ColorID for "${color}": ${ColorID}`);
 
-            // Insert the variation
+            // Step 3: Insert variation into product_variations table
+            const insertVariationQuery = `
+              INSERT INTO product_variations 
+                (ProductID, SizeID, ColorID, units)
+              VALUES (?, ?, ?, ?)
+            `;
+            
             const variationValues = [product_id, SizeID, ColorID, units];
-
-            sqldb.query(insertVariationQuery, variationValues, (err, variationResult) => {
-              if (err) {
-                console.error('Error inserting variation:', err);
-                if (!hasErrors) {
-                  hasErrors = true;
+            
+            sqldb.query(insertVariationQuery, variationValues, (variationErr, variationResult) => {
+              processedCount++;
+              
+              if (variationErr) {
+                console.error(`Error inserting variation ${index + 1}:`, variationErr);
+                if (!errorOccurred) {
+                  errorOccurred = true;
                   return res.status(500).json({ 
-                    message: 'Error inserting variation into the database',
-                    error: err.message,
+                    message: `Error inserting variation: ${variationErr.message}`,
                     Status: 'error'
                   });
                 }
                 return;
               }
 
-              console.log(`Variation added successfully: ${product_id}, Size=${size}(ID=${SizeID}), Color=${color}(ID=${ColorID}), Units=${units}`);
-              completedVariations++;
+              console.log(`Variation added successfully with ID: ${variationResult.insertId}`);
+              successCount++;
 
               // Check if all variations have been processed
-              if (completedVariations === product_variations.length && !hasErrors) {
-                console.log(`All variations added (${completedVariations} total)`);
-                // All variations have been added successfully - send final response
+              if (processedCount === product_variations.length && !errorOccurred) {
+                console.log(`All ${successCount} variations added successfully`);
                 res.status(200).json({
-                  message: 'Product, variations, and images added successfully',
+                  message: 'Product and variations added successfully',
                   Status: 'success',
                 });
               }
