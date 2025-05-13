@@ -218,7 +218,6 @@ const AddEmployee = () => {
                 >
                   <option value="">Select role</option>
                   <option value="admin">Cashier</option>
-                  <option value="manager">Manager</option>
                   <option value="employee">Employee</option>
                 </select>
                 {errors.role && <span className="error-text">{errors.role}</span>}
