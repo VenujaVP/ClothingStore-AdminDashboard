@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import withAuth from '../withAuth';
-import { FaChevronLeft, FaShoppingCart } from 'react-icons/fa';
+import { FaChevronLeft, FaShoppingCart, FaTimes, FaArrowRight } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './PrePaymentPage.css';
@@ -33,6 +33,7 @@ const PrePaymentPage = ({ userId }) => {
   });
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1); // 1: Shipping, 2: Payment, 3: Confirmation
 
   // Initialize order items from location state
   useEffect(() => {
@@ -189,6 +190,25 @@ const PrePaymentPage = ({ userId }) => {
     return (subtotal + deliveryCost).toFixed(2);
   };
 
+  const continueToPayment = () => {
+    if (!selectedAddress) {
+      toast.error('Please select a shipping address');
+      return;
+    }
+
+    if (!selectedDelivery) {
+      toast.error('Please select a delivery method');
+      return;
+    }
+    
+    // In a real implementation, you would move to the payment page
+    // For now, we'll just update the current step
+    setCurrentStep(2);
+    
+    // For this demo, we'll proceed directly to placing the order
+    placeOrder();
+  };
+
   const placeOrder = async () => {
     if (!selectedAddress || !selectedDelivery || !selectedPayment) {
       toast.error('Please complete all required fields');
@@ -213,18 +233,27 @@ const PrePaymentPage = ({ userId }) => {
         status: 'pending'
       };
 
-      const response = await axios.post('http://localhost:8082/api/orders', orderData);
+      // Mock the order placement for now
+      // In a real implementation, you would have API call like:
+      // const response = await axios.post('http://localhost:8082/api/orders', orderData);
       
-      if (response.data.success) {
+      // Simulate successful order placement
+      setTimeout(() => {
         toast.success('Order placed successfully!');
-        navigate('/order-confirmation', { state: { orderId: response.data.order._id } });
-      } else {
-        throw new Error(response.data.message || 'Failed to place order');
-      }
+        navigate('/order-confirmation', { 
+          state: { 
+            orderId: 'ORD' + Math.floor(Math.random() * 1000000),
+            orderItems,
+            total: calculateTotal(),
+            deliveryOption: deliveryOptions.find(opt => opt._id === selectedDelivery)
+          } 
+        });
+        setProcessing(false);
+      }, 1500);
+      
     } catch (err) {
       console.error('Error placing order:', err);
       toast.error(err.response?.data?.message || 'Failed to place order');
-    } finally {
       setProcessing(false);
     }
   };
@@ -251,6 +280,127 @@ const PrePaymentPage = ({ userId }) => {
 
   return (
     <div className="pre-payment-page">
+      {/* Address Form Modal */}
+      {showAddressForm && (
+        <div className="modal-overlay">
+          <div className="address-modal">
+            <div className="modal-header">
+              <h2>Add New Address</h2>
+              <button className="close-modal" onClick={() => setShowAddressForm(false)}>
+                <FaTimes />
+              </button>
+            </div>
+            <div className="modal-content">
+              <div className="form-group">
+                <label>Full Name*</label>
+                <input
+                  type="text"
+                  name="contact_name"
+                  value={newAddress.contact_name || ''}
+                  onChange={handleNewAddressChange}
+                  required
+                  placeholder="Enter recipient's full name"
+                />
+              </div>
+              <div className="form-group">
+                <label>Mobile Number*</label>
+                <input
+                  type="tel"
+                  name="mobile_number"
+                  value={newAddress.mobile_number || ''}
+                  onChange={handleNewAddressChange}
+                  required
+                  placeholder="Enter contact phone number"
+                />
+              </div>
+              <div className="form-group">
+                <label>Street Address*</label>
+                <input
+                  type="text"
+                  name="street_address"
+                  value={newAddress.street_address || ''}
+                  onChange={handleNewAddressChange}
+                  required
+                  placeholder="Enter street address"
+                />
+              </div>
+              <div className="form-group">
+                <label>Apartment, Suite, Unit (Optional)</label>
+                <input
+                  type="text"
+                  name="apt_suite_unit"
+                  value={newAddress.apt_suite_unit || ''}
+                  onChange={handleNewAddressChange}
+                  placeholder="Apt, Suite, Unit, etc. (optional)"
+                />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Province*</label>
+                  <select
+                    name="province"
+                    value={newAddress.province || ''}
+                    onChange={handleNewAddressChange}
+                    required
+                  >
+                    <option value="">Select Province</option>
+                    <option value="Western">Western</option>
+                    <option value="Central">Central</option>
+                    <option value="Southern">Southern</option>
+                    <option value="Northern">Northern</option>
+                    <option value="Eastern">Eastern</option>
+                    <option value="North Western">North Western</option>
+                    <option value="North Central">North Central</option>
+                    <option value="Uva">Uva</option>
+                    <option value="Sabaragamuwa">Sabaragamuwa</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>District*</label>
+                  <input
+                    type="text"
+                    name="district"
+                    value={newAddress.district || ''}
+                    onChange={handleNewAddressChange}
+                    required
+                    placeholder="Enter district"
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Postal Code*</label>
+                <input
+                  type="text"
+                  name="zip_code"
+                  value={newAddress.zip_code || ''}
+                  onChange={handleNewAddressChange}
+                  required
+                  placeholder="Enter postal code"
+                />
+              </div>
+              <div className="form-group checkbox">
+                <input
+                  type="checkbox"
+                  id="defaultAddress"
+                  name="is_default"
+                  checked={newAddress.is_default || false}
+                  onChange={handleNewAddressChange}
+                />
+                <label htmlFor="defaultAddress">Set as default address</label>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="cancel-btn" onClick={() => setShowAddressForm(false)}>
+                Cancel
+              </button>
+              <button className="save-address-btn" onClick={saveNewAddress}>
+                Save Address
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="checkout-container">
         <div className="checkout-header">
           <button onClick={() => navigate(-1)} className="back-button">
@@ -258,9 +408,9 @@ const PrePaymentPage = ({ userId }) => {
           </button>
           <h1>Checkout</h1>
           <div className="checkout-steps">
-            <div className="step active">1. Shipping</div>
-            <div className="step">2. Payment</div>
-            <div className="step">3. Confirmation</div>
+            <div className={`step ${currentStep >= 1 ? 'active' : ''}`}>1. Shipping</div>
+            <div className={`step ${currentStep >= 2 ? 'active' : ''}`}>2. Payment</div>
+            <div className={`step ${currentStep >= 3 ? 'active' : ''}`}>3. Confirmation</div>
           </div>
         </div>
 
@@ -341,123 +491,85 @@ const PrePaymentPage = ({ userId }) => {
 
               <button 
                 className="add-address-btn"
-                onClick={() => setShowAddressForm(!showAddressForm)}
+                onClick={() => setShowAddressForm(true)}
               >
-                {showAddressForm ? 'Cancel' : '+ Add New Address'}
+                + Add New Address
               </button>
-
-              {showAddressForm && (
-                <div className="new-address-form">
-                  <div className="form-group">
-                    <label>Full Name*</label>
-                    <input
-                      type="text"
-                      name="contact_name"
-                      value={newAddress.contact_name || ''}
-                      onChange={handleNewAddressChange}
-                      required
-                      placeholder="Enter recipient's full name"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Mobile Number*</label>
-                    <input
-                      type="tel"
-                      name="mobile_number"
-                      value={newAddress.mobile_number || ''}
-                      onChange={handleNewAddressChange}
-                      required
-                      placeholder="Enter contact phone number"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Street Address*</label>
-                    <input
-                      type="text"
-                      name="street_address"
-                      value={newAddress.street_address || ''}
-                      onChange={handleNewAddressChange}
-                      required
-                      placeholder="Enter street address"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Apartment, Suite, Unit (Optional)</label>
-                    <input
-                      type="text"
-                      name="apt_suite_unit"
-                      value={newAddress.apt_suite_unit || ''}
-                      onChange={handleNewAddressChange}
-                      placeholder="Apt, Suite, Unit, etc. (optional)"
-                    />
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>Province*</label>
-                      <select
-                        name="province"
-                        value={newAddress.province || ''}
-                        onChange={handleNewAddressChange}
-                        required
-                      >
-                        <option value="">Select Province</option>
-                        <option value="Western">Western</option>
-                        <option value="Central">Central</option>
-                        <option value="Southern">Southern</option>
-                        <option value="Northern">Northern</option>
-                        <option value="Eastern">Eastern</option>
-                        <option value="North Western">North Western</option>
-                        <option value="North Central">North Central</option>
-                        <option value="Uva">Uva</option>
-                        <option value="Sabaragamuwa">Sabaragamuwa</option>
-                      </select>
-                    </div>
-                    <div className="form-group">
-                      <label>District*</label>
-                      <input
-                        type="text"
-                        name="district"
-                        value={newAddress.district || ''}
-                        onChange={handleNewAddressChange}
-                        required
-                        placeholder="Enter district"
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label>Postal Code*</label>
-                    <input
-                      type="text"
-                      name="zip_code"
-                      value={newAddress.zip_code || ''}
-                      onChange={handleNewAddressChange}
-                      required
-                      placeholder="Enter postal code"
-                    />
-                  </div>
-                  <div className="form-group checkbox">
-                    <input
-                      type="checkbox"
-                      id="defaultAddress"
-                      name="is_default"
-                      checked={newAddress.is_default || false}
-                      onChange={handleNewAddressChange}
-                    />
-                    <label htmlFor="defaultAddress">Set as default address</label>
-                  </div>
-                  <button className="save-address-btn" onClick={saveNewAddress}>
-                    Save Address
-                  </button>
-                </div>
-              )}
             </section>
+
+            {/* Delivery Options Section */}
+            <section className="checkout-section">
+              <h2>Delivery Method</h2>
+              <div className="delivery-options">
+                {deliveryOptions.map(option => (
+                  <div key={option._id} className="delivery-option">
+                    <input
+                      type="radio"
+                      id={`delivery-${option._id}`}
+                      name="delivery"
+                      value={option._id}
+                      checked={selectedDelivery === option._id}
+                      onChange={handleDeliveryChange}
+                    />
+                    <label htmlFor={`delivery-${option._id}`}>
+                      <div className="delivery-details">
+                        <h3>{option.name}</h3>
+                        <p>Estimated delivery time: {option.estimatedDays} business days</p>
+                        <span className="delivery-cost">LKR {option.cost.toFixed(2)}</span>
+                      </div>
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Payment Method Section (simplified for now) */}
+            <section className="checkout-section">
+              <h2>Payment Method</h2>
+              <div className="payment-options">
+                {paymentMethods.map(method => (
+                  <div key={method._id} className="payment-option">
+                    <input
+                      type="radio"
+                      id={`payment-${method._id}`}
+                      name="payment"
+                      value={method._id}
+                      checked={selectedPayment === method._id}
+                      onChange={handlePaymentChange}
+                    />
+                    <label htmlFor={`payment-${method._id}`}>
+                      <div className="payment-details">
+                        <h3>{method.name}</h3>
+                        <p>{method.description}</p>
+                      </div>
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Continue Button */}
+            <div className="checkout-actions">
+              <button 
+                className="continue-button"
+                onClick={continueToPayment}
+                disabled={!selectedAddress || !selectedDelivery || !selectedPayment || processing}
+              >
+                {processing ? (
+                  <>Processing...</>
+                ) : (
+                  <>
+                    Place Order <FaArrowRight />
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
 
 const AuthenticatedPrePaymentPage = withAuth(PrePaymentPage);
 export default AuthenticatedPrePaymentPage;
