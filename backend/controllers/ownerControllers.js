@@ -20,83 +20,120 @@ export const ownerCreateEmployee = (req, res) => {
         return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    // Hash the password
-    bcrypt.hash(password, saltRounds, (err, passwordHash) => {
-        if (err) {
-            console.error("Error hashing password:", err);
-            return res.status(500).json({ message: "Error hashing password" });
+    // First check if email already exists in the database
+    const checkEmailQuery = "SELECT * FROM EmployeeDetails WHERE EMAIL = ?";
+    
+    sqldb.query(checkEmailQuery, [email], (emailCheckErr, emailCheckResult) => {
+        if (emailCheckErr) {
+            console.error("Error checking existing email:", emailCheckErr);
+            return res.status(500).json({ message: "Error checking email in database" });
         }
-
-        // SQL query to insert a new employee into the database
-        const sql = `INSERT INTO EmployeeDetails 
-                    (USERNAME, EMAIL, F_NAME, L_NAME, PASSWORD, PHONE_NUM1, PHONE_NUM2, ENTRY_DATE, ROLE) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
-        const values = [
-            employee_uname, // employee_uname
-            email,          // email
-            f_name,         // f_name
-            l_name,         // l_name
-            passwordHash,   // password (hashed)
-            phone_1,        // phone_1
-            phone_2,        // phone_2
-            entry_date,     // entry_date
-            role            // role
-        ];
-
-        // Execute the SQL query
-        sqldb.query(sql, values, (err, result) => {
-            if (err) {
-                console.error("Error inserting data:", err);
-                return res.status(500).json({ message: "Error inserting data into the database" });
-            }
-
-            console.log("Employee added successfully");
-
-            // Step 1: Create a Nodemailer transporter
-            const transporter = nodemailer.createTransport({
-                service: 'gmail', // Use your email service (e.g., Gmail, Outlook)
-                auth: {
-                    user: process.env.EMAIL_USER, // Your email address
-                    pass: process.env.EMAIL_PASS, // Your email password or app password
-                }
+        
+        // If email already exists, return an error
+        if (emailCheckResult && emailCheckResult.length > 0) {
+            return res.status(409).json({ 
+                message: "Email address already registered. Please use a different email.", 
+                Status: "error" 
             });
-
-            // Step 2: Define email content
-            const mailOptions = {
-                from: process.env.EMAIL_USER, // Sender email address
-                to: email, // Recipient email address (employee's email)
-                subject: 'Your Employee Account Details', // Email subject
-                // You can also use `html` for a more visually appealing email
-                html: `
-                    <h1>Hello ${f_name} ${l_name},</h1>
-                    <p>Your employee account has been successfully created. Below are your login details:</p>
-                    <ul>
-                        <li><strong>Username:</strong> ${employee_uname}</li>
-                        <li><strong>Email:</strong> ${email}</li>
-                        <li><strong>Password:</strong> ${password}</li>
-                    </ul>
-                    <p>Please use these credentials to log in to your account.</p>
-                    <p>Best regards,<br>Your Company Name</p>
-                `
-            };
-
-            // Step 3: Send the email
-            transporter.sendMail(mailOptions, (err, info) => {
+        }
+        
+        // Also check if username already exists
+        const checkUsernameQuery = "SELECT * FROM EmployeeDetails WHERE USERNAME = ?";
+        
+        sqldb.query(checkUsernameQuery, [employee_uname], (usernameCheckErr, usernameCheckResult) => {
+            if (usernameCheckErr) {
+                console.error("Error checking existing username:", usernameCheckErr);
+                return res.status(500).json({ message: "Error checking username in database" });
+            }
+            
+            // If username already exists, return an error
+            if (usernameCheckResult && usernameCheckResult.length > 0) {
+                return res.status(409).json({ 
+                    message: "Username already taken. Please choose a different username.", 
+                    Status: "error" 
+                });
+            }
+            
+            // If email and username are unique, proceed with creating the employee account
+            // Hash the password
+            bcrypt.hash(password, saltRounds, (err, passwordHash) => {
                 if (err) {
-                    console.error("Error sending email:", err);
-                    return res.status(500).json({ 
-                        message: "Employee created successfully, but failed to send email", 
-                        Status: "Success" 
-                    });
+                    console.error("Error hashing password:", err);
+                    return res.status(500).json({ message: "Error hashing password" });
                 }
 
-                console.log("Email sent:", info.response);
+                // SQL query to insert a new employee into the database
+                const sql = `INSERT INTO EmployeeDetails 
+                            (USERNAME, EMAIL, F_NAME, L_NAME, PASSWORD, PHONE_NUM1, PHONE_NUM2, ENTRY_DATE, ROLE) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-                // Step 4: Send success response
-                res.status(200).json({ 
-                    message: "Employee created successfully and email sent", 
-                    Status: "Success"
+                const values = [
+                    employee_uname, // employee_uname
+                    email,          // email
+                    f_name,         // f_name
+                    l_name,         // l_name
+                    passwordHash,   // password (hashed)
+                    phone_1,        // phone_1
+                    phone_2,        // phone_2
+                    entry_date,     // entry_date
+                    role            // role
+                ];
+
+                // Execute the SQL query
+                sqldb.query(sql, values, (err, result) => {
+                    if (err) {
+                        console.error("Error inserting data:", err);
+                        return res.status(500).json({ message: "Error inserting data into the database" });
+                    }
+
+                    console.log("Employee added successfully");
+
+                    // Step 1: Create a Nodemailer transporter
+                    const transporter = nodemailer.createTransport({
+                        service: 'gmail', // Use your email service (e.g., Gmail, Outlook)
+                        auth: {
+                            user: process.env.EMAIL_USER, // Your email address
+                            pass: process.env.EMAIL_PASS, // Your email password or app password
+                        }
+                    });
+
+                    // Step 2: Define email content
+                    const mailOptions = {
+                        from: process.env.EMAIL_USER, // Sender email address
+                        to: email, // Recipient email address (employee's email)
+                        subject: 'Your Employee Account Details', // Email subject
+                        // You can also use `html` for a more visually appealing email
+                        html: `
+                            <h1>Hello ${f_name} ${l_name},</h1>
+                            <p>Your employee account has been successfully created. Below are your login details:</p>
+                            <ul>
+                                <li><strong>Username:</strong> ${employee_uname}</li>
+                                <li><strong>Email:</strong> ${email}</li>
+                                <li><strong>Password:</strong> ${password}</li>
+                            </ul>
+                            <p>Please use these credentials to log in to your account.</p>
+                            <p>Best regards,<br>Your Company Name</p>
+                        `
+                    };
+
+                    // Step 3: Send the email
+                    transporter.sendMail(mailOptions, (err, info) => {
+                        if (err) {
+                            console.error("Error sending email:", err);
+                            return res.status(500).json({ 
+                                message: "Employee created successfully, but failed to send email", 
+                                Status: "Success" 
+                            });
+                        }
+
+                        console.log("Email sent:", info.response);
+
+                        // Step 4: Send success response
+                        res.status(200).json({ 
+                            message: "Employee created successfully and email sent", 
+                            Status: "Success"
+                        });
+                    });
                 });
             });
         });
