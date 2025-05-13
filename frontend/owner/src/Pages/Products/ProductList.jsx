@@ -4,6 +4,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 
 import React, { useState } from 'react';
+import withAuth from '../withAuth';
 import './ProductList.css';
 import { FaSearch, FaEdit, FaTrash, FaSort, FaFilter, FaEye } from 'react-icons/fa';
 
@@ -234,4 +235,7 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+// export default ProductList;
+
+const AuthenticatedProductList = withAuth(ProductList);
+export default AuthenticatedProductList;
