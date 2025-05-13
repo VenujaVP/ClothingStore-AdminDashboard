@@ -13,7 +13,7 @@
 // npm install nodemailer
 // npm install mongodb mongoose
 
-import mongoose from 'mongoose'; // Import mongoose for MongoDB
+import {connectToDatabase} from './config/mongodb.js'; // MongoDB connection
 import sqldb from './config/sqldb.js'
 import authRoutes from './routes/authRoutes.js'
 import verifyUser from './middleware/authMiddleware.js';
