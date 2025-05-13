@@ -11,7 +11,7 @@
 // npm install mysql2 dotenv bcrypt jsonwebtoken express cors cookie-parser mongoose express-validator
 // npm install express-validator for validations = for Parameterized Queries:
 // npm install nodemailer
-// npm install mongodb mongoose
+// npm install mongodb mongoose multer
 
 import {connectToDatabase} from './config/mongodb.js'; // MongoDB connection
 import sqldb from './config/sqldb.js'

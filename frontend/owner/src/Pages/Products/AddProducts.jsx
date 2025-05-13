@@ -271,7 +271,6 @@ const handleSubmit = (e) => {
   };
 
 
-
   return (
     <div className="add-product-container">
       <div className="add-product-card">
