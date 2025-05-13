@@ -104,8 +104,8 @@ export const ownerCreateEmployee = (req, res) => {
 
 export const ownerCreateProduct = async (req, res) => {
   console.log(req.body);
+
   try {
-    // Extract form data from req.body (text fields)
     const {
       product_id,
       product_name,
@@ -122,12 +122,11 @@ export const ownerCreateProduct = async (req, res) => {
       product_variations,
     } = req.body;
 
-    // Parse product_variations if it's a string (from FormData)
-    const variations = typeof product_variations === 'string' 
-      ? JSON.parse(product_variations) 
+    // Handle product variations parsing
+    const variations = typeof product_variations === 'string'
+      ? JSON.parse(product_variations)
       : product_variations;
 
-    // Validation for empty fields
     if (!product_id || !product_name || !unit_price || !date_added || !category1 || !variations) {
       return res.status(400).json({ message: 'All required fields are missing' });
     }
@@ -136,8 +135,7 @@ export const ownerCreateProduct = async (req, res) => {
       return res.status(400).json({ message: 'At least one product variation is required' });
     }
 
-    // Start database operations
-    // 1. Insert product into SQL database
+    // Insert into product_table
     const insertProductQuery = `
       INSERT INTO product_table 
         (ProductID, ProductName, ProductDescription, UnitPrice, DateAdded, ShippingWeight, Category1, Category2, Category3, Material, FabricType, ReturnPolicy)
@@ -159,98 +157,91 @@ export const ownerCreateProduct = async (req, res) => {
       return_policy || null,
     ];
 
-    // Execute SQL product insertion
-    const productResult = await new Promise((resolve, reject) => {
-      sqldb.query(insertProductQuery, productValues, (err, result) => {
-        if (err) return reject(err);
-        resolve(result);
-      });
-    });
+    sqldb.query(insertProductQuery, productValues, async (err, result) => {
+      if (err) {
+        console.error('Error inserting product:', err);
+        return res.status(500).json({ message: 'Error inserting product' });
+      }
 
-    // 2. Insert product variations
+      // Insert each variation one by one (sync style)
+      for (const variation of variations) {
+        const { size, color, units } = variation;
 
-    // Insert product variations into product_variations table
-    // Loop through each variation and insert it
-    product_variations.forEach((variation) => {
-      const { size, color, units } = variation;
-
-      // Get SizeID and ColorID from sizes and colors tables
-      const getSizeIDQuery = 'SELECT SizeID FROM sizes WHERE SizeValue = ?';
-      const getColorIDQuery = 'SELECT ColorID FROM colors WHERE ColorValue = ?';
-
-      // Execute queries to get SizeID and ColorID
-      sqldb.query(getSizeIDQuery, [size], (err, sizeResult) => {
-        if (err) {
-          console.error('Error fetching SizeID:', err);
-          return res.status(500).json({ message: 'Error fetching SizeID' });
-        }
-
-        const SizeID = sizeResult[0]?.SizeID;
-        console.log('SizeID:', SizeID);
-
-        sqldb.query(getColorIDQuery, [color], (err, colorResult) => {
-          if (err) {
-            console.error('Error fetching ColorID:', err);
-            return res.status(500).json({ message: 'Error fetching ColorID' });
-          }
-
-          const ColorID = colorResult[0]?.ColorID;
-          console.log('ColorID:', ColorID);
-
-          // Insert the variation
-          const variationValues = [product_id, SizeID, ColorID, units];
-          console.log('Inserting variation:', variationValues);
-
-          const insertVariationQuery = `
-            INSERT INTO product_variations 
-              (ProductID, SizeID, ColorID, units)
-            VALUES (?, ?, ?, ?)
-          `;
-
-          sqldb.query(insertVariationQuery, variationValues, (err, variationResult) => {
-            if (err) {
-              console.error('Error inserting variation:', err);
-              return res.status(500).json({ message: 'Error inserting variation into the database' });
-            }
-            
-            console.log('Variation added successfully');
+        // Get SizeID
+        const sizeResult = await new Promise((resolve, reject) => {
+          sqldb.query('SELECT SizeID FROM sizes WHERE SizeValue = ?', [size], (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
           });
         });
+
+        if (sizeResult.length === 0) {
+          return res.status(400).json({ message: `Size '${size}' not found` });
+        }
+
+        const SizeID = sizeResult[0].SizeID;
+
+        // Get ColorID
+        const colorResult = await new Promise((resolve, reject) => {
+          sqldb.query('SELECT ColorID FROM colors WHERE ColorValue = ?', [color], (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+          });
+        });
+
+        if (colorResult.length === 0) {
+          return res.status(400).json({ message: `Color '${color}' not found` });
+        }
+
+        const ColorID = colorResult[0].ColorID;
+
+        // Insert variation
+        const variationValues = [product_id, SizeID, ColorID, units];
+        await new Promise((resolve, reject) => {
+          sqldb.query(
+            'INSERT INTO product_variations (ProductID, SizeID, ColorID, units) VALUES (?, ?, ?, ?)',
+            variationValues,
+            (err, result) => {
+              if (err) return reject(err);
+              resolve(result);
+            }
+          );
+        });
+      }
+
+      // Handle image uploads to MongoDB
+      if (req.files && req.files.length > 0) {
+        const { db } = await connectToDatabase();
+        const imagesCollection = db.collection('product_images');
+
+        const imagesToInsert = req.files.map((file, index) => ({
+          product_id,
+          image_name: file.originalname,
+          image_data: file.buffer.toString('base64'),
+          content_type: file.mimetype,
+          uploaded_at: new Date(),
+          is_primary: index === 0,
+          order: index + 1
+        }));
+
+        await imagesCollection.insertMany(imagesToInsert);
+      }
+
+      return res.status(200).json({
+        message: 'Product, variations, and images added successfully',
+        Status: 'Success'
       });
-    });
-
-    // 3. Handle image uploads to MongoDB if files exist
-    if (req.files && req.files.length > 0) {
-      const { db } = await connectToDatabase();
-      const imagesCollection = db.collection('product_images');
-
-      const imagesToInsert = req.files.map((file, index) => ({
-        product_id,
-        image_name: file.originalname,
-        image_data: file.buffer.toString('base64'), // Store as base64
-        content_type: file.mimetype,
-        uploaded_at: new Date(),
-        is_primary: index === 0, // Mark first image as primary
-        order: index + 1 // Maintain image order
-      }));
-
-      await imagesCollection.insertMany(imagesToInsert);
-    }
-
-    // Success response
-    res.status(200).json({ 
-      message: 'Product, variations, and images added successfully', 
-      Status: 'Success' 
     });
 
   } catch (error) {
     console.error('Error in product creation:', error);
-    res.status(500).json({ 
+    return res.status(500).json({
       message: error.message || 'Error processing product creation',
-      error: error 
+      error: error
     });
   }
 };
+
 
 export const ownerAddExpenses = (req, res) => {
     const { expenses_id, date, expenses_name, cost, description } = req.body;
