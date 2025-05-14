@@ -294,7 +294,7 @@ import sqldb from '../config/sqldb.js';
                       };
   
                       res.json(responseData);
-                      // console.log('Product details fetched successfully:', responseData);
+                      console.log('Product details fetched successfully:', responseData.product.variations);
                   }
               );
           }
