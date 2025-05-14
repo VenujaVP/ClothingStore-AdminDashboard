@@ -487,46 +487,52 @@ export const ownerCreateProduct = async (req, res) => {
       });
     }
 
-    // Handle image uploads if files are present
-    const uploadedImages = [];
+    // Handle image uploads if files are present - NEW STRUCTURE
+    const uploadedImagesSummary = [];
     if (req.files && req.files.length > 0) {
       try {
         console.log(`Processing ${req.files.length} images for product ID: ${product_id}`);
         const { db } = await connectToDatabase();
-        const productImagesCollection = db.collection('product_images');
+        const productsCollection = db.collection('products');
         
-        // Process each image file
-        for (let i = 0; i < req.files.length; i++) {
-          const file = req.files[i];
-          
-          // Convert image buffer to Base64 string
-          const imageBase64 = file.buffer.toString('base64');
-          
-          // Create image document
-          const imageDoc = {
-            product_id: product_id,
-            image_name: file.originalname,
-            image_data: imageBase64,
-            content_type: file.mimetype,
-            uploaded_at: new Date(),
-            is_primary: i === 0, // First image is primary by default
-            order: i + 1
-          };
-          
-          // Insert image document to MongoDB
-          const result = await productImagesCollection.insertOne(imageDoc);
-          console.log(`Image ${i+1} uploaded with ID: ${result.insertedId}`);
-          
-          // Add to uploaded images list (without storing the actual image data in response)
-          uploadedImages.push({
-            id: result.insertedId,
-            name: file.originalname,
-            is_primary: imageDoc.is_primary,
-            order: imageDoc.order
-          });
-        }
+        // Prepare images array
+        const imagesArray = req.files.map((file, index) => ({
+          image_name: file.originalname,
+          image_data: file.buffer.toString('base64'),
+          content_type: file.mimetype,
+          uploaded_at: new Date(),
+          is_primary: index === 0, // First image is primary by default
+          order: index + 1
+        }));
         
-        console.log(`Successfully uploaded ${uploadedImages.length} images to MongoDB`);
+        // Store images metadata for response (without the actual base64 data)
+        uploadedImagesSummary = imagesArray.map((img, index) => ({
+          name: img.image_name,
+          is_primary: img.is_primary,
+          order: img.order,
+          content_type: img.content_type
+        }));
+        
+        // Create or update product document with images
+        // Using product_id as the document _id
+        const result = await productsCollection.updateOne(
+          { _id: product_id },
+          { 
+            $set: {
+              name: product_name,
+              description: product_description || '',
+              price: parseFloat(unit_price),
+              updated_at: new Date()
+            },
+            $setOnInsert: { created_at: new Date() },
+            $push: { 
+              images: { $each: imagesArray }
+            }
+          },
+          { upsert: true }
+        );
+        
+        console.log(`Successfully stored ${imagesArray.length} images to MongoDB under product ID: ${product_id}`);
       } catch (imgError) {
         console.error('Error uploading images to MongoDB:', imgError);
         // Don't return here, continue with product creation even if image upload fails
@@ -586,7 +592,7 @@ export const ownerCreateProduct = async (req, res) => {
               Status: 'success',
               successCount: successfulVariations.length,
               failCount: failedVariations.length,
-              uploadedImages: uploadedImages.length > 0 ? uploadedImages : []
+              uploadedImages: uploadedImagesSummary.length > 0 ? uploadedImagesSummary : []
             });
           } else {
             // If no variations were successful, consider it a failure
@@ -595,7 +601,7 @@ export const ownerCreateProduct = async (req, res) => {
               message: 'Product was added but all variations failed',
               errors: failedVariations,
               Status: 'error',
-              uploadedImages: uploadedImages.length > 0 ? uploadedImages : []
+              uploadedImages: uploadedImagesSummary.length > 0 ? uploadedImagesSummary : []
             });
           }
         }
@@ -703,9 +709,6 @@ export const ownerCreateProduct = async (req, res) => {
     });
   }
 };
-
-
-
 
 export const getProductImages = async (req, res) => {
   try {
