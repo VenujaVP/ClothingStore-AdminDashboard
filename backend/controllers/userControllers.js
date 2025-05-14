@@ -3,6 +3,139 @@ import sqldb from '../config/sqldb.js';
 
 
 
+  export const searchProducts = async (req, res) => {
+      const { query } = req.body; // Get the search query from the request body
+    
+      if (!query) {
+        return res.status(400).json({ message: 'Search query is required' });
+      }
+    
+      try {
+        // Query to search for products by name, description, or categories
+        const searchProductsQuery = `
+          SELECT 
+            p.ProductID AS product_id,
+            p.ProductName AS product_name,
+            p.ProductDescription AS product_description,
+            p.UnitPrice AS unit_price,
+            p.FinalRating AS rating,
+            p.WishlistCount AS wishlist_count,
+            SUM(v.units) AS total_units
+          FROM product_table p
+          LEFT JOIN product_variations v ON p.ProductID = v.ProductID
+          WHERE 
+            p.ProductName LIKE ? OR 
+            p.ProductDescription LIKE ? OR
+            p.Category1 LIKE ? OR
+            p.Category2 LIKE ? OR
+            p.Category3 LIKE ?
+          GROUP BY p.ProductID
+        `;
+    
+        // Add wildcards for partial matching
+        const searchTerm = `%${query}%`;
+    
+        // Execute the query
+        sqldb.query(
+          searchProductsQuery,
+          [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm],
+          async (err, results) => {
+            if (err) {
+              console.error('Error searching products:', err);
+              return res.status(500).json({ message: 'Error searching products in the database' });
+            }
+    
+            if (results.length === 0) {
+              return res.status(200).json({ 
+                message: 'No products found matching your search', 
+                products: [] 
+              });
+            }
+    
+            // Extract product IDs for image fetching
+            const productIds = results.map(row => row.product_id);
+    
+            try {
+              // Connect to MongoDB to fetch images
+              const { db } = await connectToDatabase();
+              const productsCollection = db.collection('products');
+              
+              // Fetch images for all products in one query
+              const productsWithImages = await productsCollection.find(
+                { _id: { $in: productIds } },
+                { projection: { _id: 1, images: 1 } }
+              ).toArray();
+    
+              // Create a map of productId to its images for quick lookup
+              const imagesMap = {};
+              productsWithImages.forEach(product => {
+                imagesMap[product._id] = product.images || [];
+              });
+    
+              // Format the final response with product details and images
+              const products = results.map((row) => {
+                const productImages = imagesMap[row.product_id] || [];
+                
+                // Format images to include only necessary data (exclude base64 if present)
+                const formattedImages = productImages.map(img => ({
+                  url: img.url || (img.image_data ? `data:${img.content_type};base64,${img.image_data}` : null),
+                  thumbnail_url: img.thumbnail_url || null,
+                  content_type: img.content_type,
+                  is_primary: img.is_primary,
+                  alt_text: `${row.product_name} product image`
+                }));
+                
+                // Find primary image (or first image if none marked as primary)
+                const primaryImage = formattedImages.find(img => img.is_primary) || 
+                                  (formattedImages.length > 0 ? formattedImages[0] : null);
+                
+                return {
+                  product_id: row.product_id,
+                  product_name: row.product_name,
+                  product_description: row.product_description,
+                  unit_price: row.unit_price,
+                  rating: row.rating,
+                  wishlist_count: row.wishlist_count,
+                  total_units: row.total_units || 0,
+                  images: formattedImages,
+                  primary_image: primaryImage
+                };
+              });
+    
+              // Send the response
+              res.status(200).json({ 
+                message: 'Search results fetched successfully', 
+                products: products 
+              });
+            } catch (mongoError) {
+              console.error('Error fetching product images:', mongoError);
+              // If image fetch fails, still return products without images
+              const products = results.map((row) => ({
+                product_id: row.product_id,
+                product_name: row.product_name,
+                product_description: row.product_description,
+                unit_price: row.unit_price,
+                rating: row.rating,
+                wishlist_count: row.wishlist_count,
+                total_units: row.total_units || 0,
+                images: [],
+                primary_image: null
+              }));
+              
+              res.status(200).json({ 
+                message: 'Products fetched but images could not be loaded', 
+                products: products,
+                warning: 'Product images could not be loaded'
+              });
+            }
+          }
+        );
+      } catch (err) {
+        console.error('Error in searchProducts:', err);
+        res.status(500).json({ message: 'Internal server error' });
+      }
+  };
+
   export const filterProducts = async (req, res) => {
     const { cat1, cat2, cat3 } = req.body; // Get the category filters from the request body
   
@@ -270,7 +403,7 @@ import sqldb from '../config/sqldb.js';
             );
         }
     );
-};
+  };
 
 //------------------------------------------------------------------------------
 
