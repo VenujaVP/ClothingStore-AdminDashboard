@@ -7,7 +7,10 @@ import { connectToDatabase } from '../config/mongodb.js';
       const { query } = req.body; // Get the search query from the request body
     
       if (!query) {
-        return res.status(400).json({ message: 'Search query is required' });
+        return res.status(400).json({ 
+          message: 'Search query is required',
+          status: 'error'
+        });
       }
     
       try {
@@ -30,25 +33,31 @@ import { connectToDatabase } from '../config/mongodb.js';
             p.Category2 LIKE ? OR
             p.Category3 LIKE ?
           GROUP BY p.ProductID
+          LIMIT 50
         `;
     
         // Add wildcards for partial matching
         const searchTerm = `%${query}%`;
     
-        // Execute the query
+        // Execute the SQL query
         sqldb.query(
           searchProductsQuery,
           [searchTerm, searchTerm, searchTerm, searchTerm, searchTerm],
           async (err, results) => {
             if (err) {
               console.error('Error searching products:', err);
-              return res.status(500).json({ message: 'Error searching products in the database' });
+              return res.status(500).json({ 
+                message: 'Error searching products in the database',
+                status: 'error',
+                error: err.message
+              });
             }
     
             if (results.length === 0) {
               return res.status(200).json({ 
                 message: 'No products found matching your search', 
-                products: [] 
+                products: [],
+                status: 'success'
               });
             }
     
@@ -63,76 +72,89 @@ import { connectToDatabase } from '../config/mongodb.js';
               // Fetch images for all products in one query
               const productsWithImages = await productsCollection.find(
                 { _id: { $in: productIds } },
-                { projection: { _id: 1, images: 1 } }
+                { projection: { images: 1 } } // Only fetch images field
               ).toArray();
     
               // Create a map of productId to its images for quick lookup
-              const imagesMap = {};
+              const imagesMap = new Map();
               productsWithImages.forEach(product => {
-                imagesMap[product._id] = product.images || [];
+                imagesMap.set(product._id.toString(), product.images || []);
               });
     
               // Format the final response with product details and images
-              const products = results.map((row) => {
-                const productImages = imagesMap[row.product_id] || [];
+              const products = results.map((product) => {
+                const productImages = imagesMap.get(product.product_id) || [];
                 
-                // Format images to include only necessary data (exclude base64 if present)
+                // Format images to include only necessary data
                 const formattedImages = productImages.map(img => ({
-                  url: img.url || (img.image_data ? `data:${img.content_type};base64,${img.image_data}` : null),
-                  thumbnail_url: img.thumbnail_url || null,
+                  image_name: img.image_name,
+                  image_url: `data:${img.content_type};base64,${img.image_data}`,
                   content_type: img.content_type,
+                  uploaded_at: img.uploaded_at,
                   is_primary: img.is_primary,
-                  alt_text: `${row.product_name} product image`
-                }));
+                  order: img.order,
+                  alt_text: `${product.product_name} - ${img.image_name}`
+                })).sort((a, b) => a.order - b.order); // Sort by order field
                 
                 // Find primary image (or first image if none marked as primary)
                 const primaryImage = formattedImages.find(img => img.is_primary) || 
                                   (formattedImages.length > 0 ? formattedImages[0] : null);
                 
                 return {
-                  product_id: row.product_id,
-                  product_name: row.product_name,
-                  product_description: row.product_description,
-                  unit_price: row.unit_price,
-                  rating: row.rating,
-                  wishlist_count: row.wishlist_count,
-                  total_units: row.total_units || 0,
+                  product_id: product.product_id,
+                  product_name: product.product_name,
+                  product_description: product.product_description,
+                  unit_price: product.unit_price,
+                  rating: product.rating || 0,
+                  wishlist_count: product.wishlist_count || 0,
+                  total_units: product.total_units || 0,
                   images: formattedImages,
-                  primary_image: primaryImage
+                  primary_image: primaryImage,
+                  has_images: formattedImages.length > 0
                 };
               });
     
-              // Send the response
+              // Send the successful response
               res.status(200).json({ 
                 message: 'Search results fetched successfully', 
-                products: products 
+                products: products,
+                status: 'success',
+                count: products.length,
+                has_results: products.length > 0
               });
             } catch (mongoError) {
               console.error('Error fetching product images:', mongoError);
-              // If image fetch fails, still return products without images
-              const products = results.map((row) => ({
-                product_id: row.product_id,
-                product_name: row.product_name,
-                product_description: row.product_description,
-                unit_price: row.unit_price,
-                rating: row.rating,
-                wishlist_count: row.wishlist_count,
-                total_units: row.total_units || 0,
+              // If image fetch fails, return products without images
+              const products = results.map((product) => ({
+                product_id: product.product_id,
+                product_name: product.product_name,
+                product_description: product.product_description,
+                unit_price: product.unit_price,
+                rating: product.rating || 0,
+                wishlist_count: product.wishlist_count || 0,
+                total_units: product.total_units || 0,
                 images: [],
-                primary_image: null
+                primary_image: null,
+                has_images: false
               }));
               
               res.status(200).json({ 
                 message: 'Products fetched but images could not be loaded', 
                 products: products,
-                warning: 'Product images could not be loaded'
+                status: 'partial_success',
+                warning: 'Product images could not be loaded',
+                error: mongoError.message
               });
             }
           }
         );
       } catch (err) {
         console.error('Error in searchProducts:', err);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ 
+          message: 'Internal server error',
+          status: 'error',
+          error: err.message 
+        });
       }
   };
 
@@ -405,7 +427,9 @@ import { connectToDatabase } from '../config/mongodb.js';
     );
   };
 
+
 //------------------------------------------------------------------------------
+
 
 export const fetchCartItems = (req, res) => {
   const { userId } = req.params;
