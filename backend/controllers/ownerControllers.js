@@ -1,3 +1,5 @@
+//controllers/ownerControllers.js
+
 import bcrypt from 'bcrypt';
 import sqldb from '../config/sqldb.js';
 import nodemailer from 'nodemailer';
@@ -705,6 +707,9 @@ export const ownerCreateProduct = async (req, res) => {
     });
   }
 };
+
+
+
 
 export const getProductImages = async (req, res) => {
   try {
