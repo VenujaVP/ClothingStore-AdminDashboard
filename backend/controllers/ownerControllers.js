@@ -723,22 +723,24 @@ export const getProductImages = async (req, res) => {
     
     // Connect to MongoDB
     const { db } = await connectToDatabase();
-    const productImagesCollection = db.collection('product_images');
+    const productsCollection = db.collection('products');
     
-    // Find images for the product
-    const images = await productImagesCollection.find({ 
-      product_id: productId 
-    }).sort({ 
-      is_primary: -1, // Primary images first
-      order: 1        // Then by order
-    }).toArray();
+    // Find the product document by its ID
+    const product = await productsCollection.findOne({ _id: productId });
+    
+    if (!product || !product.images || product.images.length === 0) {
+      return res.status(404).json({
+        message: 'No images found for this product',
+        Status: 'error'
+      });
+    }
     
     // Return images (with or without image data depending on query param)
     const includeData = req.query.includeData === 'true';
     
-    const formattedImages = images.map(img => ({
-      id: img._id,
-      product_id: img.product_id,
+    // Map and format the image data
+    const formattedImages = product.images.map((img, index) => ({
+      index: index,
       image_name: img.image_name,
       content_type: img.content_type,
       uploaded_at: img.uploaded_at,
@@ -750,6 +752,7 @@ export const getProductImages = async (req, res) => {
     
     res.status(200).json({
       status: 'success',
+      product_id: productId,
       count: formattedImages.length,
       images: formattedImages
     });
@@ -820,31 +823,32 @@ export const getProductWithImages = async (req, res) => {
           });
         }
         
-        // Step 3: Get product images from MongoDB
+        // Step 3: Get product images from MongoDB (updated for new schema)
         try {
           const { db } = await connectToDatabase();
-          const productImagesCollection = db.collection('product_images');
+          const productsCollection = db.collection('products');
           
-          // Find images for the product
-          const images = await productImagesCollection.find({ 
-            product_id: productId 
-          }).sort({ 
-            is_primary: -1, // Primary images first
-            order: 1        // Then by order
-          }).toArray();
+          // Find the product document
+          const productDoc = await productsCollection.findOne({ _id: productId });
           
-          console.log(`Found ${images.length} images for product ${productId}`);
+          let formattedImages = [];
           
-          // Format image data - exclude actual binary data to keep response smaller
-          const formattedImages = images.map(img => ({
-            id: img._id,
-            image_name: img.image_name,
-            content_type: img.content_type,
-            is_primary: img.is_primary,
-            order: img.order,
-            // Create a URL to access this image (assuming you'll create this endpoint)
-            image_url: `/api/products/images/${img._id}`
-          }));
+          if (productDoc && productDoc.images && productDoc.images.length > 0) {
+            console.log(`Found ${productDoc.images.length} images for product ${productId}`);
+            
+            // Format image data - exclude actual binary data to keep response smaller
+            formattedImages = productDoc.images.map((img, index) => ({
+              index: index,
+              image_name: img.image_name,
+              content_type: img.content_type,
+              is_primary: img.is_primary,
+              order: img.order,
+              // Create a URL to access this image
+              image_url: `/api/products/${productId}/images/${index}`
+            }));
+          } else {
+            console.log(`No images found for product ${productId}`);
+          }
           
           // Combine all data into a single response
           res.status(200).json({
@@ -852,7 +856,7 @@ export const getProductWithImages = async (req, res) => {
             product: {
               ...product,
               variations: variationsResult || [],
-              images: formattedImages || []
+              images: formattedImages
             }
           });
           
@@ -884,27 +888,35 @@ export const getProductWithImages = async (req, res) => {
 
 export const getProductImageById = async (req, res) => {
   try {
-    const { imageId } = req.params;
+    const { productId, imageIndex } = req.params;
     
-    if (!imageId) {
+    if (!productId || imageIndex === undefined) {
       return res.status(400).json({
-        message: 'Image ID is required',
+        message: 'Product ID and image index are required',
         Status: 'error'
       });
     }
     
     // Connect to MongoDB
     const { db } = await connectToDatabase();
-    const productImagesCollection = db.collection('product_images');
+    const productsCollection = db.collection('products');
     
-    // Find the specific image by ID
-    const image = await productImagesCollection.findOne({ 
-      _id: new ObjectId(imageId) 
-    });
+    // Find the product document
+    const product = await productsCollection.findOne({ _id: productId });
+    
+    if (!product || !product.images || product.images.length === 0) {
+      return res.status(404).json({
+        message: 'Product or images not found',
+        Status: 'error'
+      });
+    }
+    
+    const index = parseInt(imageIndex);
+    const image = product.images[index];
     
     if (!image) {
       return res.status(404).json({
-        message: 'Image not found',
+        message: 'Image not found at specified index',
         Status: 'error'
       });
     }
@@ -920,7 +932,7 @@ export const getProductImageById = async (req, res) => {
     res.send(imageBuffer);
     
   } catch (error) {
-    console.error('Error fetching product image by ID:', error);
+    console.error('Error fetching product image:', error);
     res.status(500).json({
       message: 'Error fetching image',
       error: error.message,
