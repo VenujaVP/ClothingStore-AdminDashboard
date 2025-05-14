@@ -487,15 +487,17 @@ export const ownerCreateProduct = async (req, res) => {
       });
     }
 
-    // Handle image uploads if files are present - NEW STRUCTURE
-    const uploadedImagesSummary = [];
+    // Handle image uploads if files are present
+    let uploadedImagesSummary = [];
     if (req.files && req.files.length > 0) {
       try {
         console.log(`Processing ${req.files.length} images for product ID: ${product_id}`);
+        
+        // Connect to MongoDB
         const { db } = await connectToDatabase();
         const productsCollection = db.collection('products');
         
-        // Prepare images array
+        // Create image objects for each uploaded file
         const imagesArray = req.files.map((file, index) => ({
           image_name: file.originalname,
           image_data: file.buffer.toString('base64'),
@@ -505,28 +507,22 @@ export const ownerCreateProduct = async (req, res) => {
           order: index + 1
         }));
         
-        // Store images metadata for response (without the actual base64 data)
-        uploadedImagesSummary = imagesArray.map((img, index) => ({
+        // Create metadata for response (without base64 data)
+        uploadedImagesSummary = imagesArray.map(img => ({
           name: img.image_name,
+          content_type: img.content_type,
           is_primary: img.is_primary,
-          order: img.order,
-          content_type: img.content_type
+          order: img.order
         }));
         
-        // Create or update product document with images
-        // Using product_id as the document _id
+        // Create or update product document with ONLY the _id and images array
         const result = await productsCollection.updateOne(
           { _id: product_id },
-          { 
-            $set: {
-              name: product_name,
-              description: product_description || '',
-              price: parseFloat(unit_price),
-              updated_at: new Date()
-            },
+          {
             $setOnInsert: { created_at: new Date() },
+            $set: { updated_at: new Date() },
             $push: { 
-              images: { $each: imagesArray }
+              images: { $each: imagesArray } 
             }
           },
           { upsert: true }
@@ -535,11 +531,11 @@ export const ownerCreateProduct = async (req, res) => {
         console.log(`Successfully stored ${imagesArray.length} images to MongoDB under product ID: ${product_id}`);
       } catch (imgError) {
         console.error('Error uploading images to MongoDB:', imgError);
-        // Don't return here, continue with product creation even if image upload fails
+        // Continue with product creation even if image upload fails
       }
     }
 
-    // Insert product into product_table
+    // Insert product into MySQL product_table
     const insertProductQuery = `
       INSERT INTO product_table 
         (ProductID, ProductName, ProductDescription, UnitPrice, DateAdded, ShippingWeight, Category1, Category2, Category3, Material, FabricType, ReturnPolicy)
@@ -574,11 +570,11 @@ export const ownerCreateProduct = async (req, res) => {
 
       console.log('Product base data inserted successfully');
       
-      // Create an array to track successful variations
+      // Create arrays to track variations processing
       let successfulVariations = [];
       let failedVariations = [];
       
-      // Define the recursive function to process variations one by one
+      // Process variations recursively to handle async operations properly
       const processVariation = (index) => {
         // Base case: all variations processed
         if (index >= product_variations.length) {
