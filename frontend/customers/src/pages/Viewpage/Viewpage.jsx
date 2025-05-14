@@ -114,14 +114,21 @@
             >
               <div className="vp-square-image-container">
                 <img 
-                  src="https://via.placeholder.com/200" 
+                  src={product.primary_image ? product.primary_image.image_url : "https://via.placeholder.com/200"} 
                   alt={product.product_name} 
                   className="vp-product-image" 
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://via.placeholder.com/200";
+                  }}
                 />
                 {/* Favorite (heart) icon */}
                 <div 
                   className="vp-favorite-icon" 
-                  onClick={() => toggleFavorite(product.product_id)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering parent click
+                    toggleFavorite(product.product_id);
+                  }}
                 >
                   {favorites[product.product_id] ? (
                     <RiHeartFill className="vp-heart-icon vp-heart-icon-filled" />
@@ -130,7 +137,12 @@
                   )}
                 </div>
                 {/* Shopping cart icon */}
-                <div className="vp-cart-icon">
+                <div 
+                  className="vp-cart-icon"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering parent click
+                  }}
+                >
                   <FaShoppingCart className="vp-cart-icon" />
                 </div>
               </div>
