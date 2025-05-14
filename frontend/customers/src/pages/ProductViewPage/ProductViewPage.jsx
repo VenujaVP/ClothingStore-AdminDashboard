@@ -13,6 +13,8 @@ import { FaShoppingCart, FaStar, FaRegStar, FaChevronLeft } from 'react-icons/fa
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './ProductViewPage.css';
+// Import a local placeholder image
+import placeholderImage from '../../assets/placeholder.png'; // Adjust the path to match your project structure
 
 const ProductViewPage = ({ userId }) => {
   console.log("Current user ID fuck:", userId);
@@ -131,30 +133,29 @@ const ProductViewPage = ({ userId }) => {
         throw new Error('Invalid price values');
       }
   
-      const orderData = {
-        productId: product.product_id, // Using product_id from API response
+      // Create cart item object
+      const cartItem = {
+        cartItemId: `direct-${Date.now()}`, // Generate a temporary ID for direct purchases
+        productId: product.product_id,
         productName: product.product_name,
-        variationId: selectedVariation.VariationID, // Using VariationID from API
+        variationId: selectedVariation.VariationID,
         size: selectedSize,
         color: selectedColor,
         quantity: quantity,
         unitPrice: unitPrice,
         totalPrice: totalPrice,
-        image: product.images[0],
-        variationDetails: {
-          inStock: selectedVariation.in_stock,
-          availableQuantity: selectedVariation.quantity
-        },
-        productDetails: {
-          material: product.material,
-          fabricType: product.fabric_type,
-          shippingWeight: product.shipping_weight,
-          returnPolicy: product.return_policy
-        }
+        imageUrl: product.images[0], // Use the first image as the product image
       };
   
-      console.log('Navigating with order data:', orderData);
-      navigate('/user-pre-payment-page', { state: orderData });
+      console.log('Navigating with cart item:', cartItem);
+      
+      // Pass data in the format PrePaymentPage expects
+      navigate('/user-pre-payment-page', { 
+        state: {
+          cart: [cartItem], // Create an array with a single item
+          fromBuyNow: true  // Flag to indicate this is a direct purchase
+        }
+      });
     } catch (error) {
       console.error('Error in buyNow:', error);
       toast.error('Failed to proceed to checkout');
@@ -309,7 +310,7 @@ const ProductViewPage = ({ userId }) => {
             className="main-image"
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = "https://via.placeholder.com/500";
+              e.target.src = placeholderImage; // Use the imported placeholder image
             }}
           />
           <div className="thumbnail-images">
@@ -322,7 +323,7 @@ const ProductViewPage = ({ userId }) => {
                 onClick={() => changeImage(index)}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "https://via.placeholder.com/100";
+                  e.target.src = placeholderImage; // Use the imported placeholder image
                 }}
               />
             ))}

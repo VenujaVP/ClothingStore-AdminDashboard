@@ -28,6 +28,7 @@
   import { RiHeartLine, RiHeartFill } from 'react-icons/ri'; // Heart icons from react-icons/ri
   import { FaShoppingCart } from 'react-icons/fa'; // Shopping cart icon from react-icons/fa
   import './Viewpage.css';
+  import placeholderImage from '../../assets/placeholder.png'; // Adjust the path as needed
   
   const Viewpage = ({ userId }) => {
     console.log("Current user ID :", userId);
@@ -114,12 +115,12 @@
             >
               <div className="vp-square-image-container">
                 <img 
-                  src={product.primary_image ? product.primary_image.image_url : "https://via.placeholder.com/200"} 
+                  src={product.primary_image ? product.primary_image.image_url : placeholderImage} 
                   alt={product.product_name} 
                   className="vp-product-image" 
                   onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://via.placeholder.com/200";
+                    e.target.onerror = null; // Prevent infinite loop
+                    e.target.src = placeholderImage;
                   }}
                 />
                 {/* Favorite (heart) icon */}
