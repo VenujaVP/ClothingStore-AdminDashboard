@@ -1,6 +1,6 @@
 //conrrollers/userControllers.js
 import sqldb from '../config/sqldb.js';
-
+import { connectToDatabase } from '../config/mongodb.js';
 
 
   export const searchProducts = async (req, res) => {
