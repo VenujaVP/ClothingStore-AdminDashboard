@@ -235,115 +235,188 @@ import { connectToDatabase } from '../config/mongodb.js';
     }
   };
 
-  export const fetchProductDetails = (req, res) => {
-      const { productId } = req.params;
-      console.log('Fetching details for product ID:', productId);
-  
-      // 1. Fetch main product details
-      sqldb.query(
+  export const fetchProductDetails = async (req, res) => {
+  const { productId } = req.params;
+  console.log('Fetching details for product ID:', productId);
+
+  try {
+    // 1. Fetch main product details
+    sqldb.query(
+      `SELECT 
+        p.*,
+        GROUP_CONCAT(DISTINCT c.ColorValue) AS colors,
+        GROUP_CONCAT(DISTINCT s.SizeValue) AS sizes
+      FROM 
+        product_table p
+      LEFT JOIN 
+        product_variations pv ON p.ProductID = pv.ProductID
+      LEFT JOIN 
+        colors c ON pv.ColorID = c.ColorID
+      LEFT JOIN 
+        sizes s ON pv.SizeID = s.SizeID
+      WHERE 
+        p.ProductID = ?
+      GROUP BY 
+        p.ProductID`,
+      [productId],
+      async (err, productRows) => {
+        if (err) {
+          console.error('Error fetching product:', err);
+          return res.status(500).json({
+            success: false,
+            message: 'Database error',
+            error: err.message
+          });
+        }
+
+        if (productRows.length === 0) {
+          return res.status(404).json({
+            success: false,
+            message: 'Product not found'
+          });
+        }
+
+        const product = productRows[0];
+
+        // 2. Fetch variations with inventory
+        sqldb.query(
           `SELECT 
-              p.*,
-              GROUP_CONCAT(DISTINCT c.ColorValue) AS colors,
-              GROUP_CONCAT(DISTINCT s.SizeValue) AS sizes
+            pv.VariationID,
+            s.SizeValue AS size,
+            c.ColorValue AS color,
+            pv.units AS quantity,
+            pv.units > 0 AS in_stock
           FROM 
-              product_table p
-          LEFT JOIN 
-              product_variations pv ON p.ProductID = pv.ProductID
-          LEFT JOIN 
-              colors c ON pv.ColorID = c.ColorID
-          LEFT JOIN 
-              sizes s ON pv.SizeID = s.SizeID
+            product_variations pv
+          JOIN 
+            sizes s ON pv.SizeID = s.SizeID
+          JOIN 
+            colors c ON pv.ColorID = c.ColorID
           WHERE 
-              p.ProductID = ?
-          GROUP BY 
-              p.ProductID`,
+            pv.ProductID = ?`,
           [productId],
-          (err, productRows) => {
-              if (err) {
-                  console.error('Error fetching product:', err);
-                  return res.status(500).json({
-                      success: false,
-                      message: 'Database error',
-                      error: err.message
-                  });
-              }
-  
-              if (productRows.length === 0) {
-                  return res.status(404).json({
-                      success: false,
-                      message: 'Product not found'
-                  });
-              }
-  
-              const product = productRows[0];
-  
-              // 2. Fetch variations with inventory
-              sqldb.query(
-                  `SELECT 
-                      pv.VariationID,
-                      s.SizeValue AS size,
-                      c.ColorValue AS color,
-                      pv.units AS quantity,
-                      pv.units > 0 AS in_stock
-                  FROM 
-                      product_variations pv
-                  JOIN 
-                      sizes s ON pv.SizeID = s.SizeID
-                  JOIN 
-                      colors c ON pv.ColorID = c.ColorID
-                  WHERE 
-                      pv.ProductID = ?`,
-                  [productId],
-                  (err, variations) => {
-                      if (err) {
-                          console.error('Error fetching variations:', err);
-                          return res.status(500).json({
-                              success: false,
-                              message: 'Database error',
-                              error: err.message
-                          });
-                      }
-  
-                      // 3. Fetch images (placeholder - implement your actual image table)
-                      const imageUrls = [
-                          'https://via.placeholder.com/500',
-                          'https://via.placeholder.com/500'
-                      ];
-  
-                      // 4. Prepare response
-                      const responseData = {
-                          success: true,
-                          product: {
-                              product_id: product.ProductID,
-                              product_name: product.ProductName,
-                              product_description: product.ProductDescription,
-                              unit_price: product.UnitPrice,
-                              original_price: product.UnitPrice * 1.2, // Example markup
-                              material: product.Material,
-                              fabric_type: product.FabricType,
-                              shipping_weight: product.ShippingWeight,
-                              return_policy: product.ReturnPolicy,
-                              wishlist_count: product.WishlistCount,
-                              rating: product.FinalRating || 0,
-                              total_units: variations.reduce((sum, v) => sum + v.quantity, 0),
-                              main_image: imageUrls[0],
-                              image_urls: imageUrls,
-                              variations: variations,
-                              sizes: product.sizes ? product.sizes.split(',') : [],
-                              colors: product.colors ? product.colors.split(',') : [],
-                              Category1: product.Category1,
-                              Category2: product.Category2,
-                              Category3: product.Category3
-                          }
-                      };
-  
-                      res.json(responseData);
-                      console.log('Product details fetched successfully:', responseData.product.variations);
-                  }
+          async (err, variations) => {
+            if (err) {
+              console.error('Error fetching variations:', err);
+              return res.status(500).json({
+                success: false,
+                message: 'Database error',
+                error: err.message
+              });
+            }
+
+            // 3. Fetch images from MongoDB
+            try {
+              const { db } = await connectToDatabase();
+              const productsCollection = db.collection('products');
+              
+              // Fetch the product document with images
+              const productWithImages = await productsCollection.findOne(
+                { _id: productId },
+                { projection: { images: 1 } }
               );
+              
+              // Format images to include only necessary data
+              let formattedImages = [];
+              let imageUrls = [];
+              
+              if (productWithImages && productWithImages.images) {
+                formattedImages = productWithImages.images.map(img => ({
+                  image_name: img.image_name,
+                  image_url: `data:${img.content_type};base64,${img.image_data}`,
+                  content_type: img.content_type,
+                  uploaded_at: img.uploaded_at,
+                  is_primary: img.is_primary,
+                  order: img.order,
+                  alt_text: `${product.ProductName} - ${img.image_name}`
+                })).sort((a, b) => a.order - b.order);
+                
+                // Extract just the URLs for the frontend
+                imageUrls = formattedImages.map(img => img.image_url);
+              }
+              
+              // If no images found, provide placeholders
+              if (imageUrls.length === 0) {
+                imageUrls = ['https://via.placeholder.com/500'];
+              }
+
+              // 4. Prepare response
+              const responseData = {
+                success: true,
+                product: {
+                  product_id: product.ProductID,
+                  product_name: product.ProductName,
+                  product_description: product.ProductDescription,
+                  unit_price: product.UnitPrice,
+                  original_price: product.UnitPrice * 1.2, // Example markup
+                  material: product.Material,
+                  fabric_type: product.FabricType,
+                  shipping_weight: product.ShippingWeight,
+                  return_policy: product.ReturnPolicy,
+                  wishlist_count: product.WishlistCount,
+                  rating: product.FinalRating || 0,
+                  total_units: variations.reduce((sum, v) => sum + v.quantity, 0),
+                  main_image: imageUrls[0],
+                  image_urls: imageUrls,
+                  images: formattedImages,
+                  variations: variations,
+                  sizes: product.sizes ? product.sizes.split(',') : [],
+                  colors: product.colors ? product.colors.split(',') : [],
+                  Category1: product.Category1,
+                  Category2: product.Category2,
+                  Category3: product.Category3
+                }
+              };
+
+              res.json(responseData);
+              console.log('Product details fetched successfully with images');
+            } catch (mongoError) {
+              console.error('Error fetching product images:', mongoError);
+              
+              // Fall back to placeholder images if MongoDB connection fails
+              const responseData = {
+                success: true,
+                product: {
+                  product_id: product.ProductID,
+                  product_name: product.ProductName,
+                  product_description: product.ProductDescription,
+                  unit_price: product.UnitPrice,
+                  original_price: product.UnitPrice * 1.2, // Example markup
+                  material: product.Material,
+                  fabric_type: product.FabricType,
+                  shipping_weight: product.ShippingWeight,
+                  return_policy: product.ReturnPolicy,
+                  wishlist_count: product.WishlistCount,
+                  rating: product.FinalRating || 0,
+                  total_units: variations.reduce((sum, v) => sum + v.quantity, 0),
+                  main_image: 'https://via.placeholder.com/500',
+                  image_urls: ['https://via.placeholder.com/500'],
+                  variations: variations,
+                  sizes: product.sizes ? product.sizes.split(',') : [],
+                  colors: product.colors ? product.colors.split(',') : [],
+                  Category1: product.Category1,
+                  Category2: product.Category2,
+                  Category3: product.Category3,
+                  image_error: mongoError.message
+                }
+              };
+              
+              res.json(responseData);
+              console.log('Product details fetched but images could not be loaded');
+            }
           }
-      );
-  };
+        );
+      }
+    );
+  } catch (err) {
+    console.error('Error in fetchProductDetails:', err);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Internal server error',
+      error: err.message 
+    });
+  }
+};
 
   export const addToCart = (req, res) => {
     console.log('Adding item to cart:', req.body);

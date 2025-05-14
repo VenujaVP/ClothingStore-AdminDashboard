@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import withAuth from '../withAuth';
-import { FaChevronLeft, FaShoppingCart, FaTimes, FaArrowRight } from 'react-icons/fa';
+import { FaChevronLeft, FaShoppingCart, FaTimes, FaArrowRight, FaMapMarkerAlt, FaEdit } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './PrePaymentPage.css';
@@ -34,8 +34,8 @@ const PrePaymentPage = ({ userId }) => {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [currentStep, setCurrentStep] = useState(1); // 1: Shipping, 2: Payment, 3: Confirmation
+  const [showAllAddresses, setShowAllAddresses] = useState(false);
 
-  // Initialize order items from location state
   useEffect(() => {
     if (!location.state) {
       toast.error('No order information found');
@@ -43,13 +43,11 @@ const PrePaymentPage = ({ userId }) => {
       return;
     }
 
-    // Handle both single item and multiple items
     const items = Array.isArray(location.state) ? location.state : [location.state];
     setOrderItems(items);
     setLoading(false);
   }, [location, navigate]);
 
-  // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
       if (!userId) {
@@ -59,25 +57,21 @@ const PrePaymentPage = ({ userId }) => {
       }
 
       try {
-        // Fetch user addresses
         const addressesResponse = await axios.get(`http://localhost:8082/api/user/addresses/${userId}`);
         
         if (addressesResponse.data.success) {
           setAddresses(addressesResponse.data.addresses || []);
           
-          // Set default address if available
           const defaultAddress = addressesResponse.data.addresses.find(address => address.is_default);
           if (defaultAddress) {
             setSelectedAddress(defaultAddress.address_id.toString());
           } else if (addressesResponse.data.addresses.length > 0) {
-            // If no default address, select the first one
             setSelectedAddress(addressesResponse.data.addresses[0].address_id.toString());
           }
         } else {
           console.error('Failed to fetch addresses:', addressesResponse.data.message);
         }
         
-        // Fetch delivery options (placeholder for now)
         const mockDeliveryOptions = [
           { _id: 'standard', name: 'Standard Delivery', cost: 350, estimatedDays: '3-5' },
           { _id: 'express', name: 'Express Delivery', cost: 650, estimatedDays: '1-2' }
@@ -85,7 +79,6 @@ const PrePaymentPage = ({ userId }) => {
         setDeliveryOptions(mockDeliveryOptions);
         setSelectedDelivery('standard');
         
-        // Fetch payment methods (placeholder for now)
         const mockPaymentMethods = [
           { _id: 'cod', name: 'Cash on Delivery', description: 'Pay when your order arrives' },
           { _id: 'card', name: 'Credit/Debit Card', description: 'Secure online payment' }
@@ -125,7 +118,6 @@ const PrePaymentPage = ({ userId }) => {
   };
 
   const saveNewAddress = async () => {
-    // Validation
     if (!newAddress.contact_name || !newAddress.mobile_number || 
         !newAddress.street_address || !newAddress.province || 
         !newAddress.district || !newAddress.zip_code) {
@@ -149,16 +141,12 @@ const PrePaymentPage = ({ userId }) => {
       if (response.data.success) {
         toast.success('Address added successfully');
         
-        // Refresh addresses
         const addressesResponse = await axios.get(`http://localhost:8082/api/user/addresses/${userId}`);
         if (addressesResponse.data.success) {
           setAddresses(addressesResponse.data.addresses);
-          
-          // Select the newly added address
           setSelectedAddress(response.data.address_id.toString());
         }
         
-        // Reset form and hide it
         setNewAddress({
           contact_name: '',
           mobile_number: '',
@@ -201,11 +189,7 @@ const PrePaymentPage = ({ userId }) => {
       return;
     }
     
-    // In a real implementation, you would move to the payment page
-    // For now, we'll just update the current step
     setCurrentStep(2);
-    
-    // For this demo, we'll proceed directly to placing the order
     placeOrder();
   };
 
@@ -233,11 +217,6 @@ const PrePaymentPage = ({ userId }) => {
         status: 'pending'
       };
 
-      // Mock the order placement for now
-      // In a real implementation, you would have API call like:
-      // const response = await axios.post('http://localhost:8082/api/orders', orderData);
-      
-      // Simulate successful order placement
       setTimeout(() => {
         toast.success('Order placed successfully!');
         navigate('/order-confirmation', { 
@@ -256,6 +235,109 @@ const PrePaymentPage = ({ userId }) => {
       toast.error(err.response?.data?.message || 'Failed to place order');
       setProcessing(false);
     }
+  };
+
+  const getSelectedAddressObject = () => {
+    if (!addresses || addresses.length === 0) return null;
+    return addresses.find(addr => addr.address_id.toString() === selectedAddress);
+  };
+
+  const renderShippingAddressSection = () => {
+    if (!addresses || addresses.length === 0) {
+      return (
+        <section className="checkout-section">
+          <h2>Shipping Address</h2>
+          <p className="no-address">No saved addresses found.</p>
+          <button 
+            className="add-address-btn"
+            onClick={() => setShowAddressForm(true)}
+          >
+            <FaMapMarkerAlt /> Add New Address
+          </button>
+        </section>
+      );
+    }
+
+    const selectedAddressObj = getSelectedAddressObject();
+
+    return (
+      <section className="checkout-section">
+        <h2>Shipping Address</h2>
+        
+        {selectedAddressObj && !showAllAddresses && (
+          <div className="selected-address">
+            {selectedAddressObj.is_default && 
+              <span className="selected-address-badge">Default</span>
+            }
+            <div className="address-details">
+              <p><strong>{selectedAddressObj.contact_name}</strong> • {selectedAddressObj.mobile_number}</p>
+              <p>{selectedAddressObj.street_address}</p>
+              {selectedAddressObj.apt_suite_unit && <p>{selectedAddressObj.apt_suite_unit}</p>}
+              <p>{selectedAddressObj.district}, {selectedAddressObj.province}</p>
+              <p>{selectedAddressObj.zip_code}</p>
+            </div>
+            <div className="address-actions">
+              <button 
+                className="change-address-btn"
+                onClick={() => setShowAllAddresses(true)}
+              >
+                <FaEdit /> Change Address
+              </button>
+              <button 
+                className="add-address-btn"
+                onClick={() => setShowAddressForm(true)}
+              >
+                <FaMapMarkerAlt /> Add New Address
+              </button>
+            </div>
+          </div>
+        )}
+
+        {showAllAddresses && (
+          <>
+            <div className="address-options">
+              {addresses.map(address => (
+                <div key={address.address_id} className="address-option">
+                  <input
+                    type="radio"
+                    id={`address-${address.address_id}`}
+                    name="address"
+                    value={address.address_id}
+                    checked={selectedAddress === address.address_id.toString()}
+                    onChange={handleAddressChange}
+                  />
+                  <label htmlFor={`address-${address.address_id}`}>
+                    <div className="address-details">
+                      <p><strong>{address.contact_name}</strong> • {address.mobile_number}</p>
+                      <p>{address.street_address}</p>
+                      {address.apt_suite_unit && <p>{address.apt_suite_unit}</p>}
+                      <p>{address.district}, {address.province}</p>
+                      <p>{address.zip_code}</p>
+                      {address.is_default && <span className="default-badge">Default</span>}
+                    </div>
+                  </label>
+                </div>
+              ))}
+            </div>
+
+            <div className="address-actions">
+              <button 
+                className="confirm-address-btn"
+                onClick={() => setShowAllAddresses(false)}
+              >
+                Confirm Address
+              </button>
+              <button 
+                className="add-address-btn"
+                onClick={() => setShowAddressForm(true)}
+              >
+                <FaMapMarkerAlt /> Add New Address
+              </button>
+            </div>
+          </>
+        )}
+      </section>
+    );
   };
 
   if (loading) {
@@ -280,7 +362,6 @@ const PrePaymentPage = ({ userId }) => {
 
   return (
     <div className="pre-payment-page">
-      {/* Address Form Modal */}
       {showAddressForm && (
         <div className="modal-overlay">
           <div className="address-modal">
@@ -415,7 +496,6 @@ const PrePaymentPage = ({ userId }) => {
         </div>
 
         <div className="checkout-content">
-          {/* Order Summary Section */}
           <div className="order-summary">
             <h2>Order Summary ({orderItems.length} {orderItems.length > 1 ? 'items' : 'item'})</h2>
             
@@ -455,100 +535,60 @@ const PrePaymentPage = ({ userId }) => {
             </div>
           </div>
 
-          {/* Shipping and Payment Sections */}
           <div className="checkout-sections">
-            {/* Shipping Address Section */}
-            <section className="checkout-section">
-              <h2>Shipping Address</h2>
-              {addresses.length > 0 ? (
-                <div className="address-options">
-                  {addresses.map(address => (
-                    <div key={address.address_id} className="address-option">
+            {renderShippingAddressSection()}
+
+            <div className="compact-sections-container">
+              <section className="checkout-section compact-section">
+                <h2>Delivery Method</h2>
+                <div className="delivery-options compact">
+                  {deliveryOptions.map(option => (
+                    <div key={option._id} className="delivery-option compact">
                       <input
                         type="radio"
-                        id={`address-${address.address_id}`}
-                        name="address"
-                        value={address.address_id}
-                        checked={selectedAddress === address.address_id.toString()}
-                        onChange={handleAddressChange}
+                        id={`delivery-${option._id}`}
+                        name="delivery"
+                        value={option._id}
+                        checked={selectedDelivery === option._id}
+                        onChange={handleDeliveryChange}
                       />
-                      <label htmlFor={`address-${address.address_id}`}>
-                        <div className="address-details">
-                          <p><strong>{address.contact_name}</strong> • {address.mobile_number}</p>
-                          <p>{address.street_address}</p>
-                          {address.apt_suite_unit && <p>{address.apt_suite_unit}</p>}
-                          <p>{address.district}, {address.province}</p>
-                          <p>{address.zip_code}</p>
-                          {address.is_default && <span className="default-badge">Default</span>}
+                      <label htmlFor={`delivery-${option._id}`}>
+                        <div className="delivery-details">
+                          <span className="delivery-name">{option.name}</span>
+                          <span className="delivery-time">({option.estimatedDays} days)</span>
+                          <span className="delivery-cost">LKR {option.cost.toFixed(2)}</span>
                         </div>
                       </label>
                     </div>
                   ))}
                 </div>
-              ) : (
-                <p className="no-address">No saved addresses found.</p>
-              )}
+              </section>
 
-              <button 
-                className="add-address-btn"
-                onClick={() => setShowAddressForm(true)}
-              >
-                + Add New Address
-              </button>
-            </section>
+              <section className="checkout-section compact-section">
+                <h2>Payment Method</h2>
+                <div className="payment-options compact">
+                  {paymentMethods.map(method => (
+                    <div key={method._id} className="payment-option compact">
+                      <input
+                        type="radio"
+                        id={`payment-${method._id}`}
+                        name="payment"
+                        value={method._id}
+                        checked={selectedPayment === method._id}
+                        onChange={handlePaymentChange}
+                      />
+                      <label htmlFor={`payment-${method._id}`}>
+                        <div className="payment-details">
+                          <span className="payment-name">{method.name}</span>
+                          <span className="payment-desc">{method.description}</span>
+                        </div>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </div>
 
-            {/* Delivery Options Section */}
-            <section className="checkout-section">
-              <h2>Delivery Method</h2>
-              <div className="delivery-options">
-                {deliveryOptions.map(option => (
-                  <div key={option._id} className="delivery-option">
-                    <input
-                      type="radio"
-                      id={`delivery-${option._id}`}
-                      name="delivery"
-                      value={option._id}
-                      checked={selectedDelivery === option._id}
-                      onChange={handleDeliveryChange}
-                    />
-                    <label htmlFor={`delivery-${option._id}`}>
-                      <div className="delivery-details">
-                        <h3>{option.name}</h3>
-                        <p>Estimated delivery time: {option.estimatedDays} business days</p>
-                        <span className="delivery-cost">LKR {option.cost.toFixed(2)}</span>
-                      </div>
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Payment Method Section (simplified for now) */}
-            <section className="checkout-section">
-              <h2>Payment Method</h2>
-              <div className="payment-options">
-                {paymentMethods.map(method => (
-                  <div key={method._id} className="payment-option">
-                    <input
-                      type="radio"
-                      id={`payment-${method._id}`}
-                      name="payment"
-                      value={method._id}
-                      checked={selectedPayment === method._id}
-                      onChange={handlePaymentChange}
-                    />
-                    <label htmlFor={`payment-${method._id}`}>
-                      <div className="payment-details">
-                        <h3>{method.name}</h3>
-                        <p>{method.description}</p>
-                      </div>
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Continue Button */}
             <div className="checkout-actions">
               <button 
                 className="continue-button"

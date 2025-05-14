@@ -42,6 +42,7 @@ const ProductViewPage = ({ userId }) => {
         }
 
         const productData = response.data.product;
+        console.log('Product data received:', productData);
         
         // Process variations to extract available sizes and colors
         const sizes = [...new Set(productData.variations.map(v => v.size))];
@@ -55,8 +56,9 @@ const ProductViewPage = ({ userId }) => {
           sizes,
           colors,
           total_units: totalUnits,
-          mainImage: productData.image_urls?.[0] || 'https://via.placeholder.com/500',
-          images: productData.image_urls || ['https://via.placeholder.com/500']
+          // Use image_urls from the backend that contains the MongoDB images
+          mainImage: productData.image_urls?.[0],
+          images: productData.image_urls || []
         });
         
       } catch (err) {
@@ -304,7 +306,11 @@ const ProductViewPage = ({ userId }) => {
           <img 
             src={product.images[currentImage]} 
             alt={product.product_name} 
-            className="main-image" 
+            className="main-image"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "https://via.placeholder.com/500";
+            }}
           />
           <div className="thumbnail-images">
             {product.images.map((img, index) => (
@@ -314,6 +320,10 @@ const ProductViewPage = ({ userId }) => {
                 alt={`Thumbnail ${index + 1}`}
                 className={index === currentImage ? 'thumbnail active' : 'thumbnail'}
                 onClick={() => changeImage(index)}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://via.placeholder.com/100";
+                }}
               />
             ))}
           </div>
