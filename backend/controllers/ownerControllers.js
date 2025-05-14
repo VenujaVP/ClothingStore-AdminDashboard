@@ -207,6 +207,233 @@ export const fetchColors = (req, res) => {
     });
 };
 
+export const getAllEmployees = (req, res) => {
+  const sql = `
+    SELECT 
+      EMPLOYEE_ID as id,
+      USERNAME as username, 
+      EMAIL as email,
+      F_NAME as first_name, 
+      L_NAME as last_name,
+      PHONE_NUM1 as phone_1,
+      PHONE_NUM2 as phone_2,
+      ENTRY_DATE as entry_date,
+      ROLE as role,
+      createdAt,
+      updatedAt
+    FROM EmployeeDetails
+    ORDER BY EMPLOYEE_ID DESC
+  `;
+  
+  sqldb.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error fetching employees:', err);
+      return res.status(500).json({ 
+        message: 'Error fetching employees from database',
+        Status: 'error',
+        error: err.message
+      });
+    }
+    
+    // Format dates for consistency
+    const formattedEmployees = result.map(employee => ({
+      ...employee,
+      entry_date: new Date(employee.entry_date).toISOString().split('T')[0],
+      createdAt: new Date(employee.createdAt).toISOString(),
+      updatedAt: new Date(employee.updatedAt).toISOString()
+    }));
+    
+    res.status(200).json({
+      Status: 'success',
+      count: formattedEmployees.length,
+      employees: formattedEmployees
+    });
+  });
+};
+
+export const getEmployeeById = (req, res) => {
+  const { id } = req.params;
+  
+  if (!id) {
+    return res.status(400).json({ 
+      message: 'Employee ID is required', 
+      Status: 'error' 
+    });
+  }
+  
+  const sql = `
+    SELECT 
+      EMPLOYEE_ID as id,
+      USERNAME as username, 
+      EMAIL as email,
+      F_NAME as first_name, 
+      L_NAME as last_name,
+      PHONE_NUM1 as phone_1,
+      PHONE_NUM2 as phone_2,
+      ENTRY_DATE as entry_date,
+      ROLE as role,
+      createdAt,
+      updatedAt
+    FROM EmployeeDetails
+    WHERE EMPLOYEE_ID = ?
+  `;
+  
+  sqldb.query(sql, [id], (err, result) => {
+    if (err) {
+      console.error('Error fetching employee:', err);
+      return res.status(500).json({ 
+        message: 'Error fetching employee from database',
+        Status: 'error',
+        error: err.message
+      });
+    }
+    
+    if (!result || result.length === 0) {
+      return res.status(404).json({ 
+        message: 'Employee not found',
+        Status: 'error'
+      });
+    }
+    
+    // Format dates for consistency
+    const employee = {
+      ...result[0],
+      entry_date: new Date(result[0].entry_date).toISOString().split('T')[0],
+      createdAt: new Date(result[0].createdAt).toISOString(),
+      updatedAt: new Date(result[0].updatedAt).toISOString()
+    };
+    
+    res.status(200).json({
+      Status: 'success',
+      employee
+    });
+  });
+};
+
+export const updateEmployee = (req, res) => {
+  const { id } = req.params;
+  const { 
+    first_name, 
+    last_name, 
+    email, 
+    phone_1, 
+    phone_2, 
+    role 
+  } = req.body;
+  
+  if (!id) {
+    return res.status(400).json({ 
+      message: 'Employee ID is required', 
+      Status: 'error' 
+    });
+  }
+  
+  // Check if email is changed and if so, check if the new email is already in use
+  const checkEmailQuery = "SELECT * FROM EmployeeDetails WHERE EMAIL = ? AND EMPLOYEE_ID != ?";
+  
+  sqldb.query(checkEmailQuery, [email, id], (emailCheckErr, emailCheckResult) => {
+    if (emailCheckErr) {
+      console.error("Error checking existing email:", emailCheckErr);
+      return res.status(500).json({ 
+        message: "Error checking email in database",
+        Status: "error" 
+      });
+    }
+    
+    // If email already exists, return an error
+    if (emailCheckResult && emailCheckResult.length > 0) {
+      return res.status(409).json({ 
+        message: "Email address already registered to another employee. Please use a different email.", 
+        Status: "error" 
+      });
+    }
+    
+    // If email is unique or unchanged, proceed with update
+    const updateSql = `
+      UPDATE EmployeeDetails
+      SET 
+        F_NAME = ?,
+        L_NAME = ?,
+        EMAIL = ?,
+        PHONE_NUM1 = ?,
+        PHONE_NUM2 = ?,
+        ROLE = ?
+      WHERE EMPLOYEE_ID = ?
+    `;
+    
+    const updateValues = [
+      first_name,
+      last_name,
+      email,
+      phone_1,
+      phone_2 || null,
+      role,
+      id
+    ];
+    
+    sqldb.query(updateSql, updateValues, (updateErr, updateResult) => {
+      if (updateErr) {
+        console.error("Error updating employee:", updateErr);
+        return res.status(500).json({ 
+          message: "Error updating employee in database",
+          Status: "error",
+          error: updateErr.message
+        });
+      }
+      
+      if (updateResult.affectedRows === 0) {
+        return res.status(404).json({ 
+          message: "Employee not found or no changes made",
+          Status: "error" 
+        });
+      }
+      
+      res.status(200).json({ 
+        message: "Employee updated successfully", 
+        Status: "success",
+        affectedRows: updateResult.affectedRows
+      });
+    });
+  });
+};
+
+export const deleteEmployee = (req, res) => {
+  const { id } = req.params;
+  
+  if (!id) {
+    return res.status(400).json({ 
+      message: 'Employee ID is required', 
+      Status: 'error' 
+    });
+  }
+  
+  const sql = 'DELETE FROM EmployeeDetails WHERE EMPLOYEE_ID = ?';
+  
+  sqldb.query(sql, [id], (err, result) => {
+    if (err) {
+      console.error('Error deleting employee:', err);
+      return res.status(500).json({ 
+        message: 'Error deleting employee from database',
+        Status: 'error',
+        error: err.message
+      });
+    }
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ 
+        message: 'Employee not found',
+        Status: 'error'
+      });
+    }
+    
+    res.status(200).json({
+      message: 'Employee deleted successfully',
+      Status: 'success',
+      affectedRows: result.affectedRows
+    });
+  });
+};
+
 export const ownerCreateProduct = async (req, res) => {
   console.log('Received request to create product');
   console.log('Files received:', req.files ? req.files.length : 'No files');
@@ -477,232 +704,8 @@ export const ownerCreateProduct = async (req, res) => {
   }
 };
 
-export const getAllEmployees = (req, res) => {
-  const sql = `
-    SELECT 
-      EMPLOYEE_ID as id,
-      USERNAME as username, 
-      EMAIL as email,
-      F_NAME as first_name, 
-      L_NAME as last_name,
-      PHONE_NUM1 as phone_1,
-      PHONE_NUM2 as phone_2,
-      ENTRY_DATE as entry_date,
-      ROLE as role,
-      createdAt,
-      updatedAt
-    FROM EmployeeDetails
-    ORDER BY EMPLOYEE_ID DESC
-  `;
-  
-  sqldb.query(sql, (err, result) => {
-    if (err) {
-      console.error('Error fetching employees:', err);
-      return res.status(500).json({ 
-        message: 'Error fetching employees from database',
-        Status: 'error',
-        error: err.message
-      });
-    }
-    
-    // Format dates for consistency
-    const formattedEmployees = result.map(employee => ({
-      ...employee,
-      entry_date: new Date(employee.entry_date).toISOString().split('T')[0],
-      createdAt: new Date(employee.createdAt).toISOString(),
-      updatedAt: new Date(employee.updatedAt).toISOString()
-    }));
-    
-    res.status(200).json({
-      Status: 'success',
-      count: formattedEmployees.length,
-      employees: formattedEmployees
-    });
-  });
-};
 
-export const getEmployeeById = (req, res) => {
-  const { id } = req.params;
-  
-  if (!id) {
-    return res.status(400).json({ 
-      message: 'Employee ID is required', 
-      Status: 'error' 
-    });
-  }
-  
-  const sql = `
-    SELECT 
-      EMPLOYEE_ID as id,
-      USERNAME as username, 
-      EMAIL as email,
-      F_NAME as first_name, 
-      L_NAME as last_name,
-      PHONE_NUM1 as phone_1,
-      PHONE_NUM2 as phone_2,
-      ENTRY_DATE as entry_date,
-      ROLE as role,
-      createdAt,
-      updatedAt
-    FROM EmployeeDetails
-    WHERE EMPLOYEE_ID = ?
-  `;
-  
-  sqldb.query(sql, [id], (err, result) => {
-    if (err) {
-      console.error('Error fetching employee:', err);
-      return res.status(500).json({ 
-        message: 'Error fetching employee from database',
-        Status: 'error',
-        error: err.message
-      });
-    }
-    
-    if (!result || result.length === 0) {
-      return res.status(404).json({ 
-        message: 'Employee not found',
-        Status: 'error'
-      });
-    }
-    
-    // Format dates for consistency
-    const employee = {
-      ...result[0],
-      entry_date: new Date(result[0].entry_date).toISOString().split('T')[0],
-      createdAt: new Date(result[0].createdAt).toISOString(),
-      updatedAt: new Date(result[0].updatedAt).toISOString()
-    };
-    
-    res.status(200).json({
-      Status: 'success',
-      employee
-    });
-  });
-};
 
-export const updateEmployee = (req, res) => {
-  const { id } = req.params;
-  const { 
-    first_name, 
-    last_name, 
-    email, 
-    phone_1, 
-    phone_2, 
-    role 
-  } = req.body;
-  
-  if (!id) {
-    return res.status(400).json({ 
-      message: 'Employee ID is required', 
-      Status: 'error' 
-    });
-  }
-  
-  // Check if email is changed and if so, check if the new email is already in use
-  const checkEmailQuery = "SELECT * FROM EmployeeDetails WHERE EMAIL = ? AND EMPLOYEE_ID != ?";
-  
-  sqldb.query(checkEmailQuery, [email, id], (emailCheckErr, emailCheckResult) => {
-    if (emailCheckErr) {
-      console.error("Error checking existing email:", emailCheckErr);
-      return res.status(500).json({ 
-        message: "Error checking email in database",
-        Status: "error" 
-      });
-    }
-    
-    // If email already exists, return an error
-    if (emailCheckResult && emailCheckResult.length > 0) {
-      return res.status(409).json({ 
-        message: "Email address already registered to another employee. Please use a different email.", 
-        Status: "error" 
-      });
-    }
-    
-    // If email is unique or unchanged, proceed with update
-    const updateSql = `
-      UPDATE EmployeeDetails
-      SET 
-        F_NAME = ?,
-        L_NAME = ?,
-        EMAIL = ?,
-        PHONE_NUM1 = ?,
-        PHONE_NUM2 = ?,
-        ROLE = ?
-      WHERE EMPLOYEE_ID = ?
-    `;
-    
-    const updateValues = [
-      first_name,
-      last_name,
-      email,
-      phone_1,
-      phone_2 || null,
-      role,
-      id
-    ];
-    
-    sqldb.query(updateSql, updateValues, (updateErr, updateResult) => {
-      if (updateErr) {
-        console.error("Error updating employee:", updateErr);
-        return res.status(500).json({ 
-          message: "Error updating employee in database",
-          Status: "error",
-          error: updateErr.message
-        });
-      }
-      
-      if (updateResult.affectedRows === 0) {
-        return res.status(404).json({ 
-          message: "Employee not found or no changes made",
-          Status: "error" 
-        });
-      }
-      
-      res.status(200).json({ 
-        message: "Employee updated successfully", 
-        Status: "success",
-        affectedRows: updateResult.affectedRows
-      });
-    });
-  });
-};
-
-export const deleteEmployee = (req, res) => {
-  const { id } = req.params;
-  
-  if (!id) {
-    return res.status(400).json({ 
-      message: 'Employee ID is required', 
-      Status: 'error' 
-    });
-  }
-  
-  const sql = 'DELETE FROM EmployeeDetails WHERE EMPLOYEE_ID = ?';
-  
-  sqldb.query(sql, [id], (err, result) => {
-    if (err) {
-      console.error('Error deleting employee:', err);
-      return res.status(500).json({ 
-        message: 'Error deleting employee from database',
-        Status: 'error',
-        error: err.message
-      });
-    }
-    
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ 
-        message: 'Employee not found',
-        Status: 'error'
-      });
-    }
-    
-    res.status(200).json({
-      message: 'Employee deleted successfully',
-      Status: 'success',
-      affectedRows: result.affectedRows
-    });
-  });
-};
 
 export const getProductImages = async (req, res) => {
   try {

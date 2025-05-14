@@ -30,7 +30,7 @@
   import './Viewpage.css';
   
   const Viewpage = ({ userId }) => {
-    console.log("Current user ID fuck:", userId);
+    console.log("Current user ID :", userId);
     const [products, setProducts] = useState([]); // State to store product data
     const [loading, setLoading] = useState(true); // State to handle loading state
     const [error, setError] = useState(null); // State to handle errors

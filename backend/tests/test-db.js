@@ -1,3 +1,5 @@
+//node tests/test-db.js
+
 import { connectToDatabase } from '../config/mongodb.js';
 
 async function testMongoConnection() {
